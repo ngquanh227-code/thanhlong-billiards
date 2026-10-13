@@ -99,7 +99,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                 <button
                   key={item.id}
                   onClick={() => handleSelect(item.id)}
-                  className={`flex items-center justify-between w-full px-3 py-2 rounded-lg text-xs font-medium transition-all text-left ${
+                  className={`flex items-center justify-between w-full h-9 px-3 rounded-lg text-xs font-medium transition-all text-left ${
                     isActive
                       ? 'bg-amber-500/15 text-amber-200 border border-amber-500/30 font-semibold shadow-sm'
                       : 'text-slate-300 hover:text-white hover:bg-slate-800/60 border border-transparent'
@@ -107,7 +107,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                 >
                   <span className="truncate">{item.label}</span>
                   {item.count !== undefined && (
-                    <span className={`text-[11px] px-1.5 py-0.2 rounded font-semibold ${
+                    <span className={`h-5 min-w-[20px] px-1.5 rounded-full text-[10px] font-bold flex items-center justify-center ${
                       isActive
                         ? 'bg-amber-400 text-slate-950'
                         : 'bg-emerald-500/20 text-emerald-300'
@@ -135,7 +135,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                     <button
                       key={item.id}
                       onClick={() => handleSelect(item.id)}
-                      className={`flex items-center justify-between w-full px-3 py-2 rounded-lg text-xs font-medium transition-all text-left ${
+                      className={`flex items-center justify-between w-full h-9 px-3 rounded-lg text-xs font-medium transition-all text-left ${
                         isActive
                           ? 'bg-amber-500/15 text-amber-200 border border-amber-500/30 font-semibold shadow-sm'
                           : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/60 border border-transparent'

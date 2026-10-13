@@ -114,28 +114,23 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenShiftModal, onNavigateTab 
         {/* Right Actions */}
         <div className="flex items-center gap-2 font-sans">
           {/* Shift status button */}
-          {currentShift ? (
-            <button
-              onClick={onOpenShiftModal}
-              className="text-xs px-2.5 py-1.5 rounded-lg bg-emerald-500/10 hover:bg-emerald-500/15 border border-emerald-500/25 text-emerald-300 font-medium transition-colors"
-              title="Xem ca trực hiện tại"
-            >
-              {currentShift.shiftName.split(' ')[0]}
-            </button>
-          ) : (
-            <button
-              onClick={onOpenShiftModal}
-              className="text-xs px-2.5 py-1.5 rounded-lg bg-amber-500/10 hover:bg-amber-500/15 border border-amber-500/25 text-amber-300 font-medium transition-colors"
-            >
-              Mở ca trực
-            </button>
-          )}
+          <button
+            onClick={onOpenShiftModal}
+            className={`h-8.5 px-3 rounded-lg text-xs font-medium flex items-center justify-center whitespace-nowrap transition-colors border ${
+              currentShift
+                ? 'bg-emerald-500/10 hover:bg-emerald-500/15 border-emerald-500/25 text-emerald-300'
+                : 'bg-amber-500/10 hover:bg-amber-500/15 border-amber-500/25 text-amber-300'
+            }`}
+            title="Xem và quản lý ca trực"
+          >
+            {currentShift ? (currentShift.shiftName.includes('(') ? currentShift.shiftName.split('(')[0].trim() : currentShift.shiftName) : 'Mở ca trực'}
+          </button>
 
           {/* Admin / Staff Role Switcher */}
-          <div className="flex items-center gap-1">
+          <div className="flex items-center gap-1.5">
             <button
               onClick={toggleRole}
-              className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all border ${
+              className={`h-8.5 px-3 rounded-lg text-xs font-medium flex items-center justify-center whitespace-nowrap transition-all border ${
                 isAdmin
                   ? 'bg-amber-500/15 text-amber-300 border-amber-500/35 hover:bg-amber-500/20'
                   : 'bg-slate-800/80 text-slate-300 border-slate-700 hover:text-white hover:bg-slate-700/60'
@@ -145,11 +140,11 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenShiftModal, onNavigateTab 
               {isAdmin ? 'Quản trị viên' : 'Nhân viên'}
             </button>
 
-            <div className="hidden lg:flex items-center bg-slate-900/60 px-2 py-0.5 rounded-lg border border-slate-800">
+            <div className="hidden lg:flex items-center h-8.5 bg-slate-900/60 px-2 rounded-lg border border-slate-800">
               <select
                 value={currentStaff.id}
                 onChange={(e) => switchCurrentStaff(e.target.value)}
-                className="bg-transparent text-xs text-slate-300 focus:outline-none cursor-pointer py-1 font-medium"
+                className="h-full bg-transparent text-xs text-slate-300 focus:outline-none cursor-pointer font-medium"
               >
                 {staff.map((s) => (
                   <option key={s.id} value={s.id} className="bg-slate-900 text-white">
@@ -163,7 +158,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenShiftModal, onNavigateTab 
           {/* Quick Sound & Theme Controls */}
           <button
             onClick={toggleTheme}
-            className="text-xs px-2.5 py-1.5 rounded-lg bg-slate-900/60 hover:bg-slate-800 text-slate-300 border border-slate-800 hover:border-slate-700 transition-colors"
+            className="h-8.5 px-3 rounded-lg bg-slate-900/60 hover:bg-slate-800 text-slate-300 border border-slate-800 hover:border-slate-700 text-xs font-medium flex items-center justify-center whitespace-nowrap transition-colors"
             title="Đổi giao diện Sáng / Tối"
           >
             {theme === 'dark' ? 'Tối' : 'Sáng'}
@@ -171,7 +166,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenShiftModal, onNavigateTab 
 
           <button
             onClick={toggleSound}
-            className={`text-xs px-2.5 py-1.5 rounded-lg border transition-colors ${
+            className={`h-8.5 px-3 rounded-lg border text-xs font-medium flex items-center justify-center whitespace-nowrap transition-colors ${
               soundEnabled
                 ? 'bg-slate-900/60 text-emerald-400 border-slate-800 hover:border-slate-700'
                 : 'bg-slate-900/60 text-slate-500 border-slate-800'
@@ -186,7 +181,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenShiftModal, onNavigateTab 
             onClick={() => {
               if (window.confirm('Khôi phục toàn bộ dữ liệu mẫu ban đầu của quán?')) resetAllDemoData();
             }}
-            className="hidden xl:inline-block text-xs px-2 py-1.5 rounded-lg text-slate-500 hover:text-rose-400 hover:bg-rose-500/10 transition-colors"
+            className="hidden xl:flex h-8.5 px-2.5 rounded-lg text-slate-500 hover:text-rose-400 hover:bg-rose-500/10 text-xs font-medium items-center justify-center whitespace-nowrap transition-colors"
             title="Khôi phục dữ liệu ban đầu"
           >
             Đặt lại

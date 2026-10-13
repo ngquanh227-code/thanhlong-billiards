@@ -207,10 +207,10 @@ export const TableMapView: React.FC = () => {
 
           <div className="flex items-center gap-2 text-xs">
             {/* View mode toggle */}
-            <div className="flex items-center bg-slate-900/60 p-0.5 rounded-lg border border-slate-800">
+            <div className="h-9 flex items-center bg-slate-900/60 p-0.5 rounded-lg border border-slate-800">
               <button
                 onClick={() => setViewMode('GRID')}
-                className={`px-3 py-1.5 rounded-md font-medium transition-colors ${
+                className={`h-full px-3 rounded-md font-medium text-xs transition-colors flex items-center justify-center ${
                   viewMode === 'GRID' ? 'bg-slate-800 text-white' : 'text-slate-400 hover:text-white'
                 }`}
               >
@@ -218,7 +218,7 @@ export const TableMapView: React.FC = () => {
               </button>
               <button
                 onClick={() => setViewMode('LIST')}
-                className={`px-3 py-1.5 rounded-md font-medium transition-colors ${
+                className={`h-full px-3 rounded-md font-medium text-xs transition-colors flex items-center justify-center ${
                   viewMode === 'LIST' ? 'bg-slate-800 text-white' : 'text-slate-400 hover:text-white'
                 }`}
               >
@@ -231,14 +231,14 @@ export const TableMapView: React.FC = () => {
               <div className="flex items-center gap-1.5">
                 <button
                   onClick={handleQuickAddTable}
-                  className="px-2.5 py-1.5 rounded-lg bg-slate-900 hover:bg-slate-800 text-slate-300 border border-slate-800 hover:border-slate-700 font-medium transition-colors"
+                  className="h-9 px-3 rounded-lg bg-slate-900 hover:bg-slate-800 text-slate-300 border border-slate-800 hover:border-slate-700 font-medium flex items-center justify-center transition-colors"
                   title="Thêm nhanh 1 bàn tiếp theo"
                 >
                   + Tạo nhanh
                 </button>
                 <button
                   onClick={handleOpenAddTable}
-                  className="px-3 py-1.5 rounded-lg bg-amber-500 hover:bg-amber-400 text-slate-950 font-semibold transition-colors"
+                  className="h-9 px-3.5 rounded-lg bg-amber-500 hover:bg-amber-400 text-slate-950 font-semibold flex items-center justify-center transition-colors shadow-sm"
                   title="Thêm bàn mới với thông tin chi tiết"
                 >
                   + Thêm bàn
@@ -249,7 +249,7 @@ export const TableMapView: React.FC = () => {
             {availableTables.length > 0 && !isAdmin && (
               <button
                 onClick={() => setActiveOpenModalTable(availableTables[0])}
-                className="px-3.5 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white font-medium transition-colors"
+                className="h-9 px-3.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white font-medium flex items-center justify-center transition-colors shadow-sm"
               >
                 + Mở bàn
               </button>
@@ -258,92 +258,84 @@ export const TableMapView: React.FC = () => {
             {/* Mobile trigger to view panel */}
             <button
               onClick={() => setIsMobilePanelOpen(true)}
-              className="lg:hidden px-3 py-1.5 rounded-lg bg-slate-800 border border-slate-700 text-slate-200 font-medium"
+              className="lg:hidden h-9 px-3 rounded-lg bg-slate-800 border border-slate-700 text-slate-200 font-medium flex items-center justify-center"
             >
               Điều khiển
             </button>
           </div>
         </div>
 
-        {/* Filter and Search Bar */}
-        <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3">
-          {/* Type Filter Tabs */}
-          <div className="flex items-center gap-1.5 overflow-x-auto pb-1 no-scrollbar text-xs">
-            {[
-              { id: 'ALL', label: `Tất cả (${tables.length})` },
-              { id: 'POOL', label: `Bàn Lỗ (${tables.filter((t) => t.type === 'POOL').length})` },
-              { id: 'CAROM', label: `Carom (${tables.filter((t) => t.type === 'CAROM').length})` },
-              { id: 'VIP', label: `Phòng VIP (${tables.filter((t) => t.type === 'VIP').length})` },
-              { id: 'SNOOKER', label: `Snooker (${tables.filter((t) => t.type === 'SNOOKER').length})` },
-            ].map((tab) => (
+        {/* Filter and Search Bar (Harmonized, Single-tier, No Redundancies) */}
+        <div className="flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-2.5">
+          {/* Status Filters */}
+          <div className="flex items-center bg-slate-900/60 p-1 rounded-xl border border-slate-800 text-xs overflow-x-auto no-scrollbar gap-1">
+            <button
+              onClick={() => setStatusFilter('ALL')}
+              className={`h-7.5 px-3 rounded-lg font-medium transition-all whitespace-nowrap flex items-center justify-center ${
+                statusFilter === 'ALL'
+                  ? 'bg-slate-800 text-white shadow-sm'
+                  : 'text-slate-400 hover:text-white'
+              }`}
+            >
+              Tất cả ({tables.length})
+            </button>
+            <button
+              onClick={() => setStatusFilter('PLAYING')}
+              className={`h-7.5 px-3 rounded-lg font-medium transition-all whitespace-nowrap flex items-center justify-center ${
+                statusFilter === 'PLAYING'
+                  ? 'bg-emerald-500/20 text-emerald-300 shadow-sm'
+                  : 'text-slate-400 hover:text-white'
+              }`}
+            >
+              Đang chơi ({playingCount})
+            </button>
+            <button
+              onClick={() => setStatusFilter('AVAILABLE')}
+              className={`h-7.5 px-3 rounded-lg font-medium transition-all whitespace-nowrap flex items-center justify-center ${
+                statusFilter === 'AVAILABLE'
+                  ? 'bg-slate-800 text-white shadow-sm'
+                  : 'text-slate-400 hover:text-white'
+              }`}
+            >
+              Bàn trống ({availableCount})
+            </button>
+            {waitingCount > 0 && (
               <button
-                key={tab.id}
-                onClick={() => setTypeFilter(tab.id)}
-                className={`px-3 py-1.5 rounded-full font-medium transition-colors whitespace-nowrap ${
-                  typeFilter === tab.id
-                    ? 'bg-slate-800 text-white border border-slate-700'
-                    : 'text-slate-400 hover:text-slate-200 hover:bg-slate-900 border border-transparent'
+                onClick={() => setStatusFilter('WAITING_PAYMENT')}
+                className={`h-7.5 px-3 rounded-lg font-medium transition-all whitespace-nowrap flex items-center justify-center ${
+                  statusFilter === 'WAITING_PAYMENT'
+                    ? 'bg-amber-500/20 text-amber-300 shadow-sm'
+                    : 'text-slate-400 hover:text-white'
                 }`}
               >
-                {tab.label}
+                Chờ tính ({waitingCount})
               </button>
-            ))}
+            )}
           </div>
 
-          {/* Status Chips & Search */}
+          {/* Type Selector Dropdown & Search Bar */}
           <div className="flex items-center gap-2">
-            <div className="flex items-center bg-slate-900/60 p-0.5 rounded-full border border-slate-800 text-xs">
-              <button
-                onClick={() => setStatusFilter('ALL')}
-                className={`px-2.5 py-1 rounded-full font-medium transition-colors ${
-                  statusFilter === 'ALL'
-                    ? 'bg-slate-800 text-white'
-                    : 'text-slate-400 hover:text-white'
-                }`}
+            <div className="h-8.5 bg-slate-900/60 px-2.5 rounded-lg border border-slate-800 flex items-center shrink-0">
+              <select
+                value={typeFilter}
+                onChange={(e) => setTypeFilter(e.target.value)}
+                className="h-full bg-transparent text-xs text-slate-300 focus:outline-none cursor-pointer font-medium"
               >
-                Tất cả
-              </button>
-              <button
-                onClick={() => setStatusFilter('PLAYING')}
-                className={`px-2.5 py-1 rounded-full font-medium transition-colors ${
-                  statusFilter === 'PLAYING'
-                    ? 'bg-emerald-500/20 text-emerald-300'
-                    : 'text-slate-400 hover:text-white'
-                }`}
-              >
-                Đang chơi ({playingCount})
-              </button>
-              <button
-                onClick={() => setStatusFilter('AVAILABLE')}
-                className={`px-2.5 py-1 rounded-full font-medium transition-colors ${
-                  statusFilter === 'AVAILABLE'
-                    ? 'bg-slate-800 text-white'
-                    : 'text-slate-400 hover:text-white'
-                }`}
-              >
-                Trống ({availableCount})
-              </button>
-              {waitingCount > 0 && (
-                <button
-                  onClick={() => setStatusFilter('WAITING_PAYMENT')}
-                  className={`px-2.5 py-1 rounded-full font-medium transition-colors ${
-                    statusFilter === 'WAITING_PAYMENT'
-                      ? 'bg-amber-500/20 text-amber-300'
-                      : 'text-slate-400 hover:text-white'
-                  }`}
-                >
-                  Chờ ({waitingCount})
-                </button>
-              )}
+                <option value="ALL" className="bg-slate-900 text-white">Tất cả loại bàn</option>
+                <option value="POOL" className="bg-slate-900 text-white">Bàn Lỗ (Pool)</option>
+                <option value="CAROM" className="bg-slate-900 text-white">Carom (3 Băng / Libre)</option>
+                <option value="VIP" className="bg-slate-900 text-white">Phòng VIP</option>
+                <option value="SNOOKER" className="bg-slate-900 text-white">Snooker</option>
+              </select>
             </div>
 
-            <div className="w-36 sm:w-48">
+            <div className="w-full sm:w-56 h-8.5">
               <input
                 type="text"
                 placeholder="Tìm mã hoặc tên bàn..."
                 value={searchCode}
                 onChange={(e) => setSearchCode(e.target.value)}
-                className="w-full px-3 py-1.5 text-xs rounded-lg bg-slate-900 border border-slate-800 text-white placeholder-slate-500 focus:outline-none focus:border-slate-700 transition-colors"
+                className="w-full h-full px-3 text-xs rounded-lg bg-slate-900 border border-slate-800 text-white placeholder-slate-500 focus:outline-none focus:border-slate-700 transition-colors"
               />
             </div>
           </div>

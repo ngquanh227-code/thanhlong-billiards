@@ -201,13 +201,13 @@ export const PosCashierView: React.FC = () => {
                 <div className="flex gap-2">
                   <button
                     onClick={() => window.print()}
-                    className="px-3.5 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-medium transition-colors"
+                    className="h-8.5 px-3.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-medium flex items-center justify-center transition-colors"
                   >
                     In lại hóa đơn
                   </button>
                   <button
                     onClick={() => setSelectedCompletedSession(null)}
-                    className="px-3 py-1.5 rounded-xl bg-slate-800 text-slate-300 text-xs font-medium hover:text-white"
+                    className="h-8.5 px-3.5 rounded-lg bg-slate-800 text-slate-300 text-xs font-medium flex items-center justify-center hover:text-white transition-colors"
                   >
                     Đóng
                   </button>
@@ -434,7 +434,7 @@ export const PosCashierView: React.FC = () => {
                 <button
                   type="button"
                   onClick={() => handleCheckout(true)}
-                  className="flex-1 py-2.5 px-4 rounded-xl bg-amber-400 hover:bg-amber-300 text-slate-950 font-bold text-xs transition-colors shadow-md"
+                  className="flex-1 h-10.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs flex items-center justify-center transition-all shadow-md active:scale-[0.99]"
                 >
                   In hóa đơn & Trả bàn
                 </button>
@@ -442,7 +442,7 @@ export const PosCashierView: React.FC = () => {
                 <button
                   type="button"
                   onClick={() => handleCheckout(false)}
-                  className="py-2.5 px-4 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-medium transition-colors"
+                  className="flex-1 h-10.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold flex items-center justify-center transition-colors active:scale-[0.99]"
                 >
                   Chốt không in
                 </button>

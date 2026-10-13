@@ -74,12 +74,12 @@ export const TableCard: React.FC<TableCardProps> = ({
       <div>
         {/* Header: Table Code, Type, and Status */}
         <div className="flex items-start justify-between gap-2 pb-2.5 border-b border-slate-800/60">
-          <div className="flex flex-col">
-            <div className="flex items-center gap-2">
+          <div className="flex flex-col min-w-0">
+            <div className="flex items-center gap-1.5 flex-wrap">
               <h3 className="text-base font-bold text-white tracking-tight">
                 {table.code}
               </h3>
-              <span className="text-[11px] px-2 py-0.5 rounded-full bg-slate-800/80 text-slate-300 font-medium">
+              <span className="text-[11px] px-2 py-0.5 rounded-md bg-slate-800/80 text-slate-300 font-medium whitespace-nowrap">
                 {getTypeName(table.type)}
               </span>
             </div>
@@ -88,28 +88,28 @@ export const TableCard: React.FC<TableCardProps> = ({
             </span>
           </div>
 
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1.5 shrink-0">
             {/* Status indicator */}
             {isPlaying ? (
               isPaused ? (
-                <span className="text-xs px-2.5 py-1 rounded-full bg-amber-500/10 text-amber-300 font-medium border border-amber-500/20">
+                <span className="text-[11px] px-2.5 py-0.5 rounded-full bg-amber-500/15 text-amber-300 font-medium border border-amber-500/25 whitespace-nowrap">
                   Tạm dừng
                 </span>
               ) : (
-                <span className="text-xs px-2.5 py-1 rounded-full bg-emerald-500/10 text-emerald-300 font-medium border border-emerald-500/20">
+                <span className="text-[11px] px-2.5 py-0.5 rounded-full bg-emerald-500/15 text-emerald-300 font-medium border border-emerald-500/25 whitespace-nowrap">
                   Đang chơi
                 </span>
               )
             ) : isWaiting ? (
-              <span className="text-xs px-2.5 py-1 rounded-full bg-amber-500/15 text-amber-300 font-medium border border-amber-500/25">
+              <span className="text-[11px] px-2.5 py-0.5 rounded-full bg-amber-500/20 text-amber-300 font-medium border border-amber-500/30 whitespace-nowrap">
                 Chờ tính
               </span>
             ) : isMaintenance ? (
-              <span className="text-xs px-2.5 py-1 rounded-full bg-slate-800 text-slate-400 font-medium">
+              <span className="text-[11px] px-2.5 py-0.5 rounded-full bg-slate-800 text-slate-400 font-medium whitespace-nowrap">
                 Bảo trì
               </span>
             ) : (
-              <span className="text-xs px-2.5 py-1 rounded-full bg-slate-800/60 text-slate-400 font-medium">
+              <span className="text-[11px] px-2.5 py-0.5 rounded-full bg-slate-800/80 text-slate-400 font-medium whitespace-nowrap">
                 Bàn trống
               </span>
             )}
@@ -119,7 +119,7 @@ export const TableCard: React.FC<TableCardProps> = ({
               <div className="flex items-center gap-1" onClick={(e) => e.stopPropagation()}>
                 <button
                   onClick={() => onEditTable && onEditTable(table)}
-                  className="text-xs text-amber-400/90 hover:text-amber-300 hover:underline px-1 py-0.5 transition-colors font-medium"
+                  className="text-xs text-amber-400 hover:text-amber-300 hover:underline px-1 py-0.5 transition-colors font-medium"
                   title="Chỉnh sửa thông tin bàn"
                 >
                   Sửa
@@ -187,7 +187,7 @@ export const TableCard: React.FC<TableCardProps> = ({
         {isAvailable && (
           <button
             onClick={() => onOpenTable(table)}
-            className="w-full py-2 px-3 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-medium text-xs transition-colors shadow-sm"
+            className="w-full h-9 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white font-medium text-xs flex items-center justify-center transition-colors shadow-sm active:scale-[0.99]"
           >
             Mở bàn
           </button>
@@ -197,14 +197,14 @@ export const TableCard: React.FC<TableCardProps> = ({
           <div className="flex items-center gap-2">
             <button
               onClick={() => onOrderMenu(table)}
-              className="flex-1 py-2 px-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-medium transition-colors"
+              className="flex-1 h-9 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-medium flex items-center justify-center transition-colors active:scale-[0.99]"
             >
               Gọi món
             </button>
 
             <button
               onClick={() => onCheckout(table, session)}
-              className="flex-1 py-2 px-3 rounded-xl bg-amber-400 hover:bg-amber-300 text-slate-950 font-semibold text-xs transition-colors shadow-sm"
+              className="flex-1 h-9 rounded-lg bg-amber-500 hover:bg-amber-400 text-slate-950 font-semibold text-xs flex items-center justify-center transition-colors shadow-sm active:scale-[0.99]"
             >
               Thanh toán
             </button>
@@ -214,7 +214,7 @@ export const TableCard: React.FC<TableCardProps> = ({
         {isMaintenance && (
           <button
             onClick={() => onToggleMaintenance(table)}
-            className="w-full py-2 px-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-medium transition-colors"
+            className="w-full h-9 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-medium flex items-center justify-center transition-colors"
           >
             Mở lại bàn
           </button>
