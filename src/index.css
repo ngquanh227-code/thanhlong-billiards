@@ -1,0 +1,172 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+  color-scheme: dark;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  background-color: #0b0e14;
+  color: #e2e8f0;
+  min-height: 100vh;
+  overflow-x: hidden;
+  font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3, h4, .font-heading {
+  font-family: 'Outfit', 'Plus Jakarta Sans', sans-serif;
+  letter-spacing: -0.01em;
+}
+
+/* ========================================================
+   LIGHT THEME MODE (Cao Cấp, Sáng Sủa & Sạch Sẽ)
+   ======================================================== */
+html.light {
+  color-scheme: light;
+}
+
+html.light body {
+  background-color: #f8fafc;
+  color: #0f172a;
+}
+
+html.light .bg-\[\#080a0e\] {
+  background-color: #f8fafc !important;
+}
+
+html.light .bg-charcoal-950 {
+  background-color: #ffffff !important;
+  color: #0f172a !important;
+}
+
+html.light .bg-charcoal-900 {
+  background-color: #ffffff !important;
+  color: #0f172a !important;
+}
+
+html.light .bg-charcoal-850 {
+  background-color: #ffffff !important;
+  color: #0f172a !important;
+  box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+}
+
+html.light .bg-charcoal-800 {
+  background-color: #f1f5f9 !important;
+  color: #1e293b !important;
+}
+
+html.light .bg-charcoal-750 {
+  background-color: #e2e8f0 !important;
+}
+
+html.light .border-charcoal-800,
+html.light .border-charcoal-750,
+html.light .border-charcoal-700 {
+  border-color: #e2e8f0 !important;
+}
+
+html.light h1.text-white,
+html.light h2.text-white,
+html.light h3.text-white,
+html.light h4.text-white,
+html.light span.text-white,
+html.light div.text-white,
+html.light p.text-white {
+  color: #0f172a !important;
+}
+
+html.light .text-slate-100 {
+  color: #0f172a !important;
+}
+
+html.light .text-slate-200 {
+  color: #1e293b !important;
+}
+
+html.light .text-slate-300 {
+  color: #334155 !important;
+}
+
+html.light .text-slate-400 {
+  color: #64748b !important;
+}
+
+/* Giữ chữ trắng sắc nét cho các nút chức năng nền màu nổi */
+html.light button.bg-emerald-600,
+html.light button.bg-emerald-500,
+html.light button.bg-rose-600,
+html.light button.bg-rose-500,
+html.light button.bg-cyan-600,
+html.light button.bg-cyan-500,
+html.light button[class*="bg-emerald"] *,
+html.light button[class*="bg-rose"] * {
+  color: #ffffff !important;
+}
+
+html.light input,
+html.light select,
+html.light textarea {
+  background-color: #f8fafc !important;
+  border-color: #cbd5e1 !important;
+  color: #0f172a !important;
+}
+
+html.light input::placeholder,
+html.light textarea::placeholder {
+  color: #94a3b8 !important;
+}
+
+html.light ::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+}
+
+html.light ::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+/* Minimalist Scrollbar */
+::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: #232b3c;
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #3e4b66;
+}
+
+/* POS Thermal Receipt Print Styles */
+@media print {
+  body * {
+    visibility: hidden;
+  }
+  #printable-receipt, #printable-receipt * {
+    visibility: visible;
+  }
+  #printable-receipt {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 80mm;
+    margin: 0;
+    padding: 8px;
+    background: #fff !important;
+    color: #000 !important;
+    font-size: 12px;
+    font-family: 'Courier New', Courier, monospace;
+    line-height: 1.3;
+  }
+  .no-print {
+    display: none !important;
+  }
+}
