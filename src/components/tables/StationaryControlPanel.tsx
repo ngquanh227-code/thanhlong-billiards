@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import logoImg from '../../assets/logo.png';
 import { TableItem, TableSession, PricingRule, Customer, Staff } from '../../types';
 import { calculateTableFee, formatDurationHuman, formatSecondsToTimer, formatVND } from '../../services/calculation';
 import {
@@ -67,7 +68,7 @@ export const StationaryControlPanel: React.FC<StationaryControlPanelProps> = ({
     return (
       <div className="h-full flex flex-col items-center justify-center p-6 text-center text-slate-500">
         <img
-          src="/logo.png"
+          src={logoImg}
           alt="Thanh Long Billiards Logo"
           className="w-16 h-16 rounded-full border border-amber-500/30 object-cover mb-3 opacity-60"
         />
@@ -101,7 +102,7 @@ export const StationaryControlPanel: React.FC<StationaryControlPanelProps> = ({
         <div className="flex items-center justify-between gap-3">
           <div className="flex items-center gap-2.5">
             <img
-              src="/logo.png"
+              src={logoImg}
               alt="Logo"
               className="w-9 h-9 rounded-full border border-amber-500/50 object-cover shadow-[0_0_10px_rgba(212,175,55,0.2)]"
             />

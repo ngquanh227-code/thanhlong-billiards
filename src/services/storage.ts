@@ -348,7 +348,7 @@ const DEFAULT_SETTINGS: SystemSettings = {
   receiptFooter: 'Cảm ơn Quý Khách! Hẹn gặp lại Quý Cơ Thủ!',
   currency: 'VNĐ',
   isCloudSyncEnabled: false,
-  theme: 'dark',
+  theme: 'light',
 };
 
 // Seed Current Shift

@@ -1,5 +1,6 @@
 import React from 'react';
 import { useApp } from '../context/AppContext';
+import logoImg from '../assets/logo.png';
 import {
   Clock,
   Shield,
@@ -68,7 +69,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenShiftModal, onNavigateTab 
         >
           <div className="relative">
             <img
-              src="/logo.png"
+              src={logoImg}
               alt="Thanh Long Billiards Logo"
               className="w-10 h-10 rounded-full border border-amber-500/50 shadow-[0_0_12px_rgba(212,175,55,0.3)] object-cover group-hover:scale-105 transition-transform"
             />

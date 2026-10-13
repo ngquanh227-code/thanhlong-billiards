@@ -96,6 +96,19 @@ html.light .text-slate-400 {
   color: #64748b !important;
 }
 
+html.light .text-gold-400 {
+  color: #b45309 !important;
+}
+
+html.light .text-emerald-400 {
+  color: #059669 !important;
+}
+
+html.light .text-amber-400,
+html.light .text-amber-300 {
+  color: #d97706 !important;
+}
+
 /* Giữ chữ trắng sắc nét cho các nút chức năng nền màu nổi */
 html.light button.bg-emerald-600,
 html.light button.bg-emerald-500,

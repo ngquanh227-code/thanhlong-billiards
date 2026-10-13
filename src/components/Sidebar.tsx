@@ -11,6 +11,7 @@ import {
   Settings,
 } from 'lucide-react';
 import { useApp } from '../context/AppContext';
+import logoImg from '../assets/logo.png';
 
 interface SidebarProps {
   currentTab: string;
@@ -127,7 +128,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
         {/* Minimal Footer */}
         <div className="p-3 border-t border-charcoal-800 flex items-center gap-2.5 bg-charcoal-900/50">
           <img
-            src="/logo.png"
+            src={logoImg}
             alt="Thanh Long"
             className="w-7 h-7 rounded-full border border-amber-500/40 object-cover"
           />

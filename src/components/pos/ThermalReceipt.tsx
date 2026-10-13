@@ -1,4 +1,5 @@
 import React from 'react';
+import logoImg from '../../assets/logo.png';
 import { TableSession, SystemSettings } from '../../types';
 import { formatVND, formatDurationHuman } from '../../services/calculation';
 import { getVietQRUrl } from '../../services/vietqr';
@@ -58,7 +59,7 @@ export const ThermalReceipt: React.FC<ThermalReceiptProps> = ({
       {/* Header */}
       <div className="text-center mb-2 flex flex-col items-center">
         <img
-          src="/logo.png"
+          src={logoImg}
           alt="Thanh Long Billiards Logo"
           className="w-14 h-14 rounded-full border border-gray-400 object-cover mb-1.5"
         />

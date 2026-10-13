@@ -122,7 +122,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
   const [currentBranch, setCurrentBranch] = useState<string>('Chi nhánh 1 - Quận 7 (Trụ sở chính)');
   const [soundEnabled, setSoundEnabled] = useState<boolean>(true);
   const [theme, setThemeState] = useState<'dark' | 'light'>(() => {
-    return (StorageService.getSettings()?.theme as 'dark' | 'light') || 'dark';
+    return (StorageService.getSettings()?.theme as 'dark' | 'light') || 'light';
   });
 
   // Sync sound setting
