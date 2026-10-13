@@ -1,12 +1,6 @@
 import React, { useState } from 'react';
 import { useApp } from '../../context/AppContext';
 import { formatVND, formatDurationHuman } from '../../services/calculation';
-import {
-  BarChart3,
-  Download,
-  Award,
-  TrendingUp,
-} from 'lucide-react';
 
 export const ReportsView: React.FC = () => {
   const {
@@ -14,7 +8,6 @@ export const ReportsView: React.FC = () => {
     tables,
     staff,
     transactions,
-    exportDatabaseJSON,
   } = useApp();
 
   const [dateRange, setDateRange] = useState<'TODAY' | '7DAYS' | 'MONTH' | 'ALL'>('TODAY');
@@ -84,96 +77,94 @@ export const ReportsView: React.FC = () => {
   };
 
   return (
-    <div className="flex flex-col gap-4 p-4 lg:p-6 max-w-7xl mx-auto w-full">
+    <div className="flex flex-col gap-4 p-3 sm:p-4 lg:p-6 max-w-7xl mx-auto w-full select-none">
       {/* Top Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-charcoal-800">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-charcoal-750">
         <div>
-          <h1 className="text-xl font-bold text-white tracking-tight font-heading">
-            Báo cáo & Phân tích doanh thu
+          <h1 className="text-lg sm:text-xl font-black text-white tracking-wide font-heading">
+            BÁO CÁO & PHÂN TÍCH DOANH THU
           </h1>
-          <p className="text-xs text-slate-400 mt-0.5">
-            Cơ cấu doanh thu tiền giờ vs đồ ăn F&B, hiệu suất từng bàn và xuất file CSV
+          <p className="text-[11px] font-mono text-slate-400 mt-0.5">
+            Cơ cấu doanh thu tiền giờ vs đồ ăn F&B, hiệu suất từng bàn và xuất dữ liệu CSV
           </p>
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 font-mono">
           {/* Date Range Selector */}
-          <div className="flex items-center bg-charcoal-850 p-0.5 rounded-lg border border-charcoal-750 text-xs">
+          <div className="flex items-center bg-charcoal-850 p-0.5 rounded-lg border border-charcoal-750 text-xs font-bold">
             {(['TODAY', '7DAYS', 'MONTH', 'ALL'] as const).map((r) => (
               <button
                 key={r}
                 onClick={() => setDateRange(r)}
-                className={`px-2.5 py-1 rounded-md text-xs font-medium transition-colors ${
+                className={`px-2.5 py-1 rounded-md text-[11px] transition-colors ${
                   dateRange === r
-                    ? 'bg-charcoal-700 text-white font-semibold'
+                    ? 'bg-charcoal-700 text-white'
                     : 'text-slate-400 hover:text-slate-200'
                 }`}
               >
-                {r === 'TODAY' ? 'Hôm Nay' : r === '7DAYS' ? '7 Ngày' : r === 'MONTH' ? 'Tháng Này' : 'Tất Cả'}
+                {r === 'TODAY' ? 'HÔM NAY' : r === '7DAYS' ? '7 NGÀY' : r === 'MONTH' ? 'THÁNG' : 'TẤT CẢ'}
               </button>
             ))}
           </div>
 
           <button
             onClick={handleExportCSV}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-charcoal-800 hover:bg-charcoal-750 text-slate-200 border border-charcoal-700 text-xs font-medium transition-colors"
+            className="px-3 py-1.5 rounded-lg bg-charcoal-800 hover:bg-charcoal-750 text-gold-400 border border-charcoal-700 text-xs font-bold transition-colors"
           >
-            <Download className="w-3.5 h-3.5 text-gold-400" />
-            <span>Xuất CSV</span>
+            XUẤT CSV
           </button>
         </div>
       </div>
 
       {/* Top 4 Metrics Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 font-mono">
         <div className="p-3.5 rounded-xl bg-charcoal-850 border border-charcoal-750">
-          <span className="text-xs text-slate-400 block mb-1">Tổng Doanh Thu</span>
-          <div className="text-xl font-bold text-gold-400 font-mono">
+          <span className="text-[10px] text-slate-400 block mb-1 uppercase tracking-wider font-bold">TỔNG DOANH THU</span>
+          <div className="text-xl font-black text-gold-400">
             {formatVND(totalGrandRevenue)}
           </div>
-          <div className="text-[11px] text-slate-500 mt-1">
+          <div className="text-[10px] text-slate-400 mt-1 font-sans">
             {completedSessions.length} lượt chơi đã chốt
           </div>
         </div>
 
         <div className="p-3.5 rounded-xl bg-charcoal-850 border border-charcoal-750">
-          <span className="text-xs text-slate-400 block mb-1">Doanh Thu Giờ Chơi</span>
-          <div className="text-xl font-bold text-white font-mono">
+          <span className="text-[10px] text-slate-400 block mb-1 uppercase tracking-wider font-bold">DOANH THU GIỜ</span>
+          <div className="text-xl font-black text-white">
             {formatVND(totalTableRevenue)}
           </div>
-          <div className="text-[11px] text-slate-500 mt-1">
+          <div className="text-[10px] text-slate-400 mt-1 font-sans">
             Tổng {formatDurationHuman(totalPlayedMinutes)}
           </div>
         </div>
 
         <div className="p-3.5 rounded-xl bg-charcoal-850 border border-charcoal-750">
-          <span className="text-xs text-slate-400 block mb-1">Doanh Thu F&B</span>
-          <div className="text-xl font-bold text-white font-mono">
+          <span className="text-[10px] text-slate-400 block mb-1 uppercase tracking-wider font-bold">DOANH THU F&B</span>
+          <div className="text-xl font-black text-white">
             {formatVND(totalFnbRevenue)}
           </div>
-          <div className="text-[11px] text-slate-500 mt-1">
+          <div className="text-[10px] text-slate-400 mt-1 font-sans">
             Tỷ trọng: {totalGrandRevenue > 0 ? Math.round((totalFnbRevenue / totalGrandRevenue) * 100) : 0}% doanh thu
           </div>
         </div>
 
         <div className="p-3.5 rounded-xl bg-charcoal-850 border border-charcoal-750">
-          <span className="text-xs text-slate-400 block mb-1">Lợi Nhuận Ước Tính</span>
-          <div className="text-xl font-bold text-emerald-400 font-mono">
+          <span className="text-[10px] text-slate-400 block mb-1 uppercase tracking-wider font-bold">LỢI NHUẬN ƯỚC TÍNH</span>
+          <div className="text-xl font-black text-emerald-400">
             {formatVND(netEstimatedProfit)}
           </div>
-          <div className="text-[11px] text-slate-500 mt-1">
+          <div className="text-[10px] text-slate-400 mt-1 font-sans">
             Chi phí vận hành: {formatVND(totalExpenses)}
           </div>
         </div>
       </div>
 
       {/* 2-Columns: Top Tables Performance & Staff Productivity */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 sm:gap-4 font-mono">
         {/* Top Tables Performance */}
         <div className="p-4 rounded-xl bg-charcoal-850 border border-charcoal-750">
-          <h3 className="text-sm font-bold text-white font-heading mb-3 flex items-center gap-2">
-            <Award className="w-4 h-4 text-gold-400" />
-            Xếp Hạng Doanh Thu Các Bàn Bida
+          <h3 className="text-xs font-bold text-white uppercase tracking-wider mb-3">
+            XẾP HẠNG DOANH THU CÁC BÀN BIDA
           </h3>
 
           <div className="space-y-2 max-h-80 overflow-y-auto pr-1">
@@ -182,28 +173,28 @@ export const ReportsView: React.FC = () => {
                 key={item.table.id}
                 className="p-2.5 rounded-lg bg-charcoal-900 border border-charcoal-800 flex items-center justify-between text-xs"
               >
-                <div className="flex items-center gap-3">
-                  <span className={`w-5 h-5 rounded-md font-bold flex items-center justify-center text-[11px] ${
+                <div className="flex items-center gap-2.5">
+                  <span className={`w-6 h-6 rounded font-black flex items-center justify-center text-[10px] ${
                     index === 0
-                      ? 'bg-amber-500/20 text-amber-300'
+                      ? 'bg-amber-500/20 text-amber-300 border border-amber-500/30'
                       : index === 1
                       ? 'bg-slate-700 text-slate-200'
                       : index === 2
                       ? 'bg-amber-900/40 text-amber-400'
                       : 'bg-charcoal-800 text-slate-400'
                   }`}>
-                    {index + 1}
+                    #{index + 1}
                   </span>
                   <div>
-                    <span className="font-semibold text-white">{item.table.code}</span>
-                    <span className="text-slate-400 ml-1.5 text-[11px]">({item.table.type})</span>
-                    <div className="text-[11px] text-slate-500">
+                    <span className="font-bold text-white">{item.table.code}</span>
+                    <span className="text-slate-400 ml-1.5 text-[10px]">({item.table.type})</span>
+                    <div className="text-[10px] text-slate-400 font-sans">
                       {item.sessionCount} lượt chơi • {formatDurationHuman(item.totalMinutes)}
                     </div>
                   </div>
                 </div>
 
-                <div className="text-right font-mono font-medium text-gold-400">
+                <div className="text-right font-black text-gold-400">
                   {formatVND(item.totalRevenue)}
                 </div>
               </div>
@@ -213,9 +204,8 @@ export const ReportsView: React.FC = () => {
 
         {/* Staff Productivity */}
         <div className="p-4 rounded-xl bg-charcoal-850 border border-charcoal-750">
-          <h3 className="text-sm font-bold text-white font-heading mb-3 flex items-center gap-2">
-            <TrendingUp className="w-4 h-4 text-emerald-400" />
-            Doanh Thu Theo Nhân Viên / Thu Ngân
+          <h3 className="text-xs font-bold text-white uppercase tracking-wider mb-3">
+            DOANH THU THEO NHÂN VIÊN / THU NGÂN
           </h3>
 
           <div className="space-y-2 max-h-80 overflow-y-auto pr-1">
@@ -225,18 +215,18 @@ export const ReportsView: React.FC = () => {
                 className="p-2.5 rounded-lg bg-charcoal-900 border border-charcoal-800 flex items-center justify-between text-xs"
               >
                 <div className="flex items-center gap-2.5">
-                  <div className="w-7 h-7 rounded-full bg-charcoal-800 border border-charcoal-700 text-slate-200 font-bold text-xs flex items-center justify-center">
-                    {item.staff.name.charAt(0)}
+                  <div className="w-6 h-6 rounded bg-charcoal-800 border border-charcoal-700 text-gold-400 font-black text-[10px] flex items-center justify-center">
+                    {item.staff.code}
                   </div>
                   <div>
-                    <span className="font-semibold text-white">{item.staff.name}</span>
-                    <div className="text-[11px] text-slate-500">
+                    <span className="font-bold text-white font-sans">{item.staff.name}</span>
+                    <div className="text-[10px] text-slate-400 font-sans">
                       {item.staff.role} • {item.sessionCount} hóa đơn hoàn tất
                     </div>
                   </div>
                 </div>
 
-                <div className="text-right font-mono font-medium text-white">
+                <div className="text-right font-bold text-white">
                   {formatVND(item.totalRevenue)}
                 </div>
               </div>

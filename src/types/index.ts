@@ -6,7 +6,11 @@ export type TableStatus = 'AVAILABLE' | 'PLAYING' | 'WAITING_PAYMENT' | 'MAINTEN
 
 export type MemberTier = 'STANDARD' | 'SILVER' | 'GOLD' | 'DIAMOND';
 
-export type StaffRole = 'OWNER' | 'MANAGER' | 'CASHIER' | 'WAITER';
+export type StaffRole = 'ADMIN' | 'STAFF' | 'OWNER' | 'MANAGER' | 'CASHIER' | 'WAITER';
+
+export const isAdminRole = (role: StaffRole | string): boolean => {
+  return role === 'ADMIN' || role === 'OWNER' || role === 'MANAGER';
+};
 
 export type PaymentMethod = 'CASH' | 'BANK_TRANSFER' | 'MEMBER_WALLET' | 'SPLIT';
 

@@ -314,12 +314,10 @@ const DEFAULT_CUSTOMERS: Customer[] = [
   },
 ];
 
-// Seed Staff
+// Seed Staff (Chỉ 2 vai trò: ADMIN & NHÂN VIÊN)
 const DEFAULT_STAFF: Staff[] = [
-  { id: 'staff-1', code: 'NV-001', name: 'Nguyễn Thanh Long', phone: '0909000111', role: 'OWNER', isActive: true },
-  { id: 'staff-2', code: 'NV-002', name: 'Trần Quốc Huy', phone: '0909222333', role: 'MANAGER', isActive: true },
-  { id: 'staff-3', code: 'NV-003', name: 'Lê Hoàng Nam', phone: '0909444555', role: 'CASHIER', isActive: true },
-  { id: 'staff-4', code: 'NV-004', name: 'Vũ Minh Tuấn', phone: '0909666777', role: 'WAITER', isActive: true },
+  { id: 'staff-1', code: 'ADMIN', name: 'Nguyễn Thanh Long (Admin)', phone: '0909000111', role: 'ADMIN', isActive: true },
+  { id: 'staff-2', code: 'NV-01', name: 'Lê Hoàng Nam (Nhân viên)', phone: '0909444555', role: 'STAFF', isActive: true },
 ];
 
 // Seed Pricing Rules
@@ -441,7 +439,11 @@ export const StorageService = {
 
   // Staff
   getStaff(): Staff[] {
-    return this.get(STORAGE_KEYS.STAFF, DEFAULT_STAFF);
+    const list = this.get(STORAGE_KEYS.STAFF, DEFAULT_STAFF);
+    return list.map((s) => ({
+      ...s,
+      role: (s.role === 'OWNER' || s.role === 'MANAGER' || s.role === 'ADMIN') ? 'ADMIN' : 'STAFF',
+    }));
   },
   saveStaff(staff: Staff[]): void {
     this.set(STORAGE_KEYS.STAFF, staff);
@@ -489,7 +491,11 @@ export const StorageService = {
 
   // Current Active User/Role
   getCurrentStaff(): Staff {
-    return this.get(STORAGE_KEYS.CURRENT_USER, DEFAULT_STAFF[0]); // Default to Owner
+    const current = this.get(STORAGE_KEYS.CURRENT_USER, DEFAULT_STAFF[0]);
+    return {
+      ...current,
+      role: (current.role === 'OWNER' || current.role === 'MANAGER' || current.role === 'ADMIN') ? 'ADMIN' : 'STAFF',
+    };
   },
   setCurrentStaff(staff: Staff): void {
     this.set(STORAGE_KEYS.CURRENT_USER, staff);

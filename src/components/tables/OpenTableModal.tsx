@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { TableItem, Customer, Staff, PricingRule } from '../../types';
 import { formatVND } from '../../services/calculation';
-import { X, Play, User, ShieldCheck, DollarSign, Sparkles } from 'lucide-react';
 
 interface OpenTableModalProps {
   table: TableItem | null;
@@ -36,7 +35,6 @@ export const OpenTableModal: React.FC<OpenTableModalProps> = ({
 
   const selectedCustomer = customers.find((c) => c.id === selectedCustomerId);
 
-  // Filter customers by phone or name
   const filteredCustomers = customers.filter(
     (c) =>
       c.name.toLowerCase().includes(searchPhone.toLowerCase()) ||
@@ -56,70 +54,62 @@ export const OpenTableModal: React.FC<OpenTableModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-sm animate-fade-in">
-      <div className="relative w-full max-w-lg rounded-2xl bg-charcoal-900 border border-charcoal-700 shadow-2xl overflow-hidden flex flex-col">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/80 backdrop-blur-sm select-none">
+      <div className="relative w-full max-w-lg rounded-2xl bg-[#0c1018] border border-charcoal-700 shadow-2xl overflow-hidden flex flex-col max-h-[92vh]">
         {/* Header */}
-        <div className="flex items-center justify-between p-4 border-b border-charcoal-700/80 bg-charcoal-850">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-felt-900 border border-felt-500/40 flex items-center justify-center text-felt-400 font-black">
-              🎱
-            </div>
+        <div className="flex items-center justify-between p-3.5 sm:p-4 border-b border-charcoal-750 bg-charcoal-850">
+          <div className="flex items-center gap-2.5">
+            <span className="font-mono text-xs font-black px-2.5 py-1 rounded bg-charcoal-800 text-gold-400 border border-charcoal-700">
+              {table.code}
+            </span>
             <div>
-              <h3 className="text-base font-bold text-white font-heading">
-                MỞ BÀN: {table.code}
+              <h3 className="text-sm sm:text-base font-bold text-white tracking-wide">
+                MỞ BÀN CHƠI
               </h3>
-              <p className="text-xs text-slate-400">
+              <p className="text-[11px] text-slate-400 font-mono">
                 {table.name} • {table.area}
               </p>
             </div>
           </div>
           <button
             onClick={onClose}
-            className="p-1.5 text-slate-400 hover:text-white rounded-lg hover:bg-charcoal-800 transition-colors"
+            className="p-1 px-2.5 text-slate-400 hover:text-white rounded-lg hover:bg-charcoal-800 font-mono text-xs font-bold transition-colors"
           >
-            <X className="w-5 h-5" />
+            ✕
           </button>
         </div>
 
         {/* Form Body */}
-        <form onSubmit={handleSubmit} className="p-5 flex flex-col gap-4">
+        <form onSubmit={handleSubmit} className="p-4 sm:p-5 flex flex-col gap-3.5 overflow-y-auto">
           {/* Base Rate Notice */}
-          <div className="flex items-center justify-between p-3 rounded-xl bg-charcoal-850 border border-charcoal-700/60">
-            <div className="flex items-center gap-2 text-xs text-slate-300">
-              <DollarSign className="w-4 h-4 text-gold-400" />
-              <span>Giá chơi niêm yết:</span>
-            </div>
-            <div className="text-sm font-bold text-gold-400 font-mono">
-              {formatVND(defaultRate)}/giờ
-            </div>
+          <div className="flex items-center justify-between p-3 rounded-xl bg-charcoal-850 border border-charcoal-750 font-mono">
+            <span className="text-xs text-slate-300">GIÁ NIÊM YẾT:</span>
+            <span className="text-sm font-black text-gold-400">
+              {formatVND(defaultRate)}/GIỜ
+            </span>
           </div>
 
           {/* Select Customer / Member */}
           <div className="flex flex-col gap-1.5">
-            <label className="text-xs font-semibold text-slate-300 flex items-center justify-between">
-              <span className="flex items-center gap-1.5">
-                <User className="w-3.5 h-3.5 text-felt-400" />
-                Khách hàng / Hội viên
-              </span>
-              <span className="text-[11px] text-slate-400 font-normal">
-                (Không bắt buộc nếu khách vãng lai)
+            <label className="text-xs font-mono font-bold text-slate-300 flex items-center justify-between">
+              <span>KHÁCH HÀNG / HỘI VIÊN:</span>
+              <span className="text-[10px] text-slate-400 font-normal">
+                (Tùy chọn)
               </span>
             </label>
 
-            {/* Quick search phone/name input */}
             <input
               type="text"
               placeholder="Tìm theo số điện thoại hoặc tên hội viên..."
               value={searchPhone}
               onChange={(e) => setSearchPhone(e.target.value)}
-              className="w-full px-3 py-2 text-xs rounded-xl bg-charcoal-800 border border-charcoal-700 text-white placeholder-slate-500 focus:outline-none focus:border-felt-500"
+              className="w-full px-3 py-2 text-xs rounded-xl bg-charcoal-800 border border-charcoal-700 text-white placeholder-slate-500 focus:outline-none focus:border-emerald-500"
             />
 
-            {/* Dropdown Select */}
             <select
               value={selectedCustomerId}
               onChange={(e) => setSelectedCustomerId(e.target.value)}
-              className="w-full px-3 py-2 text-xs rounded-xl bg-charcoal-800 border border-charcoal-700 text-white focus:outline-none focus:border-felt-500 cursor-pointer mt-1"
+              className="w-full px-3 py-2 text-xs rounded-xl bg-charcoal-800 border border-charcoal-700 text-white focus:outline-none focus:border-emerald-500 cursor-pointer mt-1"
             >
               <option value="">-- Khách vãng lai (Chưa đăng ký) --</option>
               {filteredCustomers.map((cust) => (
@@ -129,35 +119,30 @@ export const OpenTableModal: React.FC<OpenTableModalProps> = ({
               ))}
             </select>
 
-            {/* If Member is selected, show perks badge */}
             {selectedCustomer && (
-              <div className="mt-1 p-2.5 rounded-xl bg-gold-950/40 border border-gold-500/30 flex items-center justify-between text-xs">
-                <div className="flex items-center gap-2">
-                  <Sparkles className="w-4 h-4 text-gold-400" />
-                  <span className="text-gold-300 font-medium">
-                    Hội viên Hạng {selectedCustomer.tier}
-                  </span>
-                </div>
-                <div className="text-[11px] text-gold-400 font-bold">
-                  {selectedCustomer.tier === 'DIAMOND' && 'Ưu đãi -15% tiền giờ'}
-                  {selectedCustomer.tier === 'GOLD' && 'Ưu đãi -10% tiền giờ'}
-                  {selectedCustomer.tier === 'SILVER' && 'Ưu đãi -5% tiền giờ'}
-                  {selectedCustomer.tier === 'STANDARD' && 'Tích lũy điểm 1:1'}
-                </div>
+              <div className="mt-1 p-2.5 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-between text-xs font-mono">
+                <span className="text-amber-300 font-bold">
+                  HỘI VIÊN HẠNG {selectedCustomer.tier}
+                </span>
+                <span className="text-[11px] text-gold-400 font-black">
+                  {selectedCustomer.tier === 'DIAMOND' && '-15% TIỀN GIỜ'}
+                  {selectedCustomer.tier === 'GOLD' && '-10% TIỀN GIỜ'}
+                  {selectedCustomer.tier === 'SILVER' && '-5% TIỀN GIỜ'}
+                  {selectedCustomer.tier === 'STANDARD' && 'TÍCH ĐIỂM 1:1'}
+                </span>
               </div>
             )}
           </div>
 
           {/* Assigned Staff */}
           <div className="flex flex-col gap-1.5">
-            <label className="text-xs font-semibold text-slate-300 flex items-center gap-1.5">
-              <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
-              Nhân viên phục vụ phụ trách bàn
+            <label className="text-xs font-mono font-bold text-slate-300">
+              NHÂN VIÊN PHỤ TRÁCH BÀN:
             </label>
             <select
               value={selectedStaffId}
               onChange={(e) => setSelectedStaffId(e.target.value)}
-              className="w-full px-3 py-2 text-xs rounded-xl bg-charcoal-800 border border-charcoal-700 text-white focus:outline-none focus:border-felt-500 cursor-pointer"
+              className="w-full px-3 py-2 text-xs rounded-xl bg-charcoal-800 border border-charcoal-700 text-white focus:outline-none focus:border-emerald-500 cursor-pointer"
             >
               {staff.map((s) => (
                 <option key={s.id} value={s.id}>
@@ -167,12 +152,12 @@ export const OpenTableModal: React.FC<OpenTableModalProps> = ({
             </select>
           </div>
 
-          {/* Custom Hourly Rate (if authorized) */}
+          {/* Custom Hourly Rate */}
           <div className="flex flex-col gap-1.5">
-            <label className="text-xs font-semibold text-slate-300 flex items-center justify-between">
-              <span>Đơn giá giờ áp dụng cho lượt chơi này:</span>
-              <span className="text-[11px] text-slate-400 font-normal">
-                (Được chốt cố định cho phiên này)
+            <label className="text-xs font-mono font-bold text-slate-300 flex items-center justify-between">
+              <span>ĐƠN GIÁ GIỜ ÁP DỤNG:</span>
+              <span className="text-[10px] text-slate-400 font-normal">
+                (Chốt cho phiên chơi)
               </span>
             </label>
             <input
@@ -180,25 +165,24 @@ export const OpenTableModal: React.FC<OpenTableModalProps> = ({
               step="5000"
               value={customHourlyRate}
               onChange={(e) => setCustomHourlyRate(Number(e.target.value))}
-              className="w-full px-3 py-2 text-xs rounded-xl bg-charcoal-800 border border-charcoal-700 text-gold-400 font-mono font-bold focus:outline-none focus:border-gold-500"
+              className="w-full px-3 py-2 text-xs rounded-xl bg-charcoal-800 border border-charcoal-700 text-gold-400 font-mono font-black focus:outline-none focus:border-gold-500"
             />
           </div>
 
           {/* Buttons */}
-          <div className="flex items-center justify-end gap-2.5 mt-2 pt-3 border-t border-charcoal-700/80">
+          <div className="flex items-center justify-end gap-2 mt-2 pt-3 border-t border-charcoal-750 font-mono">
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2 text-xs font-semibold text-slate-400 hover:text-white rounded-xl hover:bg-charcoal-800 transition-colors"
+              className="px-4 py-2 text-xs font-bold text-slate-400 hover:text-white rounded-xl hover:bg-charcoal-800 transition-colors"
             >
-              Hủy Bỏ
+              HỦY
             </button>
             <button
               type="submit"
-              className="flex items-center gap-1.5 px-4 py-2 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white font-semibold text-xs transition-colors"
+              className="px-4 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-black text-xs transition-colors"
             >
-              <Play className="w-3.5 h-3.5 fill-current" />
-              <span>Bắt Đầu Tính Giờ</span>
+              ✓ BẮT ĐẦU TÍNH GIỜ
             </button>
           </div>
         </form>

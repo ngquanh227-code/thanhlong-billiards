@@ -2,16 +2,6 @@ import React, { useState } from 'react';
 import { useApp } from '../../context/AppContext';
 import { CashTransaction } from '../../types';
 import { formatVND } from '../../services/calculation';
-import {
-  Boxes,
-  Plus,
-  ArrowUpCircle,
-  ArrowDownCircle,
-  AlertTriangle,
-  Package,
-  DollarSign,
-  X,
-} from 'lucide-react';
 
 export const InventoryView: React.FC = () => {
   const { menu, transactions, addCashTransaction } = useApp();
@@ -47,56 +37,53 @@ export const InventoryView: React.FC = () => {
   };
 
   return (
-    <div className="flex flex-col gap-4 p-4 lg:p-6 max-w-7xl mx-auto w-full">
+    <div className="flex flex-col gap-4 p-3 sm:p-4 lg:p-6 max-w-7xl mx-auto w-full select-none">
       {/* Top Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-charcoal-800">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-charcoal-750">
         <div>
-          <h1 className="text-xl font-bold text-white tracking-tight font-heading">
-            Kho hàng & Sổ quỹ thu chi
+          <h1 className="text-lg sm:text-xl font-black text-white tracking-wide font-heading">
+            KHO HÀNG & SỔ QUỸ THU CHI
           </h1>
-          <p className="text-xs text-slate-400 mt-0.5">
+          <p className="text-[11px] font-mono text-slate-400 mt-0.5">
             Theo dõi tồn kho F&B, quản lý chi phí vận hành (điện, nước, mặt bằng, bảo trì)
           </p>
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 font-mono">
           <button
             onClick={() => {
               setTxType('EXPENSE');
               setIsCashTxModalOpen(true);
             }}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-charcoal-800 hover:bg-charcoal-750 text-rose-400 border border-charcoal-700 text-xs font-medium transition-colors"
+            className="px-3.5 py-2 rounded-xl bg-charcoal-800 hover:bg-charcoal-750 text-rose-400 border border-charcoal-700 text-xs font-bold transition-colors"
           >
-            <ArrowDownCircle className="w-3.5 h-3.5 text-rose-400" />
-            <span>Tạo Phiếu Chi</span>
+            - TẠO PHIẾU CHI
           </button>
           <button
             onClick={() => {
               setTxType('INCOME');
               setIsCashTxModalOpen(true);
             }}
-            className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white font-semibold text-xs transition-colors"
+            className="px-3.5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-black text-xs transition-colors"
           >
-            <ArrowUpCircle className="w-3.5 h-3.5" />
-            <span>Tạo Phiếu Thu</span>
+            + TẠO PHIẾU THU
           </button>
         </div>
       </div>
 
       {/* Tabs */}
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-2 font-mono">
         <button
           onClick={() => setActiveTab('INVENTORY')}
-          className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
+          className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-colors ${
             activeTab === 'INVENTORY'
-              ? 'bg-charcoal-700 text-white font-semibold'
+              ? 'bg-charcoal-700 text-white border border-charcoal-600'
               : 'bg-charcoal-850 text-slate-400 hover:text-slate-200 border border-charcoal-750'
           }`}
         >
-          <Package className="w-3.5 h-3.5" />
-          <span>Tồn Kho Mặt Hàng ({menu.length})</span>
+          TỒN KHO MẶT HÀNG ({menu.length})
           {lowStockItems.length > 0 && (
-            <span className="px-1.5 py-0.2 rounded-full bg-amber-500/20 text-amber-300 text-[10px] font-bold">
+            <span className="ml-1.5 px-1.5 py-0.2 rounded bg-amber-500/20 text-amber-300 text-[10px]">
               {lowStockItems.length}
             </span>
           )}
@@ -104,30 +91,26 @@ export const InventoryView: React.FC = () => {
 
         <button
           onClick={() => setActiveTab('CASHFLOW')}
-          className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
+          className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-colors ${
             activeTab === 'CASHFLOW'
-              ? 'bg-charcoal-700 text-white font-semibold'
+              ? 'bg-charcoal-700 text-white border border-charcoal-600'
               : 'bg-charcoal-850 text-slate-400 hover:text-slate-200 border border-charcoal-750'
           }`}
         >
-          <DollarSign className="w-3.5 h-3.5" />
-          <span>Sổ Quỹ Thu - Chi ({transactions.length})</span>
+          SỔ QUỸ THU - CHI ({transactions.length})
         </button>
       </div>
 
       {/* Tab Content: INVENTORY */}
       {activeTab === 'INVENTORY' && (
-        <div className="flex flex-col gap-4">
+        <div className="flex flex-col gap-3 font-mono">
           {/* Low stock warning banner */}
           {lowStockItems.length > 0 && (
             <div className="p-3 rounded-lg bg-amber-500/10 border border-amber-500/20 text-amber-300 text-xs flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <AlertTriangle className="w-4 h-4 text-amber-400 shrink-0" />
-                <span>
-                  Có <b>{lowStockItems.length} mặt hàng</b> đã chạm mức báo động tồn kho. Vui lòng nhập hàng thêm!
-                </span>
+              <div>
+                Có <b>{lowStockItems.length} mặt hàng</b> đã chạm mức báo động tồn kho. Vui lòng nhập hàng thêm!
               </div>
-              <span className="text-[11px] text-amber-400 font-mono">
+              <span className="text-[11px] text-amber-400 font-bold hidden sm:inline">
                 {lowStockItems.map((i) => i.name).join(', ')}
               </span>
             </div>
@@ -138,15 +121,15 @@ export const InventoryView: React.FC = () => {
             <div className="overflow-x-auto">
               <table className="w-full text-left text-xs">
                 <thead>
-                  <tr className="border-b border-charcoal-750 text-slate-400 uppercase tracking-wider text-[11px] bg-charcoal-900/40">
-                    <th className="py-2.5 px-3.5">Mặt Hàng</th>
-                    <th className="py-2.5 px-3.5">Danh Mục</th>
-                    <th className="py-2.5 px-3.5">Đơn Vị</th>
-                    <th className="py-2.5 px-3.5">Giá Vốn</th>
-                    <th className="py-2.5 px-3.5">Giá Bán</th>
-                    <th className="py-2.5 px-3.5">Tồn Kho Hiện Tại</th>
-                    <th className="py-2.5 px-3.5">Giá Trị Tồn Kho</th>
-                    <th className="py-2.5 px-3.5 text-right">Trạng Thái</th>
+                  <tr className="border-b border-charcoal-750 text-slate-400 uppercase tracking-wider text-[10px] bg-charcoal-900/60">
+                    <th className="py-2.5 px-3.5">MẶT HÀNG</th>
+                    <th className="py-2.5 px-3.5">DANH MỤC</th>
+                    <th className="py-2.5 px-3.5">ĐƠN VỊ</th>
+                    <th className="py-2.5 px-3.5">GIÁ VỐN</th>
+                    <th className="py-2.5 px-3.5">GIÁ BÁN</th>
+                    <th className="py-2.5 px-3.5">TỒN KHO</th>
+                    <th className="py-2.5 px-3.5">GIÁ TRỊ TỒN</th>
+                    <th className="py-2.5 px-3.5 text-right">TRẠNG THÁI</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-charcoal-800">
@@ -156,7 +139,7 @@ export const InventoryView: React.FC = () => {
 
                     return (
                       <tr key={item.id} className="hover:bg-charcoal-800/40 transition-colors">
-                        <td className="py-2.5 px-3.5 font-medium text-white">
+                        <td className="py-2.5 px-3.5 font-bold text-white font-sans">
                           {item.name}
                         </td>
                         <td className="py-2.5 px-3.5 text-slate-400">
@@ -165,29 +148,28 @@ export const InventoryView: React.FC = () => {
                         <td className="py-2.5 px-3.5 text-slate-400">
                           {item.unit}
                         </td>
-                        <td className="py-2.5 px-3.5 font-mono text-slate-300">
+                        <td className="py-2.5 px-3.5 text-slate-300">
                           {formatVND(item.costPrice)}
                         </td>
-                        <td className="py-2.5 px-3.5 font-mono font-medium text-gold-400">
+                        <td className="py-2.5 px-3.5 font-bold text-gold-400">
                           {formatVND(item.price)}
                         </td>
-                        <td className="py-2.5 px-3.5 font-mono font-semibold">
+                        <td className="py-2.5 px-3.5 font-bold">
                           <span className={isLow ? 'text-amber-400' : 'text-slate-200'}>
                             {item.stock} {item.unit}
                           </span>
                         </td>
-                        <td className="py-2.5 px-3.5 font-mono text-slate-300">
+                        <td className="py-2.5 px-3.5 text-slate-300">
                           {formatVND(stockValue)}
                         </td>
                         <td className="py-2.5 px-3.5 text-right">
                           {isLow ? (
-                            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[11px] font-medium bg-amber-500/10 text-amber-400 border border-amber-500/20">
-                              <AlertTriangle className="w-3 h-3" />
-                              Sắp hết
+                            <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-amber-500/15 text-amber-400 border border-amber-500/30">
+                              SẮP HẾT
                             </span>
                           ) : (
-                            <span className="inline-flex items-center px-2 py-0.5 rounded text-[11px] font-medium bg-charcoal-800 text-slate-400">
-                              Đủ hàng
+                            <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-charcoal-800 text-slate-400 border border-charcoal-700">
+                              ĐỦ HÀNG
                             </span>
                           )}
                         </td>
@@ -203,35 +185,32 @@ export const InventoryView: React.FC = () => {
 
       {/* Tab Content: CASHFLOW */}
       {activeTab === 'CASHFLOW' && (
-        <div className="flex flex-col gap-4">
+        <div className="flex flex-col gap-3 font-mono">
           {/* Summary Strip */}
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 sm:gap-3">
             <div className="p-3.5 rounded-xl bg-charcoal-850 border border-charcoal-750">
-              <span className="text-xs text-slate-400 flex items-center gap-1.5 mb-1">
-                <ArrowUpCircle className="w-3.5 h-3.5 text-emerald-400" />
-                Tổng Thu
+              <span className="text-[10px] text-slate-400 block mb-1 uppercase tracking-wider font-bold">
+                TỔNG THU
               </span>
-              <div className="text-xl font-bold text-emerald-400 font-mono">
+              <div className="text-xl font-black text-emerald-400">
                 {formatVND(totalIncome)}
               </div>
             </div>
 
             <div className="p-3.5 rounded-xl bg-charcoal-850 border border-charcoal-750">
-              <span className="text-xs text-slate-400 flex items-center gap-1.5 mb-1">
-                <ArrowDownCircle className="w-3.5 h-3.5 text-rose-400" />
-                Tổng Chi
+              <span className="text-[10px] text-slate-400 block mb-1 uppercase tracking-wider font-bold">
+                TỔNG CHI
               </span>
-              <div className="text-xl font-bold text-rose-400 font-mono">
+              <div className="text-xl font-black text-rose-400">
                 {formatVND(totalExpense)}
               </div>
             </div>
 
             <div className="p-3.5 rounded-xl bg-charcoal-850 border border-charcoal-750">
-              <span className="text-xs text-slate-400 flex items-center gap-1.5 mb-1">
-                <DollarSign className="w-3.5 h-3.5 text-gold-400" />
-                Dòng Tiền Ròng
+              <span className="text-[10px] text-slate-400 block mb-1 uppercase tracking-wider font-bold">
+                DÒNG TIỀN RÒNG
               </span>
-              <div className="text-xl font-bold text-gold-400 font-mono">
+              <div className="text-xl font-black text-gold-400">
                 {formatVND(netCashFlow)}
               </div>
             </div>
@@ -242,42 +221,42 @@ export const InventoryView: React.FC = () => {
             <div className="overflow-x-auto">
               <table className="w-full text-left text-xs">
                 <thead>
-                  <tr className="border-b border-charcoal-750 text-slate-400 uppercase tracking-wider text-[11px] bg-charcoal-900/40">
-                    <th className="py-2.5 px-3.5">Thời Gian</th>
-                    <th className="py-2.5 px-3.5">Loại Phiếu</th>
-                    <th className="py-2.5 px-3.5">Khoản Mục</th>
-                    <th className="py-2.5 px-3.5">Nội Dung</th>
-                    <th className="py-2.5 px-3.5">Số Tiền</th>
-                    <th className="py-2.5 px-3.5 text-right">Người Lập</th>
+                  <tr className="border-b border-charcoal-750 text-slate-400 uppercase tracking-wider text-[10px] bg-charcoal-900/60">
+                    <th className="py-2.5 px-3.5">THỜI GIAN</th>
+                    <th className="py-2.5 px-3.5">LOẠI PHIẾU</th>
+                    <th className="py-2.5 px-3.5">KHOẢN MỤC</th>
+                    <th className="py-2.5 px-3.5">NỘI DUNG</th>
+                    <th className="py-2.5 px-3.5">SỐ TIỀN</th>
+                    <th className="py-2.5 px-3.5 text-right">NGƯỜI LẬP</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-charcoal-800">
                   {transactions.map((tx) => (
                     <tr key={tx.id} className="hover:bg-charcoal-800/40 transition-colors">
-                      <td className="py-2.5 px-3.5 font-mono text-slate-400">
+                      <td className="py-2.5 px-3.5 text-slate-400">
                         {new Date(tx.createdAt).toLocaleString('vi-VN')}
                       </td>
                       <td className="py-2.5 px-3.5">
-                        <span className={`inline-flex items-center px-2 py-0.5 rounded text-[11px] font-medium border ${
+                        <span className={`px-2 py-0.5 rounded text-[10px] font-bold border ${
                           tx.type === 'INCOME'
                             ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20'
                             : 'bg-rose-500/10 text-rose-400 border-rose-500/20'
                         }`}>
-                          {tx.type === 'INCOME' ? 'Phiếu Thu' : 'Phiếu Chi'}
+                          {tx.type === 'INCOME' ? 'PHIẾU THU' : 'PHIẾU CHI'}
                         </span>
                       </td>
-                      <td className="py-2.5 px-3.5 text-slate-300 font-medium">
+                      <td className="py-2.5 px-3.5 text-slate-300 font-bold">
                         {tx.category}
                       </td>
-                      <td className="py-2.5 px-3.5 text-slate-400">
+                      <td className="py-2.5 px-3.5 text-slate-300 font-sans">
                         {tx.description}
                       </td>
-                      <td className={`py-2.5 px-3.5 font-mono font-semibold ${
+                      <td className={`py-2.5 px-3.5 font-black ${
                         tx.type === 'INCOME' ? 'text-emerald-400' : 'text-rose-400'
                       }`}>
                         {tx.type === 'INCOME' ? '+' : '-'}{formatVND(tx.amount)}
                       </td>
-                      <td className="py-2.5 px-3.5 text-slate-400 text-right">
+                      <td className="py-2.5 px-3.5 text-slate-400 text-right font-sans">
                         {tx.staffName}
                       </td>
                     </tr>
@@ -291,27 +270,27 @@ export const InventoryView: React.FC = () => {
 
       {/* Modal: Tạo Phiếu Thu / Chi */}
       {isCashTxModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
-          <div className="w-full max-w-md rounded-xl bg-charcoal-900 border border-charcoal-750 p-5 flex flex-col gap-4 shadow-xl">
-            <div className="flex items-center justify-between pb-3 border-b border-charcoal-800">
-              <h3 className="text-base font-bold text-white font-heading">
-                Tạo {txType === 'INCOME' ? 'Phiếu Thu Tiền' : 'Phiếu Chi Vận Hành'}
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/80 backdrop-blur-sm select-none">
+          <div className="w-full max-w-md rounded-2xl bg-[#0c1018] border border-charcoal-700 p-4 sm:p-5 flex flex-col gap-3.5 shadow-2xl font-mono">
+            <div className="flex items-center justify-between pb-3 border-b border-charcoal-750">
+              <h3 className="text-sm sm:text-base font-bold text-white tracking-wide">
+                TẠO {txType === 'INCOME' ? 'PHIẾU THU TIỀN' : 'PHIẾU CHI VẬN HÀNH'}
               </h3>
               <button
                 onClick={() => setIsCashTxModalOpen(false)}
-                className="text-slate-400 hover:text-white p-1 rounded-md hover:bg-charcoal-800"
+                className="text-slate-400 hover:text-white p-1 px-2.5 text-xs font-bold rounded-lg hover:bg-charcoal-800"
               >
-                <X className="w-4 h-4" />
+                ✕
               </button>
             </div>
 
             <form onSubmit={handleCreateTx} className="flex flex-col gap-3 text-xs">
               <div>
-                <label className="text-slate-300 font-medium block mb-1">Khoản mục:</label>
+                <label className="text-slate-300 font-bold block mb-1">KHOẢN MỤC:</label>
                 <select
                   value={txCategory}
                   onChange={(e) => setTxCategory(e.target.value as any)}
-                  className="w-full px-3 py-2 rounded-lg bg-charcoal-800 border border-charcoal-700 text-white focus:outline-none focus:border-charcoal-600"
+                  className="w-full px-3 py-2 rounded-lg bg-charcoal-800 border border-charcoal-700 text-white focus:outline-none focus:border-gold-500"
                 >
                   {txType === 'EXPENSE' ? (
                     <>
@@ -332,46 +311,46 @@ export const InventoryView: React.FC = () => {
               </div>
 
               <div>
-                <label className="text-slate-300 font-medium block mb-1">Số tiền (VNĐ):</label>
+                <label className="text-slate-300 font-bold block mb-1">SỐ TIỀN (VNĐ):</label>
                 <input
                   type="number"
                   step="10000"
                   required
                   value={txAmount}
                   onChange={(e) => setTxAmount(Number(e.target.value))}
-                  className="w-full px-3 py-2 rounded-lg bg-charcoal-800 border border-charcoal-700 text-gold-400 font-mono font-medium focus:outline-none focus:border-charcoal-600"
+                  className="w-full px-3 py-2 rounded-lg bg-charcoal-800 border border-charcoal-700 text-gold-400 font-black focus:outline-none focus:border-gold-500"
                 />
               </div>
 
               <div>
-                <label className="text-slate-300 font-medium block mb-1">Lý do / Diễn giải:</label>
+                <label className="text-slate-300 font-bold block mb-1">LÝ DO / DIỄN GIẢI:</label>
                 <input
                   type="text"
                   required
                   placeholder="Ví dụ: Tiền điện tháng này..."
                   value={txDescription}
                   onChange={(e) => setTxDescription(e.target.value)}
-                  className="w-full px-3 py-2 rounded-lg bg-charcoal-800 border border-charcoal-700 text-white placeholder-slate-500 focus:outline-none focus:border-charcoal-600"
+                  className="w-full px-3 py-2 rounded-lg bg-charcoal-800 border border-charcoal-700 text-white placeholder-slate-500 focus:outline-none focus:border-gold-500 font-sans"
                 />
               </div>
 
-              <div className="flex justify-end gap-2 pt-3 border-t border-charcoal-800 mt-2">
+              <div className="flex justify-end gap-2 pt-3 border-t border-charcoal-750 mt-1">
                 <button
                   type="button"
                   onClick={() => setIsCashTxModalOpen(false)}
-                  className="px-3.5 py-2 rounded-lg bg-charcoal-800 hover:bg-charcoal-750 text-slate-300 font-medium"
+                  className="px-3.5 py-2 rounded-lg bg-charcoal-800 hover:bg-charcoal-750 text-slate-300 font-bold"
                 >
-                  Hủy
+                  HỦY
                 </button>
                 <button
                   type="submit"
-                  className={`px-4 py-2 rounded-lg font-semibold text-white transition-colors ${
+                  className={`px-4 py-2 rounded-lg font-black text-white transition-colors ${
                     txType === 'INCOME'
                       ? 'bg-emerald-600 hover:bg-emerald-500'
                       : 'bg-rose-600 hover:bg-rose-500'
                   }`}
                 >
-                  Lưu Phiếu {txType === 'INCOME' ? 'Thu' : 'Chi'}
+                  LƯU PHIẾU {txType === 'INCOME' ? 'THU' : 'CHI'}
                 </button>
               </div>
             </form>

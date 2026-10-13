@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { TableItem } from '../../types';
-import { X, Layers, AlertCircle } from 'lucide-react';
 
 interface MergeTableModalProps {
   sourceTable: TableItem | null;
@@ -19,7 +18,6 @@ export const MergeTableModal: React.FC<MergeTableModalProps> = ({
 }) => {
   if (!isOpen || !sourceTable) return null;
 
-  // Tables eligible to merge into (other playing tables)
   const eligibleTables = activePlayingTables.filter((t) => t.id !== sourceTable.id);
 
   const [targetTableId, setTargetTableId] = useState<string>(
@@ -34,47 +32,44 @@ export const MergeTableModal: React.FC<MergeTableModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-fade-in">
-      <div className="relative w-full max-w-md rounded-2xl bg-charcoal-900 border border-charcoal-700 shadow-2xl overflow-hidden flex flex-col">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/80 backdrop-blur-sm select-none">
+      <div className="relative w-full max-w-md rounded-2xl bg-[#0c1018] border border-charcoal-700 shadow-2xl overflow-hidden flex flex-col">
         {/* Header */}
-        <div className="flex items-center justify-between p-4 border-b border-charcoal-700/80 bg-charcoal-850">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-purple-950/80 border border-purple-500/40 flex items-center justify-center text-purple-400">
-              <Layers className="w-5 h-5" />
-            </div>
+        <div className="flex items-center justify-between p-3.5 sm:p-4 border-b border-charcoal-750 bg-charcoal-850">
+          <div className="flex items-center gap-2.5">
+            <span className="font-mono text-xs font-black px-2.5 py-1 rounded bg-purple-950/80 text-purple-400 border border-purple-500/40">
+              GỘP BÀN
+            </span>
             <div>
-              <h3 className="text-base font-bold text-white font-heading">
+              <h3 className="text-sm sm:text-base font-bold text-white tracking-wide">
                 GỘP HÓA ĐƠN BÀN
               </h3>
-              <p className="text-xs text-slate-400">
-                Gộp từ bàn: <span className="text-gold-400 font-bold">{sourceTable.code}</span>
+              <p className="text-[11px] text-slate-400 font-mono">
+                Từ bàn: <span className="text-gold-400 font-bold">{sourceTable.code}</span>
               </p>
             </div>
           </div>
           <button
             onClick={onClose}
-            className="p-1.5 text-slate-400 hover:text-white rounded-lg hover:bg-charcoal-800 transition-colors"
+            className="p-1 px-2.5 text-slate-400 hover:text-white rounded-lg hover:bg-charcoal-800 font-mono text-xs font-bold transition-colors"
           >
-            <X className="w-5 h-5" />
+            ✕
           </button>
         </div>
 
         {/* Form Body */}
-        <form onSubmit={handleSubmit} className="p-5 flex flex-col gap-4">
-          <div className="p-3 rounded-xl bg-purple-950/30 border border-purple-500/30 flex items-start gap-2.5 text-xs text-purple-300">
-            <AlertCircle className="w-4 h-4 flex-shrink-0 mt-0.5 text-purple-400" />
-            <div>
-              Toàn bộ các món ăn và đồ uống của <b>{sourceTable.code}</b> sẽ được gộp sang bàn đích. Bàn {sourceTable.code} sẽ được kết thúc và chuyển về trạng thái TRỐNG.
-            </div>
+        <form onSubmit={handleSubmit} className="p-4 sm:p-5 flex flex-col gap-3.5">
+          <div className="p-3 rounded-xl bg-purple-950/30 border border-purple-500/30 text-xs text-purple-300">
+            Toàn bộ các món đã gọi của <b>{sourceTable.code}</b> sẽ được gộp sang bàn đích. Bàn {sourceTable.code} sẽ được kết thúc phiên và chuyển về trạng thái TRỐNG.
           </div>
 
-          <div className="flex flex-col gap-1.5">
-            <label className="text-xs font-semibold text-slate-300">
-              Chọn bàn đích muốn gộp vào (Các bàn đang chơi):
+          <div className="flex flex-col gap-1.5 font-mono">
+            <label className="text-xs font-bold text-slate-300">
+              CHỌN BÀN ĐÍCH MUỐN GỘP VÀO:
             </label>
 
             {eligibleTables.length === 0 ? (
-              <div className="p-4 rounded-xl bg-charcoal-850 border border-charcoal-700 text-center text-xs text-rose-400">
+              <div className="p-4 rounded-xl bg-charcoal-850 border border-charcoal-700 text-center text-xs text-rose-400 font-sans">
                 Không có bàn nào khác đang chơi để gộp vào!
               </div>
             ) : (
@@ -92,21 +87,20 @@ export const MergeTableModal: React.FC<MergeTableModalProps> = ({
             )}
           </div>
 
-          <div className="flex items-center justify-end gap-2.5 pt-3 border-t border-charcoal-700/80">
+          <div className="flex items-center justify-end gap-2 pt-3 border-t border-charcoal-750 font-mono">
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2 text-xs font-semibold text-slate-400 hover:text-white rounded-xl hover:bg-charcoal-800 transition-colors"
+              className="px-4 py-2 text-xs font-bold text-slate-400 hover:text-white rounded-xl hover:bg-charcoal-800 transition-colors"
             >
-              Hủy
+              HỦY
             </button>
             <button
               type="submit"
               disabled={eligibleTables.length === 0}
-              className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-purple-600 hover:bg-purple-500 disabled:opacity-40 text-white font-bold text-xs shadow-lg transition-all"
+              className="px-5 py-2.5 rounded-xl bg-purple-600 hover:bg-purple-500 disabled:opacity-40 text-white font-black text-xs shadow-lg transition-all"
             >
-              <Layers className="w-3.5 h-3.5" />
-              XÁC NHẬN GỘP BÀN
+              ✓ XÁC NHẬN GỘP BÀN
             </button>
           </div>
         </form>

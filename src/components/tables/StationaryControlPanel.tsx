@@ -2,22 +2,6 @@ import React, { useState } from 'react';
 import logoImg from '../../assets/logo.png';
 import { TableItem, TableSession, PricingRule, Customer, Staff } from '../../types';
 import { calculateTableFee, formatDurationHuman, formatSecondsToTimer, formatVND } from '../../services/calculation';
-import {
-  Clock,
-  User,
-  UtensilsCrossed,
-  Plus,
-  Minus,
-  Trash2,
-  Pause,
-  Play,
-  Printer,
-  Receipt,
-  ArrowRightLeft,
-  Layers,
-  Wrench,
-  ShieldAlert,
-} from 'lucide-react';
 
 interface StationaryControlPanelProps {
   table: TableItem | null;
@@ -39,6 +23,7 @@ interface StationaryControlPanelProps {
   onUpdateOrderItemQty: (tableId: string, orderItemId: string, delta: number) => void;
   onRemoveOrderItem: (tableId: string, orderItemId: string) => void;
   onToggleMaintenance: (table: TableItem) => void;
+  onEditTable?: (table: TableItem) => void;
 }
 
 export const StationaryControlPanel: React.FC<StationaryControlPanelProps> = ({
@@ -60,20 +45,21 @@ export const StationaryControlPanel: React.FC<StationaryControlPanelProps> = ({
   onUpdateOrderItemQty,
   onRemoveOrderItem,
   onToggleMaintenance,
+  onEditTable,
 }) => {
   const [quickCustomerId, setQuickCustomerId] = useState<string>('');
   const [quickStaffId, setQuickStaffId] = useState<string>(currentStaff.id);
 
   if (!table) {
     return (
-      <div className="h-full flex flex-col items-center justify-center p-6 text-center text-slate-500">
+      <div className="h-full flex flex-col items-center justify-center p-6 text-center text-slate-500 select-none">
         <img
           src={logoImg}
           alt="Thanh Long Billiards Logo"
-          className="w-16 h-16 rounded-full border border-amber-500/30 object-cover mb-3 opacity-60"
+          className="w-14 h-14 rounded-full border border-amber-500/30 object-cover mb-3 opacity-60"
         />
-        <h4 className="font-brand text-gold-400 font-bold text-sm uppercase">Thanh Long Billiards</h4>
-        <p className="text-xs text-slate-400 mt-1">Chọn một bàn bên trái để điều khiển</p>
+        <h4 className="font-brand text-gold-400 font-bold text-xs uppercase tracking-widest">Thanh Long Billiards</h4>
+        <p className="text-[11px] font-mono text-slate-400 mt-1">Chọn một bàn bên danh sách để điều khiển</p>
       </div>
     );
   }
@@ -83,12 +69,9 @@ export const StationaryControlPanel: React.FC<StationaryControlPanelProps> = ({
   const isAvailable = table.status === 'AVAILABLE';
   const isMaintenance = table.status === 'MAINTENANCE';
   const isPaused = session?.status === 'PAUSED';
+  const isAdmin = currentStaff.role === 'ADMIN' || (currentStaff.role as string) === 'OWNER' || (currentStaff.role as string) === 'MANAGER';
 
   const feeCalc = session ? calculateTableFee(session, pricingRule, currentTime) : null;
-
-  const handlePrePrint = () => {
-    window.print();
-  };
 
   const handleQuickOpen = () => {
     onQuickOpenTable(table.id, quickCustomerId || undefined, quickStaffId || currentStaff.id, table.hourlyRate);
@@ -96,62 +79,61 @@ export const StationaryControlPanel: React.FC<StationaryControlPanelProps> = ({
   };
 
   return (
-    <div className="h-full flex flex-col bg-charcoal-900 overflow-hidden">
+    <div className="h-full flex flex-col bg-[#0b0f17] border-l border-charcoal-750 overflow-hidden select-none">
       {/* Stationary Header */}
-      <div className="p-3.5 bg-charcoal-850 border-b border-charcoal-750 shrink-0">
-        <div className="flex items-center justify-between gap-3">
-          <div className="flex items-center gap-2.5">
-            <img
-              src={logoImg}
-              alt="Logo"
-              className="w-9 h-9 rounded-full border border-amber-500/50 object-cover shadow-[0_0_10px_rgba(212,175,55,0.2)]"
-            />
+      <div className="p-3 bg-charcoal-850 border-b border-charcoal-750 shrink-0">
+        <div className="flex items-center justify-between gap-2">
+          <div className="flex items-center gap-2">
+            <div className="font-mono text-xs font-black px-2 py-1 rounded bg-charcoal-800 text-gold-400 border border-charcoal-700">
+              {table.code}
+            </div>
             <div>
               <div className="flex items-center gap-1.5">
-                <h3 className="text-base font-bold text-white tracking-tight font-heading">
-                  {table.code}
-                </h3>
-                <span className="text-[10px] font-semibold px-2 py-0.5 rounded bg-charcoal-800 text-slate-300">
+                <span className="text-[10px] font-mono font-bold px-1.5 py-0.5 rounded bg-charcoal-800 text-slate-300">
                   {table.type}
                 </span>
+                <span className="text-[10px] font-mono text-slate-400">
+                  {formatVND(table.hourlyRate)}/H
+                </span>
               </div>
-              <p className="text-[11px] text-slate-400 mt-0.5">
-                {table.area} • <span className="font-mono text-gold-400">{formatVND(table.hourlyRate)}/h</span>
+              <p className="text-[10px] text-slate-400 mt-0.5 truncate max-w-[130px]">
+                {table.area}
               </p>
             </div>
           </div>
 
-          {/* Status Badge */}
-          <div>
+          {/* Admin Edit & Status Badge */}
+          <div className="flex items-center gap-1.5">
+            {isAdmin && onEditTable && (
+              <button
+                onClick={() => onEditTable(table)}
+                className="px-2 py-0.5 rounded bg-charcoal-800 hover:bg-charcoal-700 text-amber-300 border border-amber-500/30 text-[10px] font-mono font-bold transition-colors"
+                title="Chỉnh sửa thông tin bàn này"
+              >
+                [SỬA BÀN]
+              </button>
+            )}
             {isPlaying ? (
               isPaused ? (
-                <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold bg-amber-500/15 text-amber-300 border border-amber-500/30">
-                  <span className="w-1.5 h-1.5 rounded-full bg-amber-400" />
-                  Tạm dừng
+                <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-amber-500/15 text-amber-300 border border-amber-500/30">
+                  ■ TẠM DỪNG
                 </span>
               ) : (
-                <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-emerald-500/15 text-emerald-400 border border-emerald-500/30">
-                  <span className="relative flex h-1.5 w-1.5">
-                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                    <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-emerald-400"></span>
-                  </span>
-                  Đang chơi
+                <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-emerald-500/15 text-emerald-400 border border-emerald-500/30">
+                  ● ĐANG CHƠI
                 </span>
               )
             ) : isWaiting ? (
-              <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold bg-amber-500/15 text-amber-300 border border-amber-500/30">
-                <span className="w-1.5 h-1.5 rounded-full bg-amber-400" />
-                Chờ tính
+              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-amber-500/15 text-amber-300 border border-amber-500/30">
+                ▲ CHỜ TÍNH
               </span>
             ) : isMaintenance ? (
-              <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold bg-slate-800 text-slate-400">
-                <Wrench className="w-3 h-3" />
-                Bảo trì
+              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-slate-800 text-slate-400 border border-slate-700">
+                × BẢO TRÌ
               </span>
             ) : (
-              <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold bg-charcoal-800 text-slate-400 border border-charcoal-700">
-                <span className="w-1.5 h-1.5 rounded-full bg-slate-500" />
-                Bàn trống
+              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-charcoal-800 text-slate-400 border border-charcoal-700">
+                ○ BÀN TRỐNG
               </span>
             )}
           </div>
@@ -159,26 +141,25 @@ export const StationaryControlPanel: React.FC<StationaryControlPanelProps> = ({
       </div>
 
       {/* Stationary Body */}
-      <div className="flex-1 overflow-y-auto p-3.5 space-y-3">
+      <div className="flex-1 overflow-y-auto p-3 space-y-2.5">
         {(isPlaying || isWaiting) && session && feeCalc ? (
           <>
             {/* Live Clock & Money Box */}
-            <div className="p-3.5 rounded-xl bg-charcoal-850 border border-charcoal-750 flex items-center justify-between">
+            <div className="p-3 rounded-xl bg-charcoal-850 border border-charcoal-750 flex items-center justify-between font-mono">
               <div>
-                <div className="flex items-center gap-1.5 text-xs text-slate-400 mb-0.5">
-                  <Clock className="w-3.5 h-3.5 text-slate-400" />
-                  <span>Vào lúc: {new Date(session.startTime).toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' })}</span>
+                <div className="text-[10px] text-slate-400 tracking-wider">
+                  VÀO LÚC: {new Date(session.startTime).toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' })}
                 </div>
-                <div className="text-xs text-slate-300">
-                  Đã chơi: <b className="text-white font-medium">{formatDurationHuman(feeCalc.billedMinutes)}</b>
+                <div className="text-[11px] text-slate-300 mt-0.5">
+                  ĐÃ CHƠI: <b className="text-white">{formatDurationHuman(feeCalc.billedMinutes)}</b>
                 </div>
               </div>
 
               <div className="text-right">
-                <div className="font-mono text-xl font-bold text-white tracking-wider">
+                <div className="text-xl font-black text-white tracking-wider">
                   {formatSecondsToTimer(feeCalc.netSeconds)}
                 </div>
-                <div className="text-xs font-mono font-bold text-gold-400">
+                <div className="text-xs font-bold text-gold-400">
                   {formatVND(feeCalc.tableFee)}
                 </div>
               </div>
@@ -186,96 +167,88 @@ export const StationaryControlPanel: React.FC<StationaryControlPanelProps> = ({
 
             {/* Customer Tag Box */}
             <div className="p-2.5 rounded-lg bg-charcoal-850 border border-charcoal-750 flex items-center justify-between text-xs">
-              <div className="flex items-center gap-2">
-                <div className="w-7 h-7 rounded-lg bg-charcoal-800 border border-charcoal-700 flex items-center justify-center text-slate-300">
-                  <User className="w-3.5 h-3.5" />
-                </div>
-                <div>
-                  <span className="font-semibold text-white">
-                    {session.customerName || 'Khách Vãng Lai'}
+              <div className="flex flex-col min-w-0">
+                <span className="text-[9px] font-mono text-slate-400 uppercase tracking-wider">
+                  KHÁCH HÀNG:
+                </span>
+                <span className="font-bold text-white text-xs truncate">
+                  {session.customerName || 'Khách Vãng Lai'}
+                </span>
+                {session.customerPhone && (
+                  <span className="text-[10px] text-slate-400 font-mono">
+                    {session.customerPhone}
                   </span>
-                  {session.customerPhone && (
-                    <span className="block text-[10px] text-slate-400 font-mono">
-                      {session.customerPhone}
-                    </span>
-                  )}
-                </div>
+                )}
               </div>
 
               {session.customerTier && (
-                <span className="text-[10px] px-2 py-0.5 rounded font-semibold bg-gold-500/10 text-gold-400 border border-gold-500/20">
-                  Hạng {session.customerTier}
+                <span className="text-[9px] font-mono px-2 py-0.5 rounded font-bold bg-gold-500/10 text-gold-400 border border-gold-500/20">
+                  HẠNG {session.customerTier}
                 </span>
               )}
             </div>
 
             {/* Quick Action Toolbar */}
-            <div className="grid grid-cols-3 gap-2">
+            <div className="grid grid-cols-3 gap-1.5 font-mono text-[10px] font-bold">
               {isPaused ? (
                 <button
                   onClick={() => onResumeTable(table)}
-                  className="p-2 rounded-lg bg-emerald-600/20 text-emerald-300 border border-emerald-500/30 text-[11px] font-medium flex flex-col items-center justify-center gap-1 hover:bg-emerald-600/30 transition-colors"
+                  className="py-2 px-1 rounded-lg bg-emerald-600/20 text-emerald-300 border border-emerald-500/30 hover:bg-emerald-600/30 transition-colors"
                 >
-                  <Play className="w-3.5 h-3.5" />
-                  <span>Tiếp tục</span>
+                  TIẾP TỤC
                 </button>
               ) : (
                 <button
                   onClick={() => onPauseTable(table)}
-                  className="p-2 rounded-lg bg-charcoal-800 hover:bg-charcoal-750 text-slate-300 border border-charcoal-700 text-[11px] font-medium flex flex-col items-center justify-center gap-1 transition-colors"
+                  className="py-2 px-1 rounded-lg bg-charcoal-800 hover:bg-charcoal-750 text-amber-400 border border-charcoal-700 transition-colors"
                 >
-                  <Pause className="w-3.5 h-3.5 text-amber-400" />
-                  <span>Tạm dừng</span>
+                  TẠM DỪNG
                 </button>
               )}
 
               <button
                 onClick={() => onTransferTable(table)}
-                className="p-2 rounded-lg bg-charcoal-800 hover:bg-charcoal-750 text-slate-300 border border-charcoal-700 text-[11px] font-medium flex flex-col items-center justify-center gap-1 transition-colors"
+                className="py-2 px-1 rounded-lg bg-charcoal-800 hover:bg-charcoal-750 text-slate-200 border border-charcoal-700 transition-colors"
               >
-                <ArrowRightLeft className="w-3.5 h-3.5 text-blue-400" />
-                <span>Đổi bàn</span>
+                ĐỔI BÀN
               </button>
 
               <button
                 onClick={() => onMergeTable(table)}
-                className="p-2 rounded-lg bg-charcoal-800 hover:bg-charcoal-750 text-slate-300 border border-charcoal-700 text-[11px] font-medium flex flex-col items-center justify-center gap-1 transition-colors"
+                className="py-2 px-1 rounded-lg bg-charcoal-800 hover:bg-charcoal-750 text-purple-300 border border-charcoal-700 transition-colors"
               >
-                <Layers className="w-3.5 h-3.5 text-purple-400" />
-                <span>Gộp bàn</span>
+                GỘP BÀN
               </button>
             </div>
 
             {/* F&B Ordered Items Section */}
-            <div className="flex flex-col gap-2">
+            <div className="flex flex-col gap-1.5">
               <div className="flex items-center justify-between">
-                <span className="text-xs font-semibold text-slate-300 flex items-center gap-1.5">
-                  <UtensilsCrossed className="w-3.5 h-3.5 text-amber-400" />
-                  Món đã gọi ({session.orders?.length || 0})
+                <span className="text-[11px] font-mono font-bold text-slate-300">
+                  MÓN ĐÃ GỌI ({session.orders?.length || 0})
                 </span>
 
                 <button
                   onClick={() => onOpenOrderModal(table)}
-                  className="flex items-center gap-1 px-2.5 py-1 rounded-md bg-charcoal-800 hover:bg-charcoal-750 text-slate-200 text-xs font-medium border border-charcoal-700 transition-colors"
+                  className="px-2 py-1 rounded-md bg-charcoal-800 hover:bg-charcoal-750 text-gold-400 text-[10px] font-mono font-bold border border-charcoal-700 transition-colors"
                 >
-                  <Plus className="w-3.5 h-3.5 text-gold-400" />
-                  <span>Thêm món</span>
+                  + THÊM MÓN
                 </button>
               </div>
 
               {(!session.orders || session.orders.length === 0) ? (
-                <div className="py-5 text-center text-xs text-slate-500 rounded-lg bg-charcoal-850 border border-charcoal-750">
-                  Chưa có món nào. Bấm <b className="text-slate-400">"Thêm món"</b> để gọi đồ uống/đồ ăn.
+                <div className="py-4 text-center text-[11px] text-slate-400 rounded-lg bg-charcoal-850 border border-charcoal-750">
+                  Chưa có món nào. Bấm <b>"+ THÊM MÓN"</b> để gọi đồ uống/đồ ăn.
                 </div>
               ) : (
-                <div className="space-y-1 max-h-44 overflow-y-auto pr-0.5">
+                <div className="space-y-1 max-h-40 overflow-y-auto pr-0.5">
                   {session.orders.map((ord) => (
                     <div
                       key={ord.id}
                       className="p-2 rounded-lg bg-charcoal-850 border border-charcoal-750 flex items-center justify-between text-xs"
                     >
                       <div className="flex-1 min-w-0 pr-2">
-                        <span className="font-medium text-white truncate block">{ord.name}</span>
+                        <span className="font-semibold text-white truncate block text-[11px]">{ord.name}</span>
                         <span className="text-[10px] text-slate-400 font-mono">
                           {formatVND(ord.price)} / {ord.unit}
                         </span>
@@ -285,29 +258,29 @@ export const StationaryControlPanel: React.FC<StationaryControlPanelProps> = ({
                       <div className="flex items-center gap-1 mr-2">
                         <button
                           onClick={() => onUpdateOrderItemQty(table.id, ord.id, -1)}
-                          className="w-5 h-5 rounded bg-charcoal-800 hover:bg-charcoal-750 flex items-center justify-center text-slate-200"
+                          className="w-5 h-5 rounded bg-charcoal-800 hover:bg-charcoal-750 flex items-center justify-center text-slate-200 font-mono font-bold text-xs"
                         >
-                          <Minus className="w-3 h-3" />
+                          −
                         </button>
                         <span className="font-mono font-bold text-white px-1 text-xs">{ord.quantity}</span>
                         <button
                           onClick={() => onUpdateOrderItemQty(table.id, ord.id, 1)}
-                          className="w-5 h-5 rounded bg-charcoal-800 hover:bg-charcoal-750 flex items-center justify-center text-slate-200"
+                          className="w-5 h-5 rounded bg-charcoal-800 hover:bg-charcoal-750 flex items-center justify-center text-slate-200 font-mono font-bold text-xs"
                         >
-                          <Plus className="w-3 h-3" />
+                          +
                         </button>
                       </div>
 
-                      <div className="text-right flex items-center gap-2">
-                        <span className="font-mono font-medium text-slate-200 text-xs">
+                      <div className="text-right flex items-center gap-1.5">
+                        <span className="font-mono font-bold text-slate-200 text-[11px]">
                           {formatVND(ord.price * ord.quantity)}
                         </span>
                         <button
                           onClick={() => onRemoveOrderItem(table.id, ord.id)}
-                          className="text-slate-500 hover:text-rose-400 p-0.5"
+                          className="text-slate-400 hover:text-rose-400 text-[10px] font-mono px-1 py-0.5 rounded hover:bg-white/10"
                           title="Xóa món"
                         >
-                          <Trash2 className="w-3.5 h-3.5" />
+                          ✕
                         </button>
                       </div>
                     </div>
@@ -317,52 +290,52 @@ export const StationaryControlPanel: React.FC<StationaryControlPanelProps> = ({
             </div>
 
             {/* Calculations Breakdown */}
-            <div className="p-3 rounded-xl bg-charcoal-850 border border-charcoal-750 text-xs flex flex-col gap-1.5">
+            <div className="p-2.5 rounded-xl bg-charcoal-850 border border-charcoal-750 text-[11px] font-mono flex flex-col gap-1">
               <div className="flex justify-between text-slate-400">
-                <span>Tiền giờ chơi:</span>
-                <span className="font-mono text-white">{formatVND(feeCalc.tableFee)}</span>
+                <span>TIỀN GIỜ:</span>
+                <span className="text-white">{formatVND(feeCalc.tableFee)}</span>
               </div>
               <div className="flex justify-between text-slate-400">
-                <span>Tiền món đã gọi:</span>
-                <span className="font-mono text-white">{formatVND(feeCalc.fnbFee)}</span>
+                <span>TIỀN MÓN (F&B):</span>
+                <span className="text-white">{formatVND(feeCalc.fnbFee)}</span>
               </div>
               {feeCalc.discountAmount > 0 && (
-                <div className="flex justify-between text-rose-400 font-medium">
-                  <span>Ưu đãi VIP:</span>
-                  <span className="font-mono">-{formatVND(feeCalc.discountAmount)}</span>
+                <div className="flex justify-between text-rose-400 font-bold">
+                  <span>ƯU ĐÃI VIP:</span>
+                  <span>-{formatVND(feeCalc.discountAmount)}</span>
                 </div>
               )}
-              <div className="pt-2 border-t border-charcoal-750 flex justify-between items-baseline font-bold">
+              <div className="pt-1.5 border-t border-charcoal-750 flex justify-between items-baseline font-black">
                 <span className="text-slate-300">TỔNG TẠM TÍNH:</span>
-                <span className="font-mono text-gold-400 text-base">{formatVND(feeCalc.grandTotal)}</span>
+                <span className="text-gold-400 text-sm sm:text-base">{formatVND(feeCalc.grandTotal)}</span>
               </div>
             </div>
           </>
         ) : isAvailable ? (
           /* Available Table Quick Open Mode */
-          <div className="space-y-3.5">
-            <div className="p-4 rounded-xl bg-charcoal-850 border border-charcoal-750 text-center">
-              <div className="w-12 h-12 rounded-full bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center mx-auto mb-2 text-emerald-400">
-                <Play className="w-5 h-5 fill-current ml-0.5" />
-              </div>
+          <div className="space-y-3">
+            <div className="p-3.5 rounded-xl bg-charcoal-850 border border-charcoal-750 text-center">
+              <span className="text-xs font-mono font-bold text-emerald-400 block mb-1">
+                [BÀN ĐANG TRỐNG]
+              </span>
               <h4 className="text-sm font-bold text-white">{table.name}</h4>
-              <p className="text-xs text-slate-400 mt-0.5">
-                {table.area} • <span className="text-emerald-400 font-semibold">{formatVND(table.hourlyRate)}/h</span>
+              <p className="text-[11px] text-slate-400 mt-0.5 font-mono">
+                {table.area} • <span className="text-emerald-400 font-bold">{formatVND(table.hourlyRate)}/H</span>
               </p>
             </div>
 
-            <div className="p-3.5 rounded-xl bg-charcoal-850 border border-charcoal-750 space-y-3 text-xs">
-              <div className="font-bold text-white flex items-center justify-between pb-2 border-b border-charcoal-750">
-                <span>Mở Bàn Trực Tiếp</span>
-                <span className="text-[10px] text-slate-400 font-normal">Nhanh 1 chạm</span>
+            <div className="p-3 rounded-xl bg-charcoal-850 border border-charcoal-750 space-y-2.5 text-xs">
+              <div className="font-mono font-bold text-white flex items-center justify-between pb-1.5 border-b border-charcoal-750 text-[11px]">
+                <span>MỞ BÀN TRỰC TIẾP</span>
+                <span className="text-slate-400 font-normal">1 chạm</span>
               </div>
 
               <div>
-                <label className="text-slate-300 font-medium block mb-1">Khách hàng:</label>
+                <label className="text-slate-300 font-medium block mb-1 text-[11px]">Khách hàng:</label>
                 <select
                   value={quickCustomerId}
                   onChange={(e) => setQuickCustomerId(e.target.value)}
-                  className="w-full px-2.5 py-1.5 rounded-lg bg-charcoal-800 border border-charcoal-700 text-white focus:outline-none"
+                  className="w-full px-2.5 py-1.5 rounded-lg bg-charcoal-800 border border-charcoal-700 text-white focus:outline-none text-xs"
                 >
                   <option value="">Khách Vãng Lai (Khách Lẻ)</option>
                   {customers.map((c) => (
@@ -374,11 +347,11 @@ export const StationaryControlPanel: React.FC<StationaryControlPanelProps> = ({
               </div>
 
               <div>
-                <label className="text-slate-300 font-medium block mb-1">Nhân viên phục vụ:</label>
+                <label className="text-slate-300 font-medium block mb-1 text-[11px]">Nhân viên phụ trách:</label>
                 <select
                   value={quickStaffId}
                   onChange={(e) => setQuickStaffId(e.target.value)}
-                  className="w-full px-2.5 py-1.5 rounded-lg bg-charcoal-800 border border-charcoal-700 text-white focus:outline-none"
+                  className="w-full px-2.5 py-1.5 rounded-lg bg-charcoal-800 border border-charcoal-700 text-white focus:outline-none text-xs"
                 >
                   {staff.map((s) => (
                     <option key={s.id} value={s.id}>
@@ -388,33 +361,34 @@ export const StationaryControlPanel: React.FC<StationaryControlPanelProps> = ({
                 </select>
               </div>
 
-              <div className="pt-2 flex gap-2">
+              <div className="pt-1.5 flex gap-2">
                 <button
                   onClick={() => onOpenTableModal(table)}
-                  className="flex-1 py-2 px-3 rounded-lg bg-charcoal-800 hover:bg-charcoal-750 text-slate-300 border border-charcoal-700 font-medium transition-colors"
+                  className="flex-1 py-2 px-2 rounded-lg bg-charcoal-800 hover:bg-charcoal-750 text-slate-300 border border-charcoal-700 font-mono text-[11px] font-bold transition-colors"
                 >
-                  Tùy chọn khác
+                  TÙY CHỌN
                 </button>
                 <button
                   onClick={handleQuickOpen}
-                  className="flex-1 py-2 px-3 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white font-bold transition-colors flex items-center justify-center gap-1.5"
+                  className="flex-1 py-2 px-2 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white font-mono text-[11px] font-black transition-colors"
                 >
-                  <Play className="w-3.5 h-3.5 fill-current" />
-                  <span>MỞ BÀN</span>
+                  + MỞ BÀN
                 </button>
               </div>
             </div>
           </div>
         ) : isMaintenance ? (
-          <div className="p-6 rounded-xl bg-charcoal-850 border border-charcoal-750 text-center space-y-3">
-            <ShieldAlert className="w-10 h-10 text-amber-400 mx-auto" />
+          <div className="p-5 rounded-xl bg-charcoal-850 border border-charcoal-750 text-center space-y-2.5">
+            <span className="text-xs font-mono font-bold text-amber-400 block">
+              [TRẠNG THÁI: BẢO TRÌ]
+            </span>
             <h4 className="text-sm font-bold text-white">Bàn Đang Bảo Trì</h4>
-            <p className="text-xs text-slate-400">{table.notes || 'Bàn đang được căn chỉnh băng hoặc bảo dưỡng vải nỉ.'}</p>
+            <p className="text-xs text-slate-400">{table.notes || 'Bàn đang được căn chỉnh băng hoặc thay vải nỉ.'}</p>
             <button
               onClick={() => onToggleMaintenance(table)}
-              className="py-2 px-4 rounded-lg bg-charcoal-800 hover:bg-charcoal-750 text-white font-semibold text-xs border border-charcoal-700"
+              className="py-2 px-3 rounded-lg bg-charcoal-800 hover:bg-charcoal-750 text-white font-mono text-xs font-bold border border-charcoal-700 transition-colors"
             >
-              Hoàn Tất & Mở Lại Bàn
+              HOÀN TẤT & MỞ LẠI BÀN
             </button>
           </div>
         ) : null}
@@ -422,13 +396,12 @@ export const StationaryControlPanel: React.FC<StationaryControlPanelProps> = ({
 
       {/* Stationary Footer: Thanh Toán Hóa Đơn */}
       {(isPlaying || isWaiting) && session && (
-        <div className="p-3 bg-charcoal-850 border-t border-charcoal-750 shrink-0">
+        <div className="p-2.5 bg-charcoal-850 border-t border-charcoal-750 shrink-0">
           <button
             onClick={() => onCheckoutTable(table, session)}
-            className="w-full py-2.5 px-3 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs transition-colors flex items-center justify-center gap-2 shadow-lg shadow-emerald-950/50"
+            className="w-full py-2.5 px-3 rounded-xl bg-gold-500 hover:bg-amber-400 text-charcoal-950 font-mono font-black text-xs transition-colors flex items-center justify-center gap-1.5 shadow-lg active:scale-98"
           >
-            <Receipt className="w-4 h-4" />
-            <span>Thanh Toán Hóa Đơn ({feeCalc ? formatVND(feeCalc.grandTotal) : ''})</span>
+            <span>THANH TOÁN HÓA ĐƠN ({feeCalc ? formatVND(feeCalc.grandTotal) : ''})</span>
           </button>
         </div>
       )}

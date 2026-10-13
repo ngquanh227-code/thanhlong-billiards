@@ -1,15 +1,6 @@
 import React from 'react';
 import { useApp } from '../context/AppContext';
 import logoImg from '../assets/logo.png';
-import {
-  Clock,
-  Shield,
-  Volume2,
-  VolumeX,
-  RefreshCw,
-  Sun,
-  Moon,
-} from 'lucide-react';
 
 interface NavbarProps {
   onOpenShiftModal?: () => void;
@@ -21,6 +12,8 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenShiftModal, onNavigateTab 
     tables,
     shifts,
     currentStaff,
+    isAdmin,
+    toggleRole,
     staff,
     switchCurrentStaff,
     currentTime,
@@ -49,143 +42,177 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenShiftModal, onNavigateTab 
     second: '2-digit',
   });
 
-  const getRoleName = (role: string) => {
+  const getRoleShort = (role: string) => {
     switch (role) {
-      case 'OWNER': return 'Chủ Quán';
-      case 'MANAGER': return 'Quản Lý';
-      case 'CASHIER': return 'Thu Ngân';
-      case 'WAITER': return 'Phục Vụ';
-      default: return role;
+      case 'ADMIN':
+      case 'OWNER':
+      case 'MANAGER':
+        return 'ADMIN';
+      case 'STAFF':
+      case 'CASHIER':
+      case 'WAITER':
+      default:
+        return 'NHÂN VIÊN';
     }
   };
 
   return (
-    <header className="sticky top-0 z-40 w-full bg-charcoal-900 border-b border-charcoal-800 px-4 lg:px-6 py-2.5">
-      <div className="flex items-center justify-between gap-4 max-w-7xl mx-auto">
+    <header className="sticky top-0 z-40 w-full bg-[#0b0e14] border-b border-charcoal-750 px-3 sm:px-4 lg:px-6 py-2 select-none">
+      <div className="flex items-center justify-between gap-2 max-w-full mx-auto">
         {/* Brand */}
         <div
-          className="flex items-center gap-3 cursor-pointer group"
+          className="flex items-center gap-2.5 cursor-pointer group shrink-0"
           onClick={() => onNavigateTab && onNavigateTab('dashboard')}
+          title="Về Trang Tổng Quan"
         >
-          <div className="relative">
-            <img
-              src={logoImg}
-              alt="Thanh Long Billiards Logo"
-              className="w-10 h-10 rounded-full border border-amber-500/50 shadow-[0_0_12px_rgba(212,175,55,0.3)] object-cover group-hover:scale-105 transition-transform"
-            />
-            <span className="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 rounded-full bg-emerald-500 border border-charcoal-900" />
-          </div>
+          <img
+            src={logoImg}
+            alt="Thanh Long Billiards Logo"
+            className="w-8 h-8 sm:w-9 sm:h-9 rounded-full border border-amber-500/50 object-cover group-hover:scale-105 transition-transform"
+          />
 
           <div className="flex flex-col">
-            <span className="text-sm lg:text-base font-bold tracking-wider text-gold-400 font-brand leading-tight group-hover:text-gold-300 transition-colors">
-              THANH LONG
-            </span>
-            <span className="text-[9px] tracking-[0.25em] text-gold-500/80 font-sans uppercase font-medium leading-tight">
+            <div className="flex items-center gap-1.5">
+              <span className="text-xs sm:text-sm font-black tracking-widest text-gold-400 font-brand leading-none group-hover:text-amber-300 transition-colors">
+                THANH LONG
+              </span>
+              <span className="hidden sm:inline-block text-[9px] font-mono px-1.5 py-0.5 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-bold">
+                PRO
+              </span>
+            </div>
+            <span className="text-[8px] sm:text-[9px] tracking-[0.2em] text-slate-400 font-mono uppercase font-semibold leading-tight">
               BILLIARDS CLUB
             </span>
           </div>
         </div>
 
-        {/* Center: Live Counts & Clock (Minimalist) */}
-        <div className="hidden md:flex items-center gap-4 text-xs">
-          <div className="flex items-center gap-3 text-slate-400">
-            <span
+        {/* Center: Live Counts & Clock (Desktop/Tablet) */}
+        <div className="hidden md:flex items-center gap-3 text-xs">
+          <div className="flex items-center gap-2 bg-charcoal-850 px-3 py-1 rounded-lg border border-charcoal-750 font-mono">
+            <button
               onClick={() => onNavigateTab && onNavigateTab('tables')}
-              className="cursor-pointer hover:text-white transition-colors"
+              className="hover:text-white transition-colors flex items-center gap-1.5"
             >
-              Đang chơi: <b className="text-emerald-400 font-mono">{playingCount}</b>
-            </span>
+              <span className="text-emerald-400 font-bold">● CHƠI</span>
+              <span className="text-white font-bold">{playingCount}</span>
+            </button>
+
+            <span className="text-slate-600">|</span>
 
             {waitingCount > 0 && (
-              <span
-                onClick={() => onNavigateTab && onNavigateTab('tables')}
-                className="cursor-pointer hover:text-white transition-colors"
-              >
-                Chờ tính: <b className="text-amber-400 font-mono">{waitingCount}</b>
-              </span>
+              <>
+                <button
+                  onClick={() => onNavigateTab && onNavigateTab('tables')}
+                  className="hover:text-white transition-colors flex items-center gap-1.5"
+                >
+                  <span className="text-amber-400 font-bold">▲ CHỜ</span>
+                  <span className="text-white font-bold">{waitingCount}</span>
+                </button>
+                <span className="text-slate-600">|</span>
+              </>
             )}
 
-            <span
+            <button
               onClick={() => onNavigateTab && onNavigateTab('tables')}
-              className="cursor-pointer hover:text-white transition-colors"
+              className="hover:text-white transition-colors flex items-center gap-1.5"
             >
-              Trống: <b className="text-slate-200 font-mono">{availableCount}</b>
-            </span>
+              <span className="text-slate-400">○ TRỐNG</span>
+              <span className="text-slate-200 font-bold">{availableCount}</span>
+            </button>
           </div>
 
-          <div className="h-4 w-px bg-charcoal-750" />
-
           {/* Clock */}
-          <div className="flex items-center gap-1.5 text-slate-400">
-            <Clock className="w-3.5 h-3.5 text-slate-500" />
+          <div className="flex items-center gap-1.5 font-mono text-[11px] text-slate-400 bg-charcoal-850 px-2.5 py-1 rounded-lg border border-charcoal-750">
             <span>{formattedDate}</span>
-            <span className="font-mono text-white font-medium">{formattedTime}</span>
+            <span className="text-gold-400 font-bold">{formattedTime}</span>
           </div>
         </div>
 
         {/* Right Actions */}
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-1.5 sm:gap-2">
           {/* Shift status button */}
           {currentShift ? (
             <button
               onClick={onOpenShiftModal}
-              className="text-xs px-2.5 py-1.5 rounded-lg bg-charcoal-850 hover:bg-charcoal-800 border border-charcoal-750 text-slate-300 transition-colors"
+              className="text-[10px] sm:text-xs px-2 sm:px-2.5 py-1 rounded-lg bg-charcoal-850 hover:bg-charcoal-800 border border-charcoal-750 text-emerald-400 font-mono font-bold transition-colors"
+              title="Xem thông tin ca trực hiện tại"
             >
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 inline-block mr-1.5" />
-              {currentShift.shiftName.split(' ')[0]} {currentShift.shiftName.split(' ')[1]}
+              [CA: {currentShift.shiftName.split(' ')[0]}]
             </button>
           ) : (
             <button
               onClick={onOpenShiftModal}
-              className="text-xs px-2.5 py-1.5 rounded-lg bg-charcoal-850 hover:bg-charcoal-800 border border-charcoal-750 text-amber-400 transition-colors"
+              className="text-[10px] sm:text-xs px-2 sm:px-2.5 py-1 rounded-lg bg-amber-500/10 hover:bg-amber-500/20 border border-amber-500/30 text-amber-400 font-mono font-bold transition-colors"
             >
-              Mở ca
+              [MỞ CA]
             </button>
           )}
 
           {/* Audio toggle */}
           <button
             onClick={toggleSound}
-            className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-charcoal-850 transition-colors"
-            title={soundEnabled ? 'Tắt âm' : 'Bật âm'}
+            className={`text-[10px] font-mono font-bold px-2 py-1 rounded-lg border transition-colors ${
+              soundEnabled
+                ? 'bg-charcoal-850 text-emerald-400 border-charcoal-700 hover:border-emerald-500/50'
+                : 'bg-charcoal-850 text-slate-400 border-charcoal-750 hover:text-slate-200'
+            }`}
+            title={soundEnabled ? 'Tắt âm thanh hiệu ứng' : 'Bật âm thanh hiệu ứng'}
           >
-            {soundEnabled ? <Volume2 className="w-4 h-4" /> : <VolumeX className="w-4 h-4" />}
+            {soundEnabled ? 'ÂM: ON' : 'ÂM: OFF'}
           </button>
 
-          {/* Theme toggle (Sáng / Tối) */}
+          {/* Theme toggle */}
           <button
             onClick={toggleTheme}
-            className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-charcoal-850 transition-colors"
-            title={theme === 'dark' ? 'Chuyển sang Giao diện Sáng' : 'Chuyển sang Giao diện Tối'}
+            className="text-[10px] font-mono font-bold px-2 py-1 rounded-lg bg-charcoal-850 text-slate-300 border border-charcoal-750 hover:border-slate-500 transition-colors"
+            title="Đổi chế độ Sáng / Tối"
           >
-            {theme === 'dark' ? <Sun className="w-4 h-4 text-amber-400" /> : <Moon className="w-4 h-4 text-blue-400" />}
+            {theme === 'dark' ? 'TỐI' : 'SÁNG'}
           </button>
 
-          {/* User selector with Role Badge */}
-          <div className="flex items-center gap-1.5 bg-charcoal-850 px-2 py-1 rounded-lg border border-charcoal-750">
-            <span className="text-xs">{currentStaff.role === 'OWNER' || currentStaff.role === 'MANAGER' ? '👑' : '👤'}</span>
-            <select
-              value={currentStaff.id}
-              onChange={(e) => switchCurrentStaff(e.target.value)}
-              className="bg-transparent text-xs text-slate-200 focus:outline-none cursor-pointer py-0.5 font-medium"
+          {/* Admin / Staff Quick Toggle Button & Selector */}
+          <div className="flex items-center gap-1.5">
+            <button
+              onClick={toggleRole}
+              className={`px-2.5 py-1 rounded-lg border text-xs font-mono font-bold transition-all flex items-center gap-1.5 ${
+                isAdmin
+                  ? 'bg-amber-500/20 text-amber-300 border-amber-500/40 hover:bg-amber-500/30'
+                  : 'bg-emerald-500/15 text-emerald-300 border-emerald-500/30 hover:bg-emerald-500/25'
+              }`}
+              title="Bấm để chuyển nhanh giữa chế độ ADMIN (chỉnh sửa) và NHÂN VIÊN (vận hành)"
             >
-              {staff.map((s) => (
-                <option key={s.id} value={s.id} className="bg-charcoal-900 text-white">
-                  {s.name} ({s.role === 'OWNER' ? '👑 Chủ Quán' : s.role === 'MANAGER' ? '👑 Quản Lý' : `👤 ${getRoleName(s.role)}`})
-                </option>
-              ))}
-            </select>
+              <span>{isAdmin ? '[QUYỀN: ADMIN]' : '[QUYỀN: NHÂN VIÊN]'}</span>
+              <span className={`text-[10px] px-1 py-0.2 rounded font-black ${
+                isAdmin ? 'bg-amber-400 text-charcoal-950' : 'bg-charcoal-800 text-slate-300'
+              }`}>
+                {isAdmin ? 'CHỈNH SỬA' : 'VẬN HÀNH'}
+              </span>
+            </button>
+
+            <div className="hidden md:flex items-center bg-charcoal-850 px-2 py-0.5 rounded-lg border border-charcoal-750">
+              <select
+                value={currentStaff.id}
+                onChange={(e) => switchCurrentStaff(e.target.value)}
+                className="bg-transparent text-[11px] text-slate-200 focus:outline-none cursor-pointer py-0.5 font-medium"
+              >
+                {staff.map((s) => (
+                  <option key={s.id} value={s.id} className="bg-charcoal-900 text-white">
+                    {s.name} ({getRoleShort(s.role)})
+                  </option>
+                ))}
+              </select>
+            </div>
           </div>
 
-          {/* Reset Demo */}
+          {/* Reset Demo Data button */}
           <button
             onClick={() => {
-              if (window.confirm('Khôi phục dữ liệu ban đầu?')) resetAllDemoData();
+              if (window.confirm('Khôi phục toàn bộ dữ liệu mẫu ban đầu?')) resetAllDemoData();
             }}
-            className="p-1.5 rounded-lg text-slate-500 hover:text-slate-300 transition-colors"
+            className="hidden sm:inline-block text-[10px] font-mono px-2 py-1 rounded-lg text-slate-400 hover:text-rose-400 hover:bg-rose-500/10 border border-transparent hover:border-rose-500/30 transition-colors"
             title="Khôi phục dữ liệu ban đầu"
           >
-            <RefreshCw className="w-3.5 h-3.5" />
+            RESET
           </button>
         </div>
       </div>

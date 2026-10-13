@@ -37,6 +37,7 @@ interface AppContextType {
   transactions: CashTransaction[];
   auditLogs: AuditLog[];
   currentStaff: Staff;
+  isAdmin: boolean;
   currentTime: Date;
   toasts: ToastMessage[];
   currentBranch: string;
@@ -44,6 +45,7 @@ interface AppContextType {
   theme: 'dark' | 'light';
 
   // Actions
+  toggleRole: () => void;
   addToast: (type: 'success' | 'error' | 'info' | 'warning', title: string, message?: string) => void;
   removeToast: (id: string) => void;
   switchCurrentStaff: (staffId: string) => void;
@@ -236,6 +238,30 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
       StorageService.setCurrentStaff(found);
       sounds.playClick();
     }
+  };
+
+  const isAdmin = currentStaff.role === 'ADMIN' || (currentStaff.role as string) === 'OWNER' || (currentStaff.role as string) === 'MANAGER';
+
+  const toggleRole = () => {
+    const targetRole = isAdmin ? 'STAFF' : 'ADMIN';
+    const found = staff.find((s) => s.role === targetRole);
+    if (found) {
+      setCurrentStaff(found);
+      StorageService.setCurrentStaff(found);
+    } else {
+      const fallbackStaff: Staff = {
+        id: targetRole === 'ADMIN' ? 'staff-admin' : 'staff-staff',
+        code: targetRole === 'ADMIN' ? 'ADMIN' : 'NV-01',
+        name: targetRole === 'ADMIN' ? 'Nguyễn Thanh Long (Admin)' : 'Lê Hoàng Nam (Nhân Viên)',
+        phone: '0909000111',
+        role: targetRole,
+        isActive: true,
+      };
+      setCurrentStaff(fallbackStaff);
+      StorageService.setCurrentStaff(fallbackStaff);
+    }
+    sounds.playClick();
+    addToast('info', `Chuyển quyền: ${!isAdmin ? 'QUẢN TRỊ VIÊN (ADMIN)' : 'NHÂN VIÊN (STAFF)'}`);
   };
 
   // Helper: get active session for table
@@ -1041,6 +1067,8 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
         transactions,
         auditLogs,
         currentStaff,
+        isAdmin,
+        toggleRole,
         currentTime,
         toasts,
         currentBranch,
