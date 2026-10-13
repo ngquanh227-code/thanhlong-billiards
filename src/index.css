@@ -54,7 +54,7 @@ html.light .bg-charcoal-850 {
 
 /* Secondary Surfaces, Chips, Pill Badges, Inner Card Strips */
 html.light .bg-slate-800,
-html.light [class*="bg-slate-800"],
+html.light [class*="bg-slate-800"]:not([class*="hover:bg-slate-800"]):not([class*="hover:bg-slate-800/"]),
 html.light .bg-charcoal-800,
 html.light .bg-charcoal-750 {
   background-color: #f1f5f9 !important;
@@ -119,6 +119,7 @@ html.light .text-slate-500 {
 }
 
 /* Accent Colors & Badges Contrast in Light Mode */
+html.light .text-amber-200,
 html.light .text-amber-300,
 html.light .text-amber-400,
 html.light .text-gold-400 {
