@@ -204,17 +204,13 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     StorageService.saveAuditLogs(auditLogs);
   }, [auditLogs]);
 
-  // Toast Helpers
-  const addToast = useCallback((type: 'success' | 'error' | 'info' | 'warning', title: string, message?: string) => {
-    const id = `toast-${Date.now()}-${Math.random()}`;
-    setToasts((prev) => [...prev, { id, type, title, message }]);
-    setTimeout(() => {
-      setToasts((prev) => prev.filter((t) => t.id !== id));
-    }, 4000);
+  // Toast Helpers (Disabled all notification popups)
+  const addToast = useCallback((_type: 'success' | 'error' | 'info' | 'warning', _title: string, _message?: string) => {
+    // Notifications disabled per user request
   }, []);
 
-  const removeToast = useCallback((id: string) => {
-    setToasts((prev) => prev.filter((t) => t.id !== id));
+  const removeToast = useCallback((_id: string) => {
+    // Notifications disabled
   }, []);
 
   // Add audit log helper

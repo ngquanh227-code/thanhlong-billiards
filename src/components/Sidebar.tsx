@@ -14,13 +14,11 @@ export const Sidebar: React.FC<SidebarProps> = ({
   isMobileOpen,
   onCloseMobile,
 }) => {
-  const { tables, currentStaff, isAdmin } = useApp();
-  const playingCount = tables.filter((t) => t.status === 'PLAYING').length;
-  const waitingCount = tables.filter((t) => t.status === 'WAITING_PAYMENT').length;
+  const { currentStaff, isAdmin } = useApp();
 
   const operationNavItems = [
-    { id: 'tables', label: 'Sơ đồ bàn', count: playingCount > 0 ? playingCount : undefined },
-    { id: 'pos', label: 'Quầy thu ngân', count: waitingCount > 0 ? waitingCount : undefined },
+    { id: 'tables', label: 'Sơ đồ bàn' },
+    { id: 'pos', label: 'Quầy thu ngân' },
     { id: 'menu', label: 'Thực đơn & Order' },
     { id: 'members', label: 'Hội viên & Khách' },
     { id: 'dashboard', label: 'Tổng quan quán' },
@@ -106,15 +104,6 @@ export const Sidebar: React.FC<SidebarProps> = ({
                   }`}
                 >
                   <span className="truncate">{item.label}</span>
-                  {item.count !== undefined && (
-                    <span className={`h-5 min-w-[20px] px-1.5 rounded-full text-[10px] font-bold flex items-center justify-center ${
-                      isActive
-                        ? 'bg-amber-400 text-slate-950'
-                        : 'bg-emerald-500/20 text-emerald-300'
-                    }`}>
-                      {item.count}
-                    </span>
-                  )}
                 </button>
               );
             })}

@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react';
 import { useApp } from './context/AppContext';
 import { Navbar } from './components/Navbar';
 import { Sidebar } from './components/Sidebar';
-import { ToastContainer } from './components/common/Toast';
 import { DashboardView } from './components/dashboard/DashboardView';
 import { TableMapView } from './components/tables/TableMapView';
 import { PosCashierView } from './components/pos/PosCashierView';
@@ -200,8 +199,6 @@ export default function App() {
         </button>
       </nav>
 
-      {/* Toast Notifications Container */}
-      <ToastContainer />
     </div>
   );
 }

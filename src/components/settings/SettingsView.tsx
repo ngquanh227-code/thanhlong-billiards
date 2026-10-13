@@ -197,7 +197,7 @@ export const SettingsView: React.FC = () => {
         <div className="p-5 rounded-2xl bg-slate-900/60 border border-slate-800/80 flex flex-col justify-between gap-3">
           <div>
             <div className="flex items-center gap-2.5">
-              <span className="text-sm font-semibold text-white">Âm thanh thông báo</span>
+              <span className="text-sm font-semibold text-white">Âm thanh hệ thống</span>
               <span className={`text-[11px] px-2.5 py-0.5 rounded-full font-medium ${
                 soundEnabled ? 'bg-emerald-500/15 text-emerald-300' : 'bg-slate-800 text-slate-400'
               }`}>
