@@ -169,8 +169,8 @@ export const SettingsView: React.FC = () => {
             onClick={() => setTheme('dark')}
             className={`px-4 py-2 rounded-xl text-xs transition-all ${
               theme === 'dark'
-                ? 'bg-slate-800 text-white border border-slate-700 font-semibold shadow-sm'
-                : 'bg-slate-900/80 text-slate-400 hover:text-white border border-slate-800 font-medium'
+                ? 'bg-amber-500 text-slate-950 font-semibold shadow-sm'
+                : 'bg-slate-800 text-slate-400 hover:text-slate-200 border border-slate-700/60 font-medium'
             }`}
           >
             Tối (Dark)
@@ -180,8 +180,8 @@ export const SettingsView: React.FC = () => {
             onClick={() => setTheme('light')}
             className={`px-4 py-2 rounded-xl text-xs transition-all ${
               theme === 'light'
-                ? 'bg-slate-800 text-white border border-slate-700 font-semibold shadow-sm'
-                : 'bg-slate-900/80 text-slate-400 hover:text-white border border-slate-800 font-medium'
+                ? 'bg-amber-500 text-slate-950 font-semibold shadow-sm'
+                : 'bg-slate-800 text-slate-400 hover:text-slate-200 border border-slate-700/60 font-medium'
             }`}
           >
             Sáng (Light)

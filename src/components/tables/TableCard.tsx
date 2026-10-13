@@ -59,16 +59,16 @@ export const TableCard: React.FC<TableCardProps> = ({
       onClick={() => onSelectTable && onSelectTable(table)}
       className={`relative flex flex-col justify-between rounded-2xl p-4 transition-all duration-200 cursor-pointer select-none font-sans ${
         isSelected
-          ? 'bg-[#151b28] border-2 border-amber-400/80 shadow-lg'
+          ? 'bg-slate-900 border-2 border-amber-400 shadow-lg'
           : isPlaying
           ? isPaused
-            ? 'bg-[#121622] border border-amber-500/30 hover:border-amber-400/60'
-            : 'bg-[#111722] border border-emerald-500/30 hover:border-emerald-400/60'
+            ? 'bg-slate-900 border border-amber-500/40 hover:border-amber-400'
+            : 'bg-slate-900 border border-emerald-500/40 hover:border-emerald-400'
           : isWaiting
-          ? 'bg-[#15171e] border border-amber-500/40 hover:border-amber-400/60'
+          ? 'bg-slate-900 border border-amber-500/50 hover:border-amber-400'
           : isMaintenance
           ? 'bg-slate-900/40 border border-slate-800 opacity-60'
-          : 'bg-[#11141c] border border-slate-800/80 hover:border-slate-700'
+          : 'bg-slate-900 border border-slate-800/80 hover:border-slate-700'
       }`}
     >
       <div>

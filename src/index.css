@@ -24,59 +24,77 @@ h1, h2, h3, h4, .font-heading {
 }
 
 /* ========================================================
-   LIGHT THEME MODE (Cao Cấp, Sáng Sủa & Sạch Sẽ)
+   LIGHT THEME MODE (Cao Cấp, Sáng Sủa, Nhẹ Nhàng & Trang Trọng)
    ======================================================== */
 html.light {
   color-scheme: light;
 }
 
 html.light body {
-  background-color: #f8fafc;
+  background-color: #f1f5f9;
   color: #0f172a;
 }
 
-html.light .bg-\[\#080a0e\] {
-  background-color: #f8fafc !important;
-}
-
+/* Base Canvas & Containers */
+html.light .bg-slate-950,
 html.light .bg-charcoal-950 {
-  background-color: #ffffff !important;
+  background-color: #f1f5f9 !important;
   color: #0f172a !important;
 }
 
-html.light .bg-charcoal-900 {
-  background-color: #ffffff !important;
-  color: #0f172a !important;
-}
-
+/* Cards, Headers, Panels, Drawers, Modals */
+html.light .bg-slate-900,
+html.light [class*="bg-slate-900"],
+html.light .bg-charcoal-900,
 html.light .bg-charcoal-850 {
   background-color: #ffffff !important;
   color: #0f172a !important;
-  box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.04);
 }
 
-html.light .bg-charcoal-800 {
+/* Secondary Surfaces, Chips, Pill Badges, Inner Card Strips */
+html.light .bg-slate-800,
+html.light [class*="bg-slate-800"],
+html.light .bg-charcoal-800,
+html.light .bg-charcoal-750 {
   background-color: #f1f5f9 !important;
   color: #1e293b !important;
 }
 
-html.light .bg-charcoal-750 {
+/* Hover States for Interactive Elements */
+html.light .hover\:bg-slate-800:hover,
+html.light [class*="hover:bg-slate-800"]:hover {
   background-color: #e2e8f0 !important;
 }
 
-html.light .border-charcoal-800,
-html.light .border-charcoal-750,
-html.light .border-charcoal-700 {
+html.light .hover\:bg-slate-700:hover,
+html.light [class*="hover:bg-slate-700"]:hover {
+  background-color: #cbd5e1 !important;
+}
+
+html.light .hover\:bg-slate-900:hover {
+  background-color: #f8fafc !important;
+}
+
+/* Borders */
+html.light [class*="border-slate-800"],
+html.light [class*="border-slate-700"],
+html.light [class*="border-charcoal-"] {
   border-color: #e2e8f0 !important;
 }
 
-html.light h1.text-white,
-html.light h2.text-white,
-html.light h3.text-white,
-html.light h4.text-white,
-html.light span.text-white,
-html.light div.text-white,
-html.light p.text-white {
+html.light [class*="divide-slate-800"] > :not([hidden]) ~ :not([hidden]),
+html.light [class*="divide-slate-700"] > :not([hidden]) ~ :not([hidden]) {
+  border-color: #e2e8f0 !important;
+}
+
+/* Typography Hierarchy */
+html.light h1,
+html.light h2,
+html.light h3,
+html.light h4,
+html.light h5,
+html.light .text-white {
   color: #0f172a !important;
 }
 
@@ -96,37 +114,103 @@ html.light .text-slate-400 {
   color: #64748b !important;
 }
 
+html.light .text-slate-500 {
+  color: #94a3b8 !important;
+}
+
+/* Accent Colors & Badges Contrast in Light Mode */
+html.light .text-amber-300,
+html.light .text-amber-400,
 html.light .text-gold-400 {
   color: #b45309 !important;
 }
 
+html.light .text-emerald-300,
 html.light .text-emerald-400 {
-  color: #059669 !important;
+  color: #047857 !important;
 }
 
-html.light .text-amber-400,
-html.light .text-amber-300 {
-  color: #d97706 !important;
+html.light .text-rose-300,
+html.light .text-rose-400 {
+  color: #be123c !important;
 }
 
-/* Giữ chữ trắng sắc nét cho các nút chức năng nền màu nổi */
+html.light .text-blue-300,
+html.light .text-blue-400 {
+  color: #1d4ed8 !important;
+}
+
+html.light .text-cyan-300,
+html.light .text-cyan-400 {
+  color: #0e7490 !important;
+}
+
+html.light .text-purple-300,
+html.light .text-purple-400 {
+  color: #6d28d9 !important;
+}
+
+/* Subtle badge tint backgrounds in Light Mode */
+html.light [class*="bg-amber-500/"] {
+  background-color: rgba(245, 158, 11, 0.12) !important;
+}
+
+html.light [class*="bg-emerald-500/"] {
+  background-color: rgba(16, 185, 129, 0.12) !important;
+}
+
+html.light [class*="bg-rose-500/"] {
+  background-color: rgba(244, 63, 94, 0.12) !important;
+}
+
+html.light [class*="bg-purple-500/"] {
+  background-color: rgba(168, 85, 247, 0.12) !important;
+}
+
+html.light [class*="border-amber-500/"] {
+  border-color: rgba(245, 158, 11, 0.25) !important;
+}
+
+html.light [class*="border-emerald-500/"] {
+  border-color: rgba(16, 185, 129, 0.25) !important;
+}
+
+/* Ensure Crisp White Text on Action Buttons */
 html.light button.bg-emerald-600,
 html.light button.bg-emerald-500,
 html.light button.bg-rose-600,
 html.light button.bg-rose-500,
+html.light button.bg-blue-600,
+html.light button.bg-blue-500,
 html.light button.bg-cyan-600,
 html.light button.bg-cyan-500,
 html.light button[class*="bg-emerald"] *,
-html.light button[class*="bg-rose"] * {
+html.light button[class*="bg-rose"] *,
+html.light button[class*="bg-blue"] * {
   color: #ffffff !important;
 }
 
+/* Amber button dark text */
+html.light button.bg-amber-500,
+html.light button.bg-amber-400,
+html.light button[class*="bg-amber-"] * {
+  color: #0f172a !important;
+}
+
+/* Form Inputs, Selects, Textareas */
 html.light input,
 html.light select,
 html.light textarea {
-  background-color: #f8fafc !important;
+  background-color: #ffffff !important;
   border-color: #cbd5e1 !important;
   color: #0f172a !important;
+}
+
+html.light input:focus,
+html.light select:focus,
+html.light textarea:focus {
+  border-color: #94a3b8 !important;
+  outline: none !important;
 }
 
 html.light input::placeholder,
@@ -134,15 +218,30 @@ html.light textarea::placeholder {
   color: #94a3b8 !important;
 }
 
+/* Modal Backdrops - Must stay translucent dark overlay */
+html.light [class*="fixed inset-0"][class*="bg-black"],
+html.light .bg-black\/60,
+html.light .bg-black\/70,
+html.light .bg-black\/80 {
+  background-color: rgba(15, 23, 42, 0.6) !important;
+  backdrop-filter: blur(4px) !important;
+}
+
+/* Scrollbars in Light Mode */
+html.light ::-webkit-scrollbar-track {
+  background: #f1f5f9;
+}
+
 html.light ::-webkit-scrollbar-thumb {
   background: #cbd5e1;
+  border-radius: 9999px;
 }
 
 html.light ::-webkit-scrollbar-thumb:hover {
   background: #94a3b8;
 }
 
-/* Minimalist Scrollbar */
+/* Minimalist Scrollbar (Dark Mode Default) */
 ::-webkit-scrollbar {
   width: 5px;
   height: 5px;
@@ -151,11 +250,11 @@ html.light ::-webkit-scrollbar-thumb:hover {
   background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: #232b3c;
+  background: #334155;
   border-radius: 9999px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #3e4b66;
+  background: #475569;
 }
 
 /* POS Thermal Receipt Print Styles */

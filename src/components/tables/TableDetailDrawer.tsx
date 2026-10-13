@@ -51,7 +51,7 @@ export const TableDetailDrawer: React.FC<TableDetailDrawerProps> = ({
       />
 
       {/* Drawer */}
-      <div className="fixed top-0 bottom-0 right-0 z-50 w-full max-w-md bg-[#0b0f17] border-l border-charcoal-750 shadow-2xl flex flex-col justify-between select-none">
+      <div className="fixed top-0 bottom-0 right-0 z-50 w-full max-w-md bg-slate-900 border-l border-slate-800 shadow-2xl flex flex-col justify-between select-none">
         {/* Drawer Header */}
         <div className="p-3.5 bg-charcoal-850 border-b border-charcoal-750 flex items-center justify-between">
           <div className="flex items-center gap-2.5">

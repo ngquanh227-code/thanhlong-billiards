@@ -10,17 +10,17 @@ export const ToastContainer: React.FC = () => {
     <div className="fixed top-4 right-4 z-50 flex flex-col gap-2 max-w-sm w-full pointer-events-none font-sans">
       {toasts.map((toast) => {
         let dotColor = 'bg-emerald-400';
-        let borderColor = 'border-slate-800 bg-[#121622]/95';
+        let borderColor = 'border-slate-800 bg-slate-900/95';
 
         if (toast.type === 'error') {
           dotColor = 'bg-rose-400';
-          borderColor = 'border-rose-900/40 bg-[#171116]/95';
+          borderColor = 'border-rose-900/40 bg-slate-900/95';
         } else if (toast.type === 'warning') {
           dotColor = 'bg-amber-400';
-          borderColor = 'border-amber-900/40 bg-[#181512]/95';
+          borderColor = 'border-amber-900/40 bg-slate-900/95';
         } else if (toast.type === 'info') {
           dotColor = 'bg-sky-400';
-          borderColor = 'border-sky-900/40 bg-[#121722]/95';
+          borderColor = 'border-sky-900/40 bg-slate-900/95';
         }
 
         return (

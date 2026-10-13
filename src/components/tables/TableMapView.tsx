@@ -522,7 +522,7 @@ export const TableMapView: React.FC = () => {
       </div>
 
       {/* Right Column: Stationary Inspector Panel on Desktop */}
-      <div className="hidden lg:flex w-96 xl:w-[410px] shrink-0 border-l border-slate-800/80 bg-[#0e121b] h-full flex-col overflow-hidden">
+      <div className="hidden lg:flex w-96 xl:w-[410px] shrink-0 border-l border-slate-800/80 bg-slate-900 h-full flex-col overflow-hidden">
         <StationaryControlPanel
           table={selectedTable}
           session={selectedSession}
@@ -550,7 +550,7 @@ export const TableMapView: React.FC = () => {
       {/* Mobile Drawer (Only on screens < 1024px) */}
       {isMobilePanelOpen && (
         <div className="lg:hidden fixed inset-0 z-50 flex flex-col justify-end bg-black/60 backdrop-blur-sm">
-          <div className="bg-[#0e121b] border-t border-slate-800 rounded-t-3xl max-h-[85vh] flex flex-col overflow-hidden shadow-2xl">
+          <div className="bg-slate-900 border-t border-slate-800 rounded-t-3xl max-h-[85vh] flex flex-col overflow-hidden shadow-2xl">
             <div className="p-3.5 bg-slate-900/90 flex items-center justify-between border-b border-slate-800">
               <span className="text-sm font-semibold text-white">
                 Điều khiển • {selectedTable?.code}
@@ -674,7 +674,7 @@ export const TableMapView: React.FC = () => {
       {/* Modal: Thêm / Sửa Bàn (Admin) */}
       {isTableModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm select-none font-sans">
-          <div className="w-full max-w-md rounded-2xl bg-[#111520] border border-slate-800 p-5 flex flex-col gap-4 shadow-2xl">
+          <div className="w-full max-w-md rounded-2xl bg-slate-900 border border-slate-800 p-5 flex flex-col gap-4 shadow-2xl">
             <div className="flex items-center justify-between pb-3 border-b border-slate-800">
               <h3 className="text-base font-bold text-white">
                 {editingTable ? `Sửa thông tin ${editingTable.code}` : 'Thêm bàn mới cho quán'}

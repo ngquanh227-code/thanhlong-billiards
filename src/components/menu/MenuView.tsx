@@ -217,125 +217,125 @@ export const MenuView: React.FC = () => {
 
       {/* Modal: Thêm Món Mới */}
       {isAddModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/80 backdrop-blur-sm select-none">
-          <div className="w-full max-w-md rounded-2xl bg-[#0c1018] border border-charcoal-700 p-4 sm:p-5 flex flex-col gap-3.5 shadow-2xl">
-            <div className="flex items-center justify-between pb-3 border-b border-charcoal-750">
-              <h3 className="text-sm sm:text-base font-bold text-white tracking-wide font-mono">
-                THÊM MÓN VÀO MENU
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/60 backdrop-blur-sm select-none font-sans">
+          <div className="w-full max-w-md rounded-2xl bg-slate-900 border border-slate-800 p-5 flex flex-col gap-4 shadow-2xl">
+            <div className="flex items-center justify-between pb-3 border-b border-slate-800">
+              <h3 className="text-base font-bold text-white">
+                Thêm món vào menu
               </h3>
               <button
                 onClick={() => setIsAddModalOpen(false)}
-                className="text-slate-400 hover:text-white p-1 px-2.5 font-mono text-xs font-bold rounded-lg hover:bg-charcoal-800"
+                className="text-slate-400 hover:text-white px-2 py-1 text-sm rounded-lg hover:bg-slate-800 transition-colors"
               >
-                ✕
+                Đóng
               </button>
             </div>
 
-            <form onSubmit={handleCreateItem} className="flex flex-col gap-3 text-xs font-mono">
+            <form onSubmit={handleCreateItem} className="flex flex-col gap-3 text-xs">
               <div>
-                <label className="text-slate-300 font-bold block mb-1">TÊN MÓN / THỨC UỐNG:</label>
+                <label className="text-slate-300 font-medium block mb-1">Tên món / Thức uống:</label>
                 <input
                   type="text"
                   required
                   placeholder="Ví dụ: Bia Corona Extra, Mì bò trứng..."
                   value={newItem.name}
                   onChange={(e) => setNewItem({ ...newItem, name: e.target.value })}
-                  className="w-full px-3 py-2 rounded-lg bg-charcoal-800 border border-charcoal-700 text-white placeholder-slate-500 focus:outline-none focus:border-gold-500 font-sans"
+                  className="w-full px-3 py-2 rounded-xl bg-slate-800 border border-slate-700 text-white placeholder-slate-500 focus:outline-none focus:border-slate-600"
                 />
               </div>
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="text-slate-300 font-bold block mb-1">DANH MỤC:</label>
+                  <label className="text-slate-300 font-medium block mb-1">Danh mục:</label>
                   <select
                     value={newItem.category}
                     onChange={(e) => setNewItem({ ...newItem, category: e.target.value as any })}
-                    className="w-full px-3 py-2 rounded-lg bg-charcoal-800 border border-charcoal-700 text-white focus:outline-none focus:border-gold-500"
+                    className="w-full px-3 py-2 rounded-xl bg-slate-800 border border-slate-700 text-white focus:outline-none focus:border-slate-600 cursor-pointer"
                   >
-                    <option value="BEER">BIA</option>
-                    <option value="SOFT_DRINK">NƯỚC NGỌT</option>
-                    <option value="WATER">NƯỚC SUỐI</option>
-                    <option value="COFFEE">CÀ PHÊ</option>
-                    <option value="SNACK">ĂN VẶT</option>
-                    <option value="FAST_FOOD">MÌ & CƠM</option>
-                    <option value="OTHER">KHÁC</option>
+                    <option value="BEER">Bia</option>
+                    <option value="SOFT_DRINK">Nước ngọt</option>
+                    <option value="WATER">Nước suối</option>
+                    <option value="COFFEE">Cà phê</option>
+                    <option value="SNACK">Ăn vặt</option>
+                    <option value="FAST_FOOD">Mì & Cơm</option>
+                    <option value="OTHER">Khác</option>
                   </select>
                 </div>
 
                 <div>
-                  <label className="text-slate-300 font-bold block mb-1">ĐƠN VỊ TÍNH:</label>
+                  <label className="text-slate-300 font-medium block mb-1">Đơn vị tính:</label>
                   <input
                     type="text"
                     required
                     placeholder="Lon, Chai, Dĩa..."
                     value={newItem.unit}
                     onChange={(e) => setNewItem({ ...newItem, unit: e.target.value })}
-                    className="w-full px-3 py-2 rounded-lg bg-charcoal-800 border border-charcoal-700 text-white placeholder-slate-500 focus:outline-none focus:border-gold-500"
+                    className="w-full px-3 py-2 rounded-xl bg-slate-800 border border-slate-700 text-white placeholder-slate-500 focus:outline-none focus:border-slate-600"
                   />
                 </div>
               </div>
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="text-slate-300 font-bold block mb-1">GIÁ BÁN (VNĐ):</label>
+                  <label className="text-slate-300 font-medium block mb-1">Giá bán (VNĐ):</label>
                   <input
                     type="number"
                     step="1000"
                     required
                     value={newItem.price}
                     onChange={(e) => setNewItem({ ...newItem, price: Number(e.target.value) })}
-                    className="w-full px-3 py-2 rounded-lg bg-charcoal-800 border border-charcoal-700 text-gold-400 font-black focus:outline-none focus:border-gold-500"
+                    className="w-full px-3 py-2 rounded-xl bg-slate-800 border border-slate-700 text-amber-300 font-semibold focus:outline-none focus:border-slate-600"
                   />
                 </div>
 
                 <div>
-                  <label className="text-slate-300 font-bold block mb-1">GIÁ VỐN (VNĐ):</label>
+                  <label className="text-slate-300 font-medium block mb-1">Giá vốn (VNĐ):</label>
                   <input
                     type="number"
                     step="1000"
                     required
                     value={newItem.costPrice}
                     onChange={(e) => setNewItem({ ...newItem, costPrice: Number(e.target.value) })}
-                    className="w-full px-3 py-2 rounded-lg bg-charcoal-800 border border-charcoal-700 text-slate-300 focus:outline-none focus:border-gold-500"
+                    className="w-full px-3 py-2 rounded-xl bg-slate-800 border border-slate-700 text-slate-300 focus:outline-none focus:border-slate-600"
                   />
                 </div>
               </div>
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="text-slate-300 font-bold block mb-1">TỒN BAN ĐẦU:</label>
+                  <label className="text-slate-300 font-medium block mb-1">Tồn kho ban đầu:</label>
                   <input
                     type="number"
                     value={newItem.stock}
                     onChange={(e) => setNewItem({ ...newItem, stock: Number(e.target.value) })}
-                    className="w-full px-3 py-2 rounded-lg bg-charcoal-800 border border-charcoal-700 text-white focus:outline-none focus:border-gold-500"
+                    className="w-full px-3 py-2 rounded-xl bg-slate-800 border border-slate-700 text-white focus:outline-none focus:border-slate-600"
                   />
                 </div>
 
                 <div>
-                  <label className="text-slate-300 font-bold block mb-1">BÁO HẾT HÀNG KHI:</label>
+                  <label className="text-slate-300 font-medium block mb-1">Báo hết hàng khi dưới:</label>
                   <input
                     type="number"
                     value={newItem.minStockAlert}
                     onChange={(e) => setNewItem({ ...newItem, minStockAlert: Number(e.target.value) })}
-                    className="w-full px-3 py-2 rounded-lg bg-charcoal-800 border border-charcoal-700 text-white focus:outline-none focus:border-gold-500"
+                    className="w-full px-3 py-2 rounded-xl bg-slate-800 border border-slate-700 text-white focus:outline-none focus:border-slate-600"
                   />
                 </div>
               </div>
 
-              <div className="flex justify-end gap-2 pt-3 border-t border-charcoal-750 mt-1">
+              <div className="flex justify-end gap-2 pt-3 border-t border-slate-800 mt-2">
                 <button
                   type="button"
                   onClick={() => setIsAddModalOpen(false)}
-                  className="px-3.5 py-2 rounded-lg bg-charcoal-800 hover:bg-charcoal-750 text-slate-300 font-bold"
+                  className="px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 font-medium transition-colors"
                 >
-                  HỦY
+                  Hủy
                 </button>
                 <button
                   type="submit"
-                  className="px-4 py-2 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white font-black transition-colors"
+                  className="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-medium transition-colors"
                 >
-                  LƯU MÓN
+                  Lưu món
                 </button>
               </div>
             </form>
@@ -345,29 +345,29 @@ export const MenuView: React.FC = () => {
 
       {/* Modal: Nhập Kho */}
       {isImportModalOpen && selectedItemToImport && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/80 backdrop-blur-sm select-none">
-          <div className="w-full max-w-md rounded-2xl bg-[#0c1018] border border-charcoal-700 p-4 sm:p-5 flex flex-col gap-3.5 shadow-2xl font-mono">
-            <div className="flex items-center justify-between pb-3 border-b border-charcoal-750">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/60 backdrop-blur-sm select-none font-sans">
+          <div className="w-full max-w-md rounded-2xl bg-slate-900 border border-slate-800 p-5 flex flex-col gap-4 shadow-2xl">
+            <div className="flex items-center justify-between pb-3 border-b border-slate-800">
               <div>
-                <h3 className="text-sm sm:text-base font-bold text-white tracking-wide">
-                  NHẬP KHO: {selectedItemToImport.name}
+                <h3 className="text-base font-bold text-white">
+                  Nhập kho: {selectedItemToImport.name}
                 </h3>
-                <p className="text-[11px] text-slate-400 mt-0.5">
+                <p className="text-xs text-slate-400 mt-0.5">
                   Tồn kho hiện tại: {selectedItemToImport.stock} {selectedItemToImport.unit}
                 </p>
               </div>
               <button
                 onClick={() => setIsImportModalOpen(false)}
-                className="text-slate-400 hover:text-white p-1 px-2.5 text-xs font-bold rounded-lg hover:bg-charcoal-800"
+                className="text-slate-400 hover:text-white px-2 py-1 text-sm rounded-lg hover:bg-slate-800 transition-colors"
               >
-                ✕
+                Đóng
               </button>
             </div>
 
             <form onSubmit={handleExecuteImport} className="flex flex-col gap-3 text-xs">
               <div>
-                <label className="text-slate-300 font-bold block mb-1">
-                  SỐ LƯỢNG NHẬP ({selectedItemToImport.unit}):
+                <label className="text-slate-300 font-medium block mb-1">
+                  Số lượng nhập ({selectedItemToImport.unit}):
                 </label>
                 <input
                   type="number"
@@ -375,53 +375,53 @@ export const MenuView: React.FC = () => {
                   required
                   value={importQty}
                   onChange={(e) => setImportQty(Number(e.target.value))}
-                  className="w-full px-3 py-2 rounded-lg bg-charcoal-800 border border-charcoal-700 text-white font-bold focus:outline-none focus:border-gold-500"
+                  className="w-full px-3 py-2 rounded-xl bg-slate-800 border border-slate-700 text-white font-semibold focus:outline-none focus:border-slate-600"
                 />
               </div>
 
               <div>
-                <label className="text-slate-300 font-bold block mb-1">ĐƠN GIÁ NHẬP (VNĐ):</label>
+                <label className="text-slate-300 font-medium block mb-1">Đơn giá nhập (VNĐ):</label>
                 <input
                   type="number"
                   step="1000"
                   required
                   value={importUnitCost}
                   onChange={(e) => setImportUnitCost(Number(e.target.value))}
-                  className="w-full px-3 py-2 rounded-lg bg-charcoal-800 border border-charcoal-700 text-gold-400 font-black focus:outline-none focus:border-gold-500"
+                  className="w-full px-3 py-2 rounded-xl bg-slate-800 border border-slate-700 text-amber-300 font-semibold focus:outline-none focus:border-slate-600"
                 />
               </div>
 
               <div>
-                <label className="text-slate-300 font-bold block mb-1">NHÀ CUNG CẤP / GHI CHÚ:</label>
+                <label className="text-slate-300 font-medium block mb-1">Nhà cung cấp / Ghi chú:</label>
                 <input
                   type="text"
                   placeholder="Ví dụ: Đại lý bia nước ngọt..."
                   value={supplierNotes}
                   onChange={(e) => setSupplierNotes(e.target.value)}
-                  className="w-full px-3 py-2 rounded-lg bg-charcoal-800 border border-charcoal-700 text-white placeholder-slate-500 focus:outline-none focus:border-gold-500 font-sans"
+                  className="w-full px-3 py-2 rounded-xl bg-slate-800 border border-slate-700 text-white placeholder-slate-500 focus:outline-none focus:border-slate-600"
                 />
               </div>
 
-              <div className="p-3 rounded-xl bg-charcoal-850 border border-charcoal-750 flex justify-between items-center">
-                <span className="text-slate-400 font-bold">TỔNG CHI PHÍ:</span>
-                <span className="font-black text-rose-400 text-sm sm:text-base">
+              <div className="p-3 rounded-xl bg-slate-800/60 border border-slate-700 flex justify-between items-center">
+                <span className="text-slate-400 font-medium">Tổng chi phí:</span>
+                <span className="font-bold text-rose-400 text-sm sm:text-base">
                   {formatVND(importQty * importUnitCost)}
                 </span>
               </div>
 
-              <div className="flex justify-end gap-2 pt-3 border-t border-charcoal-750 mt-1">
+              <div className="flex justify-end gap-2 pt-3 border-t border-slate-800 mt-2">
                 <button
                   type="button"
                   onClick={() => setIsImportModalOpen(false)}
-                  className="px-3.5 py-2 rounded-lg bg-charcoal-800 hover:bg-charcoal-750 text-slate-300 font-bold"
+                  className="px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 font-medium transition-colors"
                 >
-                  HỦY
+                  Hủy
                 </button>
                 <button
                   type="submit"
-                  className="px-4 py-2 rounded-lg bg-gold-500 hover:bg-amber-400 text-charcoal-950 font-black transition-colors"
+                  className="px-4 py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-semibold transition-colors"
                 >
-                  XÁC NHẬN NHẬP KHO
+                  Xác nhận nhập kho
                 </button>
               </div>
             </form>

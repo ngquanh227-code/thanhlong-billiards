@@ -246,96 +246,96 @@ export const MemberView: React.FC = () => {
 
       {/* Modal: Thêm Hội Viên Mới */}
       {isAddModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/80 backdrop-blur-sm select-none">
-          <div className="w-full max-w-md rounded-2xl bg-[#0c1018] border border-charcoal-700 p-4 sm:p-5 flex flex-col gap-3.5 shadow-2xl font-mono">
-            <div className="flex items-center justify-between pb-3 border-b border-charcoal-750">
-              <h3 className="text-sm sm:text-base font-bold text-white tracking-wide">
-                THÊM HỘI VIÊN MỚI
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/60 backdrop-blur-sm select-none font-sans">
+          <div className="w-full max-w-md rounded-2xl bg-slate-900 border border-slate-800 p-5 flex flex-col gap-4 shadow-2xl">
+            <div className="flex items-center justify-between pb-3 border-b border-slate-800">
+              <h3 className="text-base font-bold text-white">
+                Thêm hội viên mới
               </h3>
               <button
                 onClick={() => setIsAddModalOpen(false)}
-                className="text-slate-400 hover:text-white p-1 px-2.5 text-xs font-bold rounded-lg hover:bg-charcoal-800"
+                className="text-slate-400 hover:text-white px-2 py-1 text-sm rounded-lg hover:bg-slate-800 transition-colors"
               >
-                ✕
+                Đóng
               </button>
             </div>
 
             <form onSubmit={handleCreateCustomer} className="flex flex-col gap-3 text-xs">
               <div>
-                <label className="text-slate-300 font-bold block mb-1">HỌ VÀ TÊN KHÁCH:</label>
+                <label className="text-slate-300 font-medium block mb-1">Họ và tên khách:</label>
                 <input
                   type="text"
                   required
                   placeholder="Ví dụ: Nguyễn Văn Tuấn"
                   value={newMember.name}
                   onChange={(e) => setNewMember({ ...newMember, name: e.target.value })}
-                  className="w-full px-3 py-2 rounded-lg bg-charcoal-800 border border-charcoal-700 text-white placeholder-slate-500 focus:outline-none focus:border-gold-500 font-sans"
+                  className="w-full px-3 py-2 rounded-xl bg-slate-800 border border-slate-700 text-white placeholder-slate-500 focus:outline-none focus:border-slate-600"
                 />
               </div>
 
               <div>
-                <label className="text-slate-300 font-bold block mb-1">SỐ ĐIỆN THOẠI:</label>
+                <label className="text-slate-300 font-medium block mb-1">Số điện thoại:</label>
                 <input
                   type="tel"
                   required
                   placeholder="09xx xxx xxx"
                   value={newMember.phone}
                   onChange={(e) => setNewMember({ ...newMember, phone: e.target.value })}
-                  className="w-full px-3 py-2 rounded-lg bg-charcoal-800 border border-charcoal-700 text-white placeholder-slate-500 focus:outline-none focus:border-gold-500"
+                  className="w-full px-3 py-2 rounded-xl bg-slate-800 border border-slate-700 text-white placeholder-slate-500 focus:outline-none focus:border-slate-600"
                 />
               </div>
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="text-slate-300 font-bold block mb-1">HẠNG THÀNH VIÊN:</label>
+                  <label className="text-slate-300 font-medium block mb-1">Hạng thành viên:</label>
                   <select
                     value={newMember.tier}
                     onChange={(e) => setNewMember({ ...newMember, tier: e.target.value as any })}
-                    className="w-full px-3 py-2 rounded-lg bg-charcoal-800 border border-charcoal-700 text-white focus:outline-none focus:border-gold-500"
+                    className="w-full px-3 py-2 rounded-xl bg-slate-800 border border-slate-700 text-white focus:outline-none focus:border-slate-600 cursor-pointer"
                   >
-                    <option value="STANDARD">TIÊU CHUẨN</option>
-                    <option value="SILVER">BẠC (-5% GIỜ)</option>
-                    <option value="GOLD">VÀNG (-10% GIỜ)</option>
-                    <option value="DIAMOND">KIM CƯƠNG (-15% GIỜ)</option>
+                    <option value="STANDARD">Tiêu chuẩn</option>
+                    <option value="SILVER">Bạc (-5% giờ)</option>
+                    <option value="GOLD">Vàng (-10% giờ)</option>
+                    <option value="DIAMOND">Kim cương (-15% giờ)</option>
                   </select>
                 </div>
 
                 <div>
-                  <label className="text-slate-300 font-bold block mb-1">NẠP VÍ BAN ĐẦU (VNĐ):</label>
+                  <label className="text-slate-300 font-medium block mb-1">Nạp ví ban đầu (VNĐ):</label>
                   <input
                     type="number"
                     step="50000"
                     value={newMember.prepaidBalance}
                     onChange={(e) => setNewMember({ ...newMember, prepaidBalance: Number(e.target.value) })}
-                    className="w-full px-3 py-2 rounded-lg bg-charcoal-800 border border-charcoal-700 text-emerald-400 font-black focus:outline-none focus:border-gold-500"
+                    className="w-full px-3 py-2 rounded-xl bg-slate-800 border border-slate-700 text-emerald-400 font-semibold focus:outline-none focus:border-slate-600"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="text-slate-300 font-bold block mb-1">GHI CHÚ SỞ THÍCH:</label>
+                <label className="text-slate-300 font-medium block mb-1">Ghi chú sở thích:</label>
                 <input
                   type="text"
                   placeholder="Bàn quen, thói quen gọi món..."
                   value={newMember.notes}
                   onChange={(e) => setNewMember({ ...newMember, notes: e.target.value })}
-                  className="w-full px-3 py-2 rounded-lg bg-charcoal-800 border border-charcoal-700 text-white placeholder-slate-500 focus:outline-none focus:border-gold-500 font-sans"
+                  className="w-full px-3 py-2 rounded-xl bg-slate-800 border border-slate-700 text-white placeholder-slate-500 focus:outline-none focus:border-slate-600"
                 />
               </div>
 
-              <div className="flex justify-end gap-2 pt-3 border-t border-charcoal-750 mt-1">
+              <div className="flex justify-end gap-2 pt-3 border-t border-slate-800 mt-2">
                 <button
                   type="button"
                   onClick={() => setIsAddModalOpen(false)}
-                  className="px-3.5 py-2 rounded-lg bg-charcoal-800 hover:bg-charcoal-750 text-slate-300 font-bold"
+                  className="px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 font-medium transition-colors"
                 >
-                  HỦY
+                  Hủy
                 </button>
                 <button
                   type="submit"
-                  className="px-4 py-2 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white font-black transition-colors"
+                  className="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-medium transition-colors"
                 >
-                  TẠO THẺ HỘI VIÊN
+                  Tạo thẻ hội viên
                 </button>
               </div>
             </form>
@@ -345,110 +345,110 @@ export const MemberView: React.FC = () => {
 
       {/* Modal: Nạp Tiền Ví Trả Trước */}
       {isDepositModalOpen && selectedCustForDeposit && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/80 backdrop-blur-sm select-none">
-          <div className="w-full max-w-md rounded-2xl bg-[#0c1018] border border-charcoal-700 p-4 sm:p-5 flex flex-col gap-3.5 shadow-2xl font-mono">
-            <div className="flex items-center justify-between pb-3 border-b border-charcoal-750">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/60 backdrop-blur-sm select-none font-sans">
+          <div className="w-full max-w-md rounded-2xl bg-slate-900 border border-slate-800 p-5 flex flex-col gap-4 shadow-2xl">
+            <div className="flex items-center justify-between pb-3 border-b border-slate-800">
               <div>
-                <h3 className="text-sm sm:text-base font-bold text-white tracking-wide">
-                  NẠP VÍ: {selectedCustForDeposit.name}
+                <h3 className="text-base font-bold text-white">
+                  Nạp ví: {selectedCustForDeposit.name}
                 </h3>
-                <p className="text-[11px] text-slate-400 mt-0.5">
+                <p className="text-xs text-slate-400 mt-0.5">
                   Mã thẻ: {selectedCustForDeposit.code} • Số dư hiện tại: {formatVND(selectedCustForDeposit.prepaidBalance)}
                 </p>
               </div>
               <button
                 onClick={() => setIsDepositModalOpen(false)}
-                className="text-slate-400 hover:text-white p-1 px-2.5 text-xs font-bold rounded-lg hover:bg-charcoal-800"
+                className="text-slate-400 hover:text-white px-2 py-1 text-sm rounded-lg hover:bg-slate-800 transition-colors"
               >
-                ✕
+                Đóng
               </button>
             </div>
 
             <form onSubmit={handleDeposit} className="flex flex-col gap-3 text-xs">
               <div>
-                <label className="text-slate-300 font-bold block mb-1.5">GÓI NẠP KHUYẾN MÃI:</label>
+                <label className="text-slate-300 font-medium block mb-1.5">Gói nạp khuyến mãi:</label>
                 <div className="grid grid-cols-2 gap-2">
                   <button
                     type="button"
                     onClick={() => selectDepositPreset(500000, 50000)}
-                    className="p-2.5 rounded-lg bg-charcoal-800 border border-charcoal-700 hover:border-gold-500 text-left transition-colors"
+                    className="p-2.5 rounded-xl bg-slate-800/80 border border-slate-700 hover:border-amber-400 text-left transition-colors"
                   >
-                    <div className="font-bold text-white">500.000 ₫</div>
-                    <div className="text-[10px] text-amber-400 font-bold">+ TẶNG 50.000 ₫ (10%)</div>
+                    <div className="font-semibold text-white">500.000 ₫</div>
+                    <div className="text-[11px] text-amber-300 font-medium">+ Tặng 50.000 ₫ (10%)</div>
                   </button>
 
                   <button
                     type="button"
                     onClick={() => selectDepositPreset(1000000, 150000)}
-                    className="p-2.5 rounded-lg bg-charcoal-800 border border-charcoal-700 hover:border-gold-500 text-left transition-colors"
+                    className="p-2.5 rounded-xl bg-slate-800/80 border border-slate-700 hover:border-amber-400 text-left transition-colors"
                   >
-                    <div className="font-bold text-white">1.000.000 ₫</div>
-                    <div className="text-[10px] text-emerald-400 font-bold">+ TẶNG 150.000 ₫ (15%)</div>
+                    <div className="font-semibold text-white">1.000.000 ₫</div>
+                    <div className="text-[11px] text-emerald-400 font-medium">+ Tặng 150.000 ₫ (15%)</div>
                   </button>
 
                   <button
                     type="button"
                     onClick={() => selectDepositPreset(2000000, 400000)}
-                    className="p-2.5 rounded-lg bg-charcoal-800 border border-charcoal-700 hover:border-gold-500 text-left transition-colors"
+                    className="p-2.5 rounded-xl bg-slate-800/80 border border-slate-700 hover:border-amber-400 text-left transition-colors"
                   >
-                    <div className="font-bold text-white">2.000.000 ₫</div>
-                    <div className="text-[10px] text-amber-400 font-bold">+ TẶNG 400.000 ₫ (20%)</div>
+                    <div className="font-semibold text-white">2.000.000 ₫</div>
+                    <div className="text-[11px] text-amber-300 font-medium">+ Tặng 400.000 ₫ (20%)</div>
                   </button>
 
                   <button
                     type="button"
                     onClick={() => selectDepositPreset(5000000, 1200000)}
-                    className="p-2.5 rounded-lg bg-charcoal-800 border border-charcoal-700 hover:border-gold-500 text-left transition-colors"
+                    className="p-2.5 rounded-xl bg-slate-800/80 border border-slate-700 hover:border-amber-400 text-left transition-colors"
                   >
-                    <div className="font-bold text-white">5.000.000 ₫</div>
-                    <div className="text-[10px] text-cyan-400 font-bold">+ TẶNG 1.200.000 ₫</div>
+                    <div className="font-semibold text-white">5.000.000 ₫</div>
+                    <div className="text-[11px] text-cyan-400 font-medium">+ Tặng 1.200.000 ₫</div>
                   </button>
                 </div>
               </div>
 
               <div>
-                <label className="text-slate-300 font-bold block mb-1">SỐ TIỀN NẠP (VNĐ):</label>
+                <label className="text-slate-300 font-medium block mb-1">Số tiền nạp (VNĐ):</label>
                 <input
                   type="number"
                   step="50000"
                   required
                   value={depositAmount}
                   onChange={(e) => setDepositAmount(Number(e.target.value))}
-                  className="w-full px-3 py-2 rounded-lg bg-charcoal-800 border border-charcoal-700 text-white font-bold focus:outline-none focus:border-gold-500"
+                  className="w-full px-3 py-2 rounded-xl bg-slate-800 border border-slate-700 text-white font-semibold focus:outline-none focus:border-slate-600"
                 />
               </div>
 
               <div>
-                <label className="text-slate-300 font-bold block mb-1">TẶNG THÊM KHUYẾN MÃI (VNĐ):</label>
+                <label className="text-slate-300 font-medium block mb-1">Tặng thêm khuyến mãi (VNĐ):</label>
                 <input
                   type="number"
                   step="10000"
                   value={bonusAmount}
                   onChange={(e) => setBonusAmount(Number(e.target.value))}
-                  className="w-full px-3 py-2 rounded-lg bg-charcoal-800 border border-charcoal-700 text-amber-400 font-bold focus:outline-none focus:border-gold-500"
+                  className="w-full px-3 py-2 rounded-xl bg-slate-800 border border-slate-700 text-amber-300 font-semibold focus:outline-none focus:border-slate-600"
                 />
               </div>
 
-              <div className="p-3 rounded-xl bg-charcoal-850 border border-charcoal-750 flex justify-between items-center">
-                <span className="text-slate-400 font-bold">CỘNG VÀO VÍ:</span>
-                <span className="font-black text-emerald-400 text-sm sm:text-base">
+              <div className="p-3 rounded-xl bg-slate-800/60 border border-slate-700 flex justify-between items-center">
+                <span className="text-slate-400 font-medium">Cộng vào ví:</span>
+                <span className="font-bold text-emerald-400 text-sm sm:text-base">
                   {formatVND(depositAmount + bonusAmount)}
                 </span>
               </div>
 
-              <div className="flex justify-end gap-2 pt-3 border-t border-charcoal-750 mt-1">
+              <div className="flex justify-end gap-2 pt-3 border-t border-slate-800 mt-2">
                 <button
                   type="button"
                   onClick={() => setIsDepositModalOpen(false)}
-                  className="px-3.5 py-2 rounded-lg bg-charcoal-800 hover:bg-charcoal-750 text-slate-300 font-bold"
+                  className="px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 font-medium transition-colors"
                 >
-                  HỦY
+                  Hủy
                 </button>
                 <button
                   type="submit"
-                  className="px-4 py-2 rounded-lg bg-gold-500 hover:bg-amber-400 text-charcoal-950 font-black transition-colors"
+                  className="px-4 py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-semibold transition-colors"
                 >
-                  XÁC NHẬN NẠP TIỀN
+                  Xác nhận nạp tiền
                 </button>
               </div>
             </form>

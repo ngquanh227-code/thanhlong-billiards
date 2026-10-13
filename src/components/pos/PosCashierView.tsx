@@ -107,7 +107,7 @@ export const PosCashierView: React.FC = () => {
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-4">
         {/* Left Column: Tables list */}
         <div className="lg:col-span-4 flex flex-col gap-3.5">
-          <div className="p-4 rounded-2xl bg-[#0e121b] border border-slate-800 flex flex-col">
+          <div className="p-4 rounded-2xl bg-slate-900 border border-slate-800 flex flex-col">
             <span className="text-xs font-semibold text-slate-300 mb-3 block">
               Danh sách bàn có khách ({activeTables.length})
             </span>
@@ -169,7 +169,7 @@ export const PosCashierView: React.FC = () => {
           </div>
 
           {/* Recent bills list */}
-          <div className="p-4 rounded-2xl bg-[#0e121b] border border-slate-800 flex flex-col">
+          <div className="p-4 rounded-2xl bg-slate-900 border border-slate-800 flex flex-col">
             <span className="text-xs font-semibold text-slate-400 mb-2.5 block">
               Đã thanh toán hôm nay ({completedToday.length})
             </span>
@@ -193,7 +193,7 @@ export const PosCashierView: React.FC = () => {
         <div className="lg:col-span-8 flex flex-col">
           {selectedCompletedSession ? (
             /* Completed Receipt Review */
-            <div className="p-5 rounded-2xl bg-[#0e121b] border border-slate-800 flex flex-col items-center">
+            <div className="p-5 rounded-2xl bg-slate-900 border border-slate-800 flex flex-col items-center">
               <div className="w-full flex items-center justify-between pb-3 border-b border-slate-800 mb-4">
                 <span className="text-sm font-semibold text-white">
                   Chi tiết hóa đơn: {selectedCompletedSession.tableCode}
@@ -229,7 +229,7 @@ export const PosCashierView: React.FC = () => {
             </div>
           ) : selectedTable && selectedSession && feeCalc ? (
             /* Live Terminal */
-            <div className="p-5 rounded-2xl bg-[#0e121b] border border-slate-800 flex flex-col justify-between">
+            <div className="p-5 rounded-2xl bg-slate-900 border border-slate-800 flex flex-col justify-between">
               <div>
                 {/* Header */}
                 <div className="flex items-center justify-between pb-3.5 border-b border-slate-800 mb-4">
@@ -449,7 +449,7 @@ export const PosCashierView: React.FC = () => {
               </div>
             </div>
           ) : (
-            <div className="p-16 rounded-2xl bg-[#0e121b] border border-slate-800 text-center flex flex-col items-center justify-center text-slate-400 text-xs">
+            <div className="p-16 rounded-2xl bg-slate-900 border border-slate-800 text-center flex flex-col items-center justify-center text-slate-400 text-xs">
               <span className="text-amber-300 font-semibold mb-1">Quầy thu ngân</span>
               <span>Chọn một bàn bên danh sách để bắt đầu thanh toán</span>
             </div>

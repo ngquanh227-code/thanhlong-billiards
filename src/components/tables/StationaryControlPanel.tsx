@@ -78,7 +78,7 @@ export const StationaryControlPanel: React.FC<StationaryControlPanelProps> = ({
   };
 
   return (
-    <div className="h-full flex flex-col bg-[#0d111a] border-l border-slate-800/80 overflow-hidden select-none font-sans">
+    <div className="h-full flex flex-col bg-slate-900 border-l border-slate-800/80 overflow-hidden select-none font-sans">
       {/* Header */}
       <div className="p-3.5 bg-slate-900/70 border-b border-slate-800 shrink-0">
         <div className="flex items-center justify-between gap-2">

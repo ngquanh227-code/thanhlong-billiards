@@ -77,7 +77,7 @@ export default function App() {
   };
 
   return (
-    <div className="h-screen w-screen overflow-hidden bg-[#07090e] text-slate-100 flex flex-col font-sans selection:bg-emerald-600 selection:text-white">
+    <div className="h-screen w-screen overflow-hidden bg-slate-950 text-slate-100 flex flex-col font-sans selection:bg-emerald-600 selection:text-white">
       {/* Top Navbar */}
       <Navbar
         onOpenShiftModal={() => setCurrentTab('staff')}
@@ -85,7 +85,7 @@ export default function App() {
       />
 
       {/* Mobile Top Context Strip */}
-      <div className="lg:hidden flex items-center justify-between px-3.5 py-2 bg-[#0e121a] border-b border-slate-800 shrink-0">
+      <div className="lg:hidden flex items-center justify-between px-3.5 py-2 bg-slate-900 border-b border-slate-800 shrink-0">
         <button
           onClick={() => setIsMobileSidebarOpen(true)}
           className="flex items-center gap-1.5 text-xs font-medium text-slate-300 bg-slate-800/80 px-3 py-1 rounded-xl border border-slate-700/60 active:scale-95 transition-transform"
@@ -128,7 +128,7 @@ export default function App() {
       </div>
 
       {/* Dedicated Mobile Bottom Navigation Bar (Thumb friendly for phone users) */}
-      <nav className="lg:hidden fixed bottom-0 left-0 right-0 z-40 bg-[#0d111a]/95 backdrop-blur-md border-t border-slate-800 flex items-stretch h-14 select-none safe-area-pb font-sans">
+      <nav className="lg:hidden fixed bottom-0 left-0 right-0 z-40 bg-slate-900/95 backdrop-blur-md border-t border-slate-800 flex items-stretch h-14 select-none safe-area-pb font-sans">
         <button
           onClick={() => {
             setCurrentTab('tables');

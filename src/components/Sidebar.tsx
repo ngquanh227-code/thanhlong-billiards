@@ -49,7 +49,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
       )}
 
       <aside
-        className={`fixed lg:static top-0 bottom-0 left-0 z-50 w-60 bg-[#0d111a] border-r border-slate-800/80 flex flex-col justify-between transition-transform duration-200 ease-in-out select-none font-sans ${
+        className={`fixed lg:static top-0 bottom-0 left-0 z-50 w-60 bg-slate-900 border-r border-slate-800/80 flex flex-col justify-between transition-transform duration-200 ease-in-out select-none font-sans ${
           isMobileOpen ? 'translate-x-0 shadow-2xl' : '-translate-x-full lg:translate-x-0'
         }`}
       >

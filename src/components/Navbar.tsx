@@ -42,7 +42,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenShiftModal, onNavigateTab 
   });
 
   return (
-    <header className="sticky top-0 z-40 w-full bg-[#0d111a]/95 backdrop-blur-md border-b border-slate-800/80 px-4 sm:px-6 py-2.5 select-none transition-colors">
+    <header className="sticky top-0 z-40 w-full bg-slate-900/95 backdrop-blur-md border-b border-slate-800/80 px-4 sm:px-6 py-2.5 select-none transition-colors">
       <div className="flex items-center justify-between gap-3 max-w-full mx-auto">
         {/* Brand */}
         <div
