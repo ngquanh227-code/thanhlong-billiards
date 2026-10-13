@@ -108,26 +108,26 @@ export const OrderModal: React.FC<OrderModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 lg:p-6 bg-black/85 backdrop-blur-sm select-none">
-      <div className="relative w-full max-w-4xl max-h-[92vh] rounded-2xl bg-[#0c1018] border border-charcoal-700 shadow-2xl overflow-hidden flex flex-col">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-5 bg-black/80 backdrop-blur-sm select-none">
+      <div className="relative w-full max-w-4xl max-h-[92vh] rounded-2xl bg-slate-900 border border-slate-800 shadow-2xl overflow-hidden flex flex-col">
         {/* Header */}
-        <div className="flex items-center justify-between p-3.5 sm:p-4 border-b border-charcoal-750 bg-charcoal-850">
-          <div className="flex items-center gap-2.5">
-            <span className="font-mono text-xs font-black px-2.5 py-1 rounded bg-charcoal-800 text-gold-400 border border-charcoal-700">
+        <div className="flex items-center justify-between p-4 border-b border-slate-800 bg-slate-900/90">
+          <div className="flex items-center gap-3">
+            <span className="text-xs font-semibold px-2.5 py-1 rounded-full bg-slate-800 text-amber-300 border border-slate-700/60">
               {table.code}
             </span>
             <div>
-              <h3 className="text-sm sm:text-base font-bold text-white tracking-wide font-mono">
-                GỌI MÓN (F&B ORDER)
+              <h3 className="text-base font-semibold text-white">
+                Gọi món & Dịch vụ F&B
               </h3>
-              <p className="text-[11px] text-slate-400 font-mono">
+              <p className="text-xs text-slate-400 mt-0.5">
                 {table.name} • {session?.customerName || 'Khách vãng lai'}
               </p>
             </div>
           </div>
           <button
             onClick={onClose}
-            className="p-1 px-2.5 text-slate-400 hover:text-white rounded-lg hover:bg-charcoal-800 font-mono text-xs font-bold transition-colors"
+            className="p-1.5 px-3 text-slate-400 hover:text-white rounded-xl hover:bg-slate-800 text-xs font-semibold transition-colors"
           >
             ✕
           </button>
@@ -136,37 +136,43 @@ export const OrderModal: React.FC<OrderModalProps> = ({
         {/* Main Content: 2-Columns */}
         <div className="flex-1 flex flex-col md:flex-row overflow-hidden min-h-0">
           {/* Left Column: Menu Catalog */}
-          <div className="flex-1 flex flex-col p-3.5 sm:p-4 border-b md:border-b-0 md:border-r border-charcoal-750 overflow-hidden">
+          <div className="flex-1 flex flex-col p-4 border-b md:border-b-0 md:border-r border-slate-800 overflow-hidden">
             {/* Search & Filter */}
-            <div className="flex flex-col gap-2 mb-3">
+            <div className="flex flex-col gap-2.5 mb-3.5">
               <input
                 type="text"
-                placeholder="Tìm món, đồ uống, bia, đồ ăn nhẹ..."
+                placeholder="Tìm món, đồ uống, thức ăn nhẹ..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full px-3 py-2 text-xs rounded-xl bg-charcoal-800 border border-charcoal-700 text-white placeholder-slate-500 focus:outline-none focus:border-gold-500 font-mono"
+                className="w-full px-3.5 py-2 text-xs rounded-xl bg-slate-800/80 border border-slate-700 text-white placeholder-slate-500 focus:outline-none focus:border-slate-500"
               />
 
               {/* Category Pills */}
-              <div className="flex items-center gap-1 overflow-x-auto pb-1 no-scrollbar text-[11px] font-mono">
+              <div className="flex items-center gap-1.5 overflow-x-auto pb-1 no-scrollbar text-xs">
                 {categories.map((cat) => (
                   <button
                     key={cat.id}
                     onClick={() => setSelectedCategory(cat.id)}
-                    className={`px-2.5 py-1.5 rounded-lg whitespace-nowrap font-bold transition-all ${
+                    className={`px-3 py-1.5 rounded-xl whitespace-nowrap font-medium transition-all ${
                       selectedCategory === cat.id
-                        ? 'bg-charcoal-700 text-white border border-charcoal-600'
-                        : 'bg-charcoal-850 text-slate-400 hover:text-slate-200 border border-transparent'
+                        ? 'bg-slate-800 text-white border border-slate-700 font-semibold shadow-sm'
+                        : 'bg-slate-900 text-slate-400 hover:text-slate-200 border border-transparent'
                     }`}
                   >
-                    {cat.label}
+                    {cat.label === 'ALL' ? 'Tất cả' :
+                     cat.label === 'BEER' ? 'Bia' :
+                     cat.label === 'SOFT_DRINK' ? 'Nước ngọt' :
+                     cat.label === 'WATER' ? 'Nước suối' :
+                     cat.label === 'COFFEE' ? 'Cà phê' :
+                     cat.label === 'SNACK' ? 'Ăn vặt' :
+                     cat.label === 'FAST_FOOD' ? 'Mì & Cơm' : 'Khác'}
                   </button>
                 ))}
               </div>
             </div>
 
             {/* Menu Items Grid */}
-            <div className="flex-1 overflow-y-auto pr-1 grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-2.5">
+            <div className="flex-1 overflow-y-auto pr-1 grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-3">
               {filteredMenu.map((item) => {
                 const isOutOfStock = item.stock <= 0;
                 const draftCount = orderDraft[item.id]?.quantity || 0;
@@ -175,36 +181,36 @@ export const OrderModal: React.FC<OrderModalProps> = ({
                   <div
                     key={item.id}
                     onClick={() => !isOutOfStock && handleAddItem(item)}
-                    className={`relative p-3 rounded-xl border flex flex-col justify-between transition-all cursor-pointer ${
+                    className={`relative p-3.5 rounded-2xl border flex flex-col justify-between transition-all cursor-pointer ${
                       isOutOfStock
-                        ? 'bg-charcoal-950/50 border-charcoal-800 opacity-50 cursor-not-allowed'
+                        ? 'bg-slate-900/40 border-slate-800/60 opacity-40 cursor-not-allowed'
                         : draftCount > 0
-                        ? 'bg-charcoal-800/90 border-amber-500/60 shadow-inner'
-                        : 'bg-charcoal-850 hover:bg-charcoal-800 border-charcoal-750 hover:border-amber-500/40'
+                        ? 'bg-slate-800/90 border-amber-500/50 shadow-sm'
+                        : 'bg-slate-850 hover:bg-slate-800/80 border-slate-800/80 hover:border-slate-700'
                     }`}
                   >
                     <div>
                       <div className="flex items-start justify-between gap-1 mb-1">
-                        <span className="text-xs font-bold text-white line-clamp-1">{item.name}</span>
+                        <span className="text-xs font-semibold text-white line-clamp-1">{item.name}</span>
                         {draftCount > 0 && (
-                          <span className="px-1.5 py-0.2 rounded bg-amber-500 text-charcoal-950 text-[10px] font-mono font-black">
+                          <span className="px-1.5 py-0.5 rounded-full bg-amber-500 text-slate-950 text-[10px] font-bold">
                             x{draftCount}
                           </span>
                         )}
                       </div>
-                      <div className="text-xs font-mono font-black text-gold-400">
+                      <div className="text-xs font-bold text-amber-300">
                         {formatVND(item.price)}
                       </div>
                     </div>
 
-                    <div className="flex items-center justify-between mt-2 pt-2 border-t border-charcoal-750/50 text-[10px] font-mono">
-                      <span className={item.stock <= item.minStockAlert ? 'text-rose-400 font-bold' : 'text-slate-400'}>
-                        {isOutOfStock ? '[HẾT HÀNG]' : `CÒN: ${item.stock} ${item.unit}`}
+                    <div className="flex items-center justify-between mt-2.5 pt-2 border-t border-slate-800/80 text-[11px]">
+                      <span className={item.stock <= item.minStockAlert ? 'text-rose-400 font-medium' : 'text-slate-400'}>
+                        {isOutOfStock ? 'Hết hàng' : `Còn: ${item.stock} ${item.unit}`}
                       </span>
                       <button
                         type="button"
                         disabled={isOutOfStock}
-                        className="px-2 py-0.5 rounded bg-charcoal-800 text-gold-400 font-black hover:bg-gold-500 hover:text-charcoal-950 transition-colors border border-charcoal-700"
+                        className="w-5 h-5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 font-semibold flex items-center justify-center transition-colors border border-slate-700"
                       >
                         +
                       </button>
@@ -216,32 +222,32 @@ export const OrderModal: React.FC<OrderModalProps> = ({
           </div>
 
           {/* Right Column: Active & Draft Cart */}
-          <div className="w-full md:w-80 flex flex-col bg-charcoal-850/80 p-3.5 sm:p-4 justify-between overflow-hidden font-mono">
+          <div className="w-full md:w-80 flex flex-col bg-slate-900/60 p-4 justify-between overflow-hidden">
             <div className="flex-1 flex flex-col overflow-hidden">
-              <div className="flex items-center justify-between text-xs font-bold uppercase tracking-wider text-slate-300 mb-2">
-                <span>MÓN CHỌN MỚI ({draftList.length})</span>
+              <div className="flex items-center justify-between text-xs font-semibold text-slate-300 mb-2.5">
+                <span>Món vừa chọn ({draftList.length})</span>
                 {draftTotal > 0 && (
-                  <span className="text-gold-400 font-black">{formatVND(draftTotal)}</span>
+                  <span className="text-amber-300 font-bold">{formatVND(draftTotal)}</span>
                 )}
               </div>
 
               {/* Draft List */}
               <div className="flex-1 overflow-y-auto space-y-2 pr-1">
                 {draftList.length === 0 ? (
-                  <div className="h-28 flex flex-col items-center justify-center text-xs text-slate-400 border border-dashed border-charcoal-700 rounded-xl p-3 text-center font-mono">
+                  <div className="h-28 flex flex-col items-center justify-center text-xs text-slate-400 border border-dashed border-slate-800 rounded-2xl p-4 text-center">
                     <span>Chưa chọn món mới nào. Nhấp vào các món bên trái để thêm vào bàn.</span>
                   </div>
                 ) : (
                   draftList.map(({ item, quantity, notes }) => (
                     <div
                       key={item.id}
-                      className="p-2.5 rounded-xl bg-charcoal-800 border border-charcoal-700 flex flex-col gap-1.5"
+                      className="p-3 rounded-xl bg-slate-800/80 border border-slate-750 flex flex-col gap-2"
                     >
                       <div className="flex items-center justify-between">
-                        <span className="text-xs font-bold text-white truncate max-w-[140px] font-sans">
+                        <span className="text-xs font-semibold text-white truncate max-w-[140px]">
                           {item.name}
                         </span>
-                        <span className="text-xs font-black text-gold-400">
+                        <span className="text-xs font-bold text-amber-300">
                           {formatVND(item.price * quantity)}
                         </span>
                       </div>
@@ -252,22 +258,22 @@ export const OrderModal: React.FC<OrderModalProps> = ({
                           placeholder="Ghi chú (ít đá...)"
                           value={notes}
                           onChange={(e) => handleUpdateNotes(item.id, e.target.value)}
-                          className="text-[11px] px-2 py-0.5 rounded bg-charcoal-900 border border-charcoal-700 text-slate-200 placeholder-slate-600 w-28 focus:outline-none focus:border-amber-500 font-sans"
+                          className="text-[11px] px-2.5 py-1 rounded-lg bg-slate-900 border border-slate-700 text-slate-200 placeholder-slate-500 w-28 focus:outline-none focus:border-slate-500"
                         />
 
-                        <div className="flex items-center gap-1">
+                        <div className="flex items-center gap-1.5">
                           <button
                             onClick={() => handleDecreaseItem(item.id)}
-                            className="w-5 h-5 rounded bg-charcoal-700 hover:bg-charcoal-600 flex items-center justify-center text-slate-200 font-black"
+                            className="w-5 h-5 rounded-md bg-slate-700 hover:bg-slate-600 flex items-center justify-center text-slate-200 font-semibold"
                           >
                             −
                           </button>
-                          <span className="text-xs font-black text-white px-1">
+                          <span className="text-xs font-bold text-white px-1">
                             {quantity}
                           </span>
                           <button
                             onClick={() => handleAddItem(item)}
-                            className="w-5 h-5 rounded bg-charcoal-700 hover:bg-charcoal-600 flex items-center justify-center text-slate-200 font-black"
+                            className="w-5 h-5 rounded-md bg-slate-700 hover:bg-slate-600 flex items-center justify-center text-slate-200 font-semibold"
                           >
                             +
                           </button>
@@ -285,25 +291,25 @@ export const OrderModal: React.FC<OrderModalProps> = ({
 
                 {/* Already Ordered Items on Table */}
                 {session && session.orders && session.orders.length > 0 && (
-                  <div className="mt-3.5 pt-3 border-t border-charcoal-750">
-                    <h5 className="text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-2">
-                      ĐÃ GỌI TRƯỚC ĐÓ ({session.orders.length} MÓN)
+                  <div className="mt-3.5 pt-3 border-t border-slate-800">
+                    <h5 className="text-[11px] font-semibold text-slate-400 mb-2">
+                      Đã phục vụ ({session.orders.length} món)
                     </h5>
-                    <div className="space-y-1 max-h-36 overflow-y-auto">
+                    <div className="space-y-1.5 max-h-36 overflow-y-auto">
                       {session.orders.map((ord) => (
                         <div
                           key={ord.id}
-                          className="flex items-center justify-between p-2 rounded-lg bg-charcoal-900/60 border border-charcoal-800 text-xs"
+                          className="flex items-center justify-between p-2.5 rounded-xl bg-slate-850 border border-slate-800 text-xs"
                         >
                           <div className="flex-1 truncate pr-2">
-                            <span className="font-semibold text-slate-300 font-sans">{ord.name}</span>
+                            <span className="font-medium text-slate-200">{ord.name}</span>
                             <div className="text-[10px] text-slate-400">
                               {ord.quantity} {ord.unit} × {formatVND(ord.price)}
-                              {ord.notes && <span className="text-amber-400 ml-1 font-sans">({ord.notes})</span>}
+                              {ord.notes && <span className="text-amber-400 ml-1">({ord.notes})</span>}
                             </div>
                           </div>
                           <div className="flex items-center gap-2">
-                            <span className="font-bold text-slate-300">
+                            <span className="font-semibold text-slate-300">
                               {formatVND(ord.price * ord.quantity)}
                             </span>
                             {onRemoveExistingOrder && (
@@ -325,10 +331,10 @@ export const OrderModal: React.FC<OrderModalProps> = ({
             </div>
 
             {/* Bottom Actions */}
-            <div className="pt-3 border-t border-charcoal-750 mt-3 flex flex-col gap-2">
+            <div className="pt-3.5 border-t border-slate-800 mt-3 flex flex-col gap-2.5">
               <div className="flex items-center justify-between text-xs">
-                <span className="text-slate-400">TIỀN MÓN MỚI:</span>
-                <span className="font-black text-gold-400 text-sm">
+                <span className="text-slate-400">Tiền món chọn mới:</span>
+                <span className="font-bold text-amber-300 text-sm">
                   {formatVND(draftTotal)}
                 </span>
               </div>
@@ -337,17 +343,17 @@ export const OrderModal: React.FC<OrderModalProps> = ({
                 <button
                   type="button"
                   onClick={onClose}
-                  className="flex-1 py-2 text-xs font-bold text-slate-400 hover:text-white rounded-xl hover:bg-charcoal-800 transition-colors"
+                  className="flex-1 py-2.5 text-xs font-semibold text-slate-400 hover:text-white rounded-xl hover:bg-slate-800 transition-colors"
                 >
-                  ĐÓNG
+                  Đóng
                 </button>
                 <button
                   type="button"
                   disabled={draftList.length === 0}
                   onClick={handleConfirm}
-                  className="flex-1 py-2.5 px-3 rounded-xl bg-gold-500 hover:bg-amber-400 disabled:opacity-40 text-charcoal-950 font-black text-xs transition-colors"
+                  className="flex-1 py-2.5 px-3 rounded-xl bg-amber-500 hover:bg-amber-400 disabled:opacity-40 text-slate-950 font-semibold text-xs transition-colors"
                 >
-                  ✓ XÁC NHẬN ({draftList.length})
+                  Xác nhận gọi món ({draftList.length})
                 </button>
               </div>
             </div>

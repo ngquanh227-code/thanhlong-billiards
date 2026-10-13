@@ -54,46 +54,46 @@ export const OpenTableModal: React.FC<OpenTableModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/80 backdrop-blur-sm select-none">
-      <div className="relative w-full max-w-lg rounded-2xl bg-[#0c1018] border border-charcoal-700 shadow-2xl overflow-hidden flex flex-col max-h-[92vh]">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-5 bg-black/80 backdrop-blur-sm select-none">
+      <div className="relative w-full max-w-lg rounded-2xl bg-slate-900 border border-slate-800 shadow-2xl overflow-hidden flex flex-col max-h-[92vh]">
         {/* Header */}
-        <div className="flex items-center justify-between p-3.5 sm:p-4 border-b border-charcoal-750 bg-charcoal-850">
-          <div className="flex items-center gap-2.5">
-            <span className="font-mono text-xs font-black px-2.5 py-1 rounded bg-charcoal-800 text-gold-400 border border-charcoal-700">
+        <div className="flex items-center justify-between p-4 border-b border-slate-800 bg-slate-900/90">
+          <div className="flex items-center gap-3">
+            <span className="text-xs font-semibold px-2.5 py-1 rounded-full bg-slate-800 text-amber-300 border border-slate-700/60">
               {table.code}
             </span>
             <div>
-              <h3 className="text-sm sm:text-base font-bold text-white tracking-wide">
-                MỞ BÀN CHƠI
+              <h3 className="text-base font-semibold text-white">
+                Mở bàn chơi
               </h3>
-              <p className="text-[11px] text-slate-400 font-mono">
+              <p className="text-xs text-slate-400 mt-0.5">
                 {table.name} • {table.area}
               </p>
             </div>
           </div>
           <button
             onClick={onClose}
-            className="p-1 px-2.5 text-slate-400 hover:text-white rounded-lg hover:bg-charcoal-800 font-mono text-xs font-bold transition-colors"
+            className="p-1.5 px-3 text-slate-400 hover:text-white rounded-xl hover:bg-slate-800 text-xs font-semibold transition-colors"
           >
             ✕
           </button>
         </div>
 
         {/* Form Body */}
-        <form onSubmit={handleSubmit} className="p-4 sm:p-5 flex flex-col gap-3.5 overflow-y-auto">
+        <form onSubmit={handleSubmit} className="p-5 flex flex-col gap-4 overflow-y-auto">
           {/* Base Rate Notice */}
-          <div className="flex items-center justify-between p-3 rounded-xl bg-charcoal-850 border border-charcoal-750 font-mono">
-            <span className="text-xs text-slate-300">GIÁ NIÊM YẾT:</span>
-            <span className="text-sm font-black text-gold-400">
-              {formatVND(defaultRate)}/GIỜ
+          <div className="flex items-center justify-between p-3.5 rounded-xl bg-slate-800/60 border border-slate-700/60 text-xs">
+            <span className="text-slate-300 font-medium">Giá giờ niêm yết:</span>
+            <span className="text-sm font-bold text-amber-300">
+              {formatVND(defaultRate)}/giờ
             </span>
           </div>
 
           {/* Select Customer / Member */}
           <div className="flex flex-col gap-1.5">
-            <label className="text-xs font-mono font-bold text-slate-300 flex items-center justify-between">
-              <span>KHÁCH HÀNG / HỘI VIÊN:</span>
-              <span className="text-[10px] text-slate-400 font-normal">
+            <label className="text-xs font-medium text-slate-300 flex items-center justify-between">
+              <span>Khách hàng / Hội viên:</span>
+              <span className="text-[11px] text-slate-400">
                 (Tùy chọn)
               </span>
             </label>
@@ -103,15 +103,15 @@ export const OpenTableModal: React.FC<OpenTableModalProps> = ({
               placeholder="Tìm theo số điện thoại hoặc tên hội viên..."
               value={searchPhone}
               onChange={(e) => setSearchPhone(e.target.value)}
-              className="w-full px-3 py-2 text-xs rounded-xl bg-charcoal-800 border border-charcoal-700 text-white placeholder-slate-500 focus:outline-none focus:border-emerald-500"
+              className="w-full px-3.5 py-2.5 text-xs rounded-xl bg-slate-800/80 border border-slate-700 text-white placeholder-slate-500 focus:outline-none focus:border-slate-500"
             />
 
             <select
               value={selectedCustomerId}
               onChange={(e) => setSelectedCustomerId(e.target.value)}
-              className="w-full px-3 py-2 text-xs rounded-xl bg-charcoal-800 border border-charcoal-700 text-white focus:outline-none focus:border-emerald-500 cursor-pointer mt-1"
+              className="w-full px-3.5 py-2.5 text-xs rounded-xl bg-slate-800/80 border border-slate-700 text-white focus:outline-none focus:border-slate-500 cursor-pointer mt-1"
             >
-              <option value="">-- Khách vãng lai (Chưa đăng ký) --</option>
+              <option value="">Khách vãng lai (Chưa đăng ký)</option>
               {filteredCustomers.map((cust) => (
                 <option key={cust.id} value={cust.id}>
                   {cust.name} ({cust.phone}) - Hạng {cust.tier} - Ví: {formatVND(cust.prepaidBalance)}
@@ -120,15 +120,15 @@ export const OpenTableModal: React.FC<OpenTableModalProps> = ({
             </select>
 
             {selectedCustomer && (
-              <div className="mt-1 p-2.5 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-between text-xs font-mono">
-                <span className="text-amber-300 font-bold">
-                  HỘI VIÊN HẠNG {selectedCustomer.tier}
+              <div className="mt-1 p-3 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-between text-xs">
+                <span className="text-amber-300 font-medium">
+                  Hội viên hạng {selectedCustomer.tier}
                 </span>
-                <span className="text-[11px] text-gold-400 font-black">
-                  {selectedCustomer.tier === 'DIAMOND' && '-15% TIỀN GIỜ'}
-                  {selectedCustomer.tier === 'GOLD' && '-10% TIỀN GIỜ'}
-                  {selectedCustomer.tier === 'SILVER' && '-5% TIỀN GIỜ'}
-                  {selectedCustomer.tier === 'STANDARD' && 'TÍCH ĐIỂM 1:1'}
+                <span className="text-xs text-amber-300 font-bold">
+                  {selectedCustomer.tier === 'DIAMOND' && '-15% tiền giờ'}
+                  {selectedCustomer.tier === 'GOLD' && '-10% tiền giờ'}
+                  {selectedCustomer.tier === 'SILVER' && '-5% tiền giờ'}
+                  {selectedCustomer.tier === 'STANDARD' && 'Tích điểm thưởng'}
                 </span>
               </div>
             )}
@@ -136,17 +136,17 @@ export const OpenTableModal: React.FC<OpenTableModalProps> = ({
 
           {/* Assigned Staff */}
           <div className="flex flex-col gap-1.5">
-            <label className="text-xs font-mono font-bold text-slate-300">
-              NHÂN VIÊN PHỤ TRÁCH BÀN:
+            <label className="text-xs font-medium text-slate-300">
+              Nhân viên phụ trách:
             </label>
             <select
               value={selectedStaffId}
               onChange={(e) => setSelectedStaffId(e.target.value)}
-              className="w-full px-3 py-2 text-xs rounded-xl bg-charcoal-800 border border-charcoal-700 text-white focus:outline-none focus:border-emerald-500 cursor-pointer"
+              className="w-full px-3.5 py-2.5 text-xs rounded-xl bg-slate-800/80 border border-slate-700 text-white focus:outline-none focus:border-slate-500 cursor-pointer"
             >
               {staff.map((s) => (
                 <option key={s.id} value={s.id}>
-                  {s.name} ({s.role})
+                  {s.name} ({s.role === 'ADMIN' ? 'Quản lý' : 'Nhân viên'})
                 </option>
               ))}
             </select>
@@ -154,10 +154,10 @@ export const OpenTableModal: React.FC<OpenTableModalProps> = ({
 
           {/* Custom Hourly Rate */}
           <div className="flex flex-col gap-1.5">
-            <label className="text-xs font-mono font-bold text-slate-300 flex items-center justify-between">
-              <span>ĐƠN GIÁ GIỜ ÁP DỤNG:</span>
-              <span className="text-[10px] text-slate-400 font-normal">
-                (Chốt cho phiên chơi)
+            <label className="text-xs font-medium text-slate-300 flex items-center justify-between">
+              <span>Đơn giá giờ áp dụng:</span>
+              <span className="text-[11px] text-slate-400">
+                (Có thể chỉnh theo thỏa thuận)
               </span>
             </label>
             <input
@@ -165,24 +165,24 @@ export const OpenTableModal: React.FC<OpenTableModalProps> = ({
               step="5000"
               value={customHourlyRate}
               onChange={(e) => setCustomHourlyRate(Number(e.target.value))}
-              className="w-full px-3 py-2 text-xs rounded-xl bg-charcoal-800 border border-charcoal-700 text-gold-400 font-mono font-black focus:outline-none focus:border-gold-500"
+              className="w-full px-3.5 py-2.5 text-xs rounded-xl bg-slate-800/80 border border-slate-700 text-amber-300 font-semibold focus:outline-none focus:border-slate-500"
             />
           </div>
 
           {/* Buttons */}
-          <div className="flex items-center justify-end gap-2 mt-2 pt-3 border-t border-charcoal-750 font-mono">
+          <div className="flex items-center justify-end gap-2.5 mt-2 pt-4 border-t border-slate-800">
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2 text-xs font-bold text-slate-400 hover:text-white rounded-xl hover:bg-charcoal-800 transition-colors"
+              className="px-4 py-2.5 text-xs font-medium text-slate-400 hover:text-white rounded-xl hover:bg-slate-800 transition-colors"
             >
-              HỦY
+              Hủy
             </button>
             <button
               type="submit"
-              className="px-4 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-black text-xs transition-colors"
+              className="px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-semibold text-xs transition-colors"
             >
-              ✓ BẮT ĐẦU TÍNH GIỜ
+              Bắt đầu tính giờ
             </button>
           </div>
         </form>

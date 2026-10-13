@@ -81,43 +81,43 @@ export const PosCashierView: React.FC = () => {
     : '';
 
   return (
-    <div className="flex flex-col gap-3.5 p-3 sm:p-4 lg:p-6 max-w-7xl mx-auto w-full select-none">
+    <div className="flex flex-col gap-4 p-4 sm:p-6 max-w-7xl mx-auto w-full select-none font-sans">
       {/* Top Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-charcoal-750">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-slate-800/80">
         <div>
-          <h1 className="text-lg sm:text-xl font-black text-white tracking-wide font-heading">
-            QUẦY THU NGÂN
+          <h1 className="text-xl font-bold text-white tracking-tight">
+            Quầy thu ngân
           </h1>
-          <p className="text-[11px] font-mono text-slate-400 mt-0.5">
+          <p className="text-xs text-slate-400 mt-0.5">
             Tính tiền giờ, dịch vụ F&B, quét mã VietQR và xuất biên lai
           </p>
         </div>
 
-        <div className="flex items-center gap-2 font-mono text-xs">
-          <span className="bg-charcoal-850 px-2.5 py-1 rounded border border-charcoal-750 text-slate-400">
-            CHỜ TÍNH: <b className="text-amber-400">{tables.filter((t) => t.status === 'WAITING_PAYMENT').length}</b>
+        <div className="flex items-center gap-2 text-xs">
+          <span className="bg-slate-900/80 px-3 py-1.5 rounded-full border border-slate-800 text-slate-300">
+            Chờ tính: <strong className="text-amber-400">{tables.filter((t) => t.status === 'WAITING_PAYMENT').length}</strong>
           </span>
-          <span className="bg-charcoal-850 px-2.5 py-1 rounded border border-charcoal-750 text-slate-400">
-            ĐANG CHƠI: <b className="text-emerald-400">{tables.filter((t) => t.status === 'PLAYING').length}</b>
+          <span className="bg-slate-900/80 px-3 py-1.5 rounded-full border border-slate-800 text-slate-300">
+            Đang chơi: <strong className="text-emerald-400">{tables.filter((t) => t.status === 'PLAYING').length}</strong>
           </span>
         </div>
       </div>
 
       {/* Main Grid: Left List (4 cols) & Right Terminal (8 cols) */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-3 sm:gap-4">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-4">
         {/* Left Column: Tables list */}
-        <div className="lg:col-span-4 flex flex-col gap-3">
-          <div className="p-3 sm:p-3.5 rounded-xl bg-charcoal-850 border border-charcoal-750 flex flex-col">
-            <span className="text-xs font-mono font-bold text-slate-300 mb-2.5 block">
-              DANH SÁCH BÀN CÓ KHÁCH ({activeTables.length})
+        <div className="lg:col-span-4 flex flex-col gap-3.5">
+          <div className="p-4 rounded-2xl bg-[#0e121b] border border-slate-800 flex flex-col">
+            <span className="text-xs font-semibold text-slate-300 mb-3 block">
+              Danh sách bàn có khách ({activeTables.length})
             </span>
 
             {activeTables.length === 0 ? (
-              <div className="py-6 text-center text-xs font-mono text-slate-400">
+              <div className="py-8 text-center text-xs text-slate-400">
                 Tất cả các bàn hiện đang trống.
               </div>
             ) : (
-              <div className="space-y-1.5 max-h-80 sm:max-h-96 overflow-y-auto pr-1">
+              <div className="space-y-2 max-h-80 sm:max-h-96 overflow-y-auto pr-1">
                 {activeTables.map((t) => {
                   const sess = getActiveSessionForTable(t.id);
                   const isSelected = selectedTableId === t.id && !selectedCompletedSession;
@@ -131,33 +131,33 @@ export const PosCashierView: React.FC = () => {
                         setSelectedTableId(t.id);
                         setSelectedCompletedSession(null);
                       }}
-                      className={`p-2.5 sm:p-3 rounded-lg border cursor-pointer transition-colors ${
+                      className={`p-3 rounded-xl border cursor-pointer transition-colors ${
                         isSelected
-                          ? 'bg-charcoal-750 border-emerald-500/80 shadow-[0_0_12px_rgba(16,185,129,0.2)]'
-                          : 'bg-charcoal-800/80 hover:bg-charcoal-800 border-charcoal-750'
+                          ? 'bg-slate-800/90 border-amber-400/80 shadow-md'
+                          : 'bg-slate-900/60 hover:bg-slate-800/60 border-slate-800'
                       }`}
                     >
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-2">
-                          <span className="font-bold text-white text-sm font-mono">{t.code}</span>
-                          <span className="text-[10px] font-mono px-1.5 py-0.2 rounded bg-charcoal-900 text-slate-400">
+                          <span className="font-semibold text-white text-sm">{t.code}</span>
+                          <span className="text-xs px-2 py-0.5 rounded-full bg-slate-800 text-slate-400">
                             {t.type}
                           </span>
                         </div>
-                        <span className={`text-[10px] font-mono px-2 py-0.5 rounded font-bold ${
+                        <span className={`text-xs px-2.5 py-0.5 rounded-full font-medium ${
                           t.status === 'WAITING_PAYMENT'
-                            ? 'bg-amber-500/15 text-amber-300 border border-amber-500/30'
-                            : 'bg-emerald-500/15 text-emerald-400 border border-emerald-500/30'
+                            ? 'bg-amber-500/15 text-amber-300'
+                            : 'bg-emerald-500/15 text-emerald-300'
                         }`}>
-                          {t.status === 'WAITING_PAYMENT' ? '▲ CHỜ TÍNH' : '● ĐANG CHƠI'}
+                          {t.status === 'WAITING_PAYMENT' ? 'Chờ tính' : 'Đang chơi'}
                         </span>
                       </div>
 
-                      <div className="flex items-center justify-between mt-2 pt-2 border-t border-charcoal-750/60 text-xs font-mono">
+                      <div className="flex items-center justify-between mt-2 pt-2 border-t border-slate-800/80 text-xs">
                         <span className="text-slate-400">
                           {fee ? formatSecondsToTimer(fee.netSeconds) : '---'}
                         </span>
-                        <span className="font-bold text-gold-400">
+                        <span className="font-semibold text-amber-300">
                           {fee ? formatVND(fee.grandTotal) : '---'}
                         </span>
                       </div>
@@ -169,20 +169,20 @@ export const PosCashierView: React.FC = () => {
           </div>
 
           {/* Recent bills list */}
-          <div className="p-3 sm:p-3.5 rounded-xl bg-charcoal-850 border border-charcoal-750 flex flex-col">
-            <span className="text-xs font-mono font-bold text-slate-400 mb-2 block">
-              ĐÃ THANH TOÁN HÔM NAY ({completedToday.length})
+          <div className="p-4 rounded-2xl bg-[#0e121b] border border-slate-800 flex flex-col">
+            <span className="text-xs font-semibold text-slate-400 mb-2.5 block">
+              Đã thanh toán hôm nay ({completedToday.length})
             </span>
 
-            <div className="space-y-1 max-h-40 overflow-y-auto pr-1">
+            <div className="space-y-1.5 max-h-40 overflow-y-auto pr-1">
               {completedToday.slice(0, 5).map((s) => (
                 <div
                   key={s.id}
                   onClick={() => setSelectedCompletedSession(s)}
-                  className="p-2 rounded-lg bg-charcoal-800 hover:bg-charcoal-750 flex items-center justify-between text-xs cursor-pointer transition-colors font-mono"
+                  className="p-2.5 rounded-xl bg-slate-900/50 hover:bg-slate-800 flex items-center justify-between text-xs cursor-pointer transition-colors"
                 >
-                  <span className="font-bold text-white">{s.tableCode}</span>
-                  <span className="text-gold-400 font-bold">{formatVND(s.finalTotal)}</span>
+                  <span className="font-medium text-white">{s.tableCode}</span>
+                  <span className="text-amber-300 font-semibold">{formatVND(s.finalTotal)}</span>
                 </div>
               ))}
             </div>
@@ -193,23 +193,23 @@ export const PosCashierView: React.FC = () => {
         <div className="lg:col-span-8 flex flex-col">
           {selectedCompletedSession ? (
             /* Completed Receipt Review */
-            <div className="p-4 sm:p-5 rounded-xl bg-charcoal-850 border border-charcoal-750 flex flex-col items-center">
-              <div className="w-full flex items-center justify-between pb-3 border-b border-charcoal-750 mb-3 font-mono">
-                <span className="text-xs sm:text-sm font-bold text-white">
-                  CHI TIẾT: {selectedCompletedSession.tableCode} (HD-{selectedCompletedSession.id.slice(-4).toUpperCase()})
+            <div className="p-5 rounded-2xl bg-[#0e121b] border border-slate-800 flex flex-col items-center">
+              <div className="w-full flex items-center justify-between pb-3 border-b border-slate-800 mb-4">
+                <span className="text-sm font-semibold text-white">
+                  Chi tiết hóa đơn: {selectedCompletedSession.tableCode}
                 </span>
                 <div className="flex gap-2">
                   <button
                     onClick={() => window.print()}
-                    className="px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold"
+                    className="px-3.5 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-medium transition-colors"
                   >
-                    IN LẠI BILL
+                    In lại hóa đơn
                   </button>
                   <button
                     onClick={() => setSelectedCompletedSession(null)}
-                    className="px-3 py-1.5 rounded-lg bg-charcoal-800 text-slate-300 text-xs font-bold"
+                    className="px-3 py-1.5 rounded-xl bg-slate-800 text-slate-300 text-xs font-medium hover:text-white"
                   >
-                    ✕ ĐÓNG
+                    Đóng
                   </button>
                 </div>
               </div>
@@ -229,29 +229,29 @@ export const PosCashierView: React.FC = () => {
             </div>
           ) : selectedTable && selectedSession && feeCalc ? (
             /* Live Terminal */
-            <div className="p-4 sm:p-5 rounded-xl bg-charcoal-850 border border-charcoal-750 flex flex-col justify-between">
+            <div className="p-5 rounded-2xl bg-[#0e121b] border border-slate-800 flex flex-col justify-between">
               <div>
                 {/* Header */}
-                <div className="flex items-center justify-between pb-3 border-b border-charcoal-750 mb-3">
+                <div className="flex items-center justify-between pb-3.5 border-b border-slate-800 mb-4">
                   <div>
-                    <h2 className="text-sm sm:text-base font-bold text-white font-mono">
-                      THANH TOÁN: {selectedTable.code} ({selectedTable.type})
+                    <h2 className="text-base font-bold text-white">
+                      Thanh toán: {selectedTable.code} ({selectedTable.type})
                     </h2>
-                    <span className="text-[11px] text-slate-400 font-mono">
-                      VÀO LÚC: {new Date(selectedSession.startTime).toLocaleTimeString('vi-VN')}
+                    <span className="text-xs text-slate-400 mt-0.5 block">
+                      Giờ vào: {new Date(selectedSession.startTime).toLocaleTimeString('vi-VN')}
                     </span>
                   </div>
 
                   <button
                     onClick={() => setShowPrintPreview(!showPrintPreview)}
-                    className="px-2.5 py-1.5 rounded-lg bg-charcoal-800 hover:bg-charcoal-750 text-xs font-mono font-bold text-slate-300 border border-charcoal-700"
+                    className="px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-xs font-medium text-slate-300 transition-colors"
                   >
-                    {showPrintPreview ? 'ẨN MẪU BILL' : 'XEM MẪU BILL'}
+                    {showPrintPreview ? 'Ẩn mẫu in' : 'Xem mẫu in'}
                   </button>
                 </div>
 
                 {showPrintPreview ? (
-                  <div className="flex justify-center p-3 bg-slate-900 rounded-lg mb-4">
+                  <div className="flex justify-center p-4 bg-slate-950 rounded-2xl mb-4 border border-slate-800">
                     <ThermalReceipt
                       session={selectedSession}
                       settings={settings}
@@ -266,38 +266,38 @@ export const PosCashierView: React.FC = () => {
                     />
                   </div>
                 ) : (
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5 mb-4">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                     {/* Itemized Info */}
-                    <div className="flex flex-col gap-2.5">
+                    <div className="flex flex-col gap-3">
                       {/* Timer */}
-                      <div className="p-3 rounded-lg bg-charcoal-800 border border-charcoal-750 font-mono">
+                      <div className="p-3.5 rounded-2xl bg-slate-900/60 border border-slate-800">
                         <div className="flex justify-between text-xs text-slate-400 mb-1">
-                          <span>THỜI GIAN:</span>
-                          <span className="text-white font-bold text-sm">
+                          <span>Thời gian chơi</span>
+                          <span className="text-white font-semibold text-sm">
                             {formatSecondsToTimer(feeCalc.netSeconds)}
                           </span>
                         </div>
-                        <div className="flex justify-between text-xs pt-1 border-t border-charcoal-750">
+                        <div className="flex justify-between text-xs pt-1.5 border-t border-slate-800/80">
                           <span className="text-slate-300">
-                            {formatDurationHuman(feeCalc.billedMinutes)} ({formatVND(selectedSession.appliedHourlyRate)}/H)
+                            {formatDurationHuman(feeCalc.billedMinutes)} ({formatVND(selectedSession.appliedHourlyRate)}/h)
                           </span>
-                          <span className="font-bold text-white">
+                          <span className="font-semibold text-white">
                             {formatVND(feeCalc.tableFee)}
                           </span>
                         </div>
                       </div>
 
                       {/* Orders */}
-                      <div className="p-3 rounded-lg bg-charcoal-800 border border-charcoal-750 font-mono">
-                        <div className="flex justify-between text-xs font-bold text-slate-300 mb-1.5">
-                          <span>MÓN ĐÃ GỌI ({selectedSession.orders?.length || 0})</span>
+                      <div className="p-3.5 rounded-2xl bg-slate-900/60 border border-slate-800">
+                        <div className="flex justify-between text-xs font-semibold text-slate-300 mb-2">
+                          <span>Dịch vụ ăn uống ({selectedSession.orders?.length || 0})</span>
                           <span className="text-white">{formatVND(feeCalc.fnbFee)}</span>
                         </div>
 
                         {(!selectedSession.orders || selectedSession.orders.length === 0) ? (
-                          <span className="text-xs text-slate-400 italic font-sans">Không gọi món</span>
+                          <span className="text-xs text-slate-500 italic">Không gọi món</span>
                         ) : (
-                          <div className="space-y-1 max-h-32 overflow-y-auto pr-1 text-xs">
+                          <div className="space-y-1.5 max-h-32 overflow-y-auto pr-1 text-xs">
                             {selectedSession.orders.map((ord) => (
                               <div key={ord.id} className="flex justify-between text-slate-300 py-0.5">
                                 <span>{ord.name} x{ord.quantity}</span>
@@ -309,83 +309,83 @@ export const PosCashierView: React.FC = () => {
                       </div>
 
                       {/* Discount & Surcharge */}
-                      <div className="p-3 rounded-lg bg-charcoal-800 border border-charcoal-750 flex flex-col gap-2 text-xs font-mono">
+                      <div className="p-3.5 rounded-2xl bg-slate-900/60 border border-slate-800 flex flex-col gap-2.5 text-xs">
                         <div className="flex justify-between items-center">
-                          <span className="text-slate-300 font-bold">GIẢM GIÁ:</span>
+                          <span className="text-slate-300 font-medium">Giảm giá:</span>
                           <input
                             type="number"
                             step="5000"
                             value={customDiscount}
                             onChange={(e) => setCustomDiscount(Math.max(0, Number(e.target.value)))}
-                            className="w-28 px-2 py-1 text-right rounded bg-charcoal-900 border border-charcoal-700 text-rose-400 font-bold"
+                            className="w-28 px-2.5 py-1 text-right rounded-lg bg-slate-950 border border-slate-800 text-rose-400 font-semibold"
                           />
                         </div>
                         <div className="flex justify-between items-center">
-                          <span className="text-slate-300 font-bold">PHỤ THU:</span>
+                          <span className="text-slate-300 font-medium">Phụ thu:</span>
                           <input
                             type="number"
                             step="5000"
                             value={customSurcharge}
                             onChange={(e) => setCustomSurcharge(Math.max(0, Number(e.target.value)))}
-                            className="w-28 px-2 py-1 text-right rounded bg-charcoal-900 border border-charcoal-700 text-white"
+                            className="w-28 px-2.5 py-1 text-right rounded-lg bg-slate-950 border border-slate-800 text-white font-medium"
                           />
                         </div>
                       </div>
                     </div>
 
                     {/* Payment Terminal */}
-                    <div className="flex flex-col justify-between gap-3 font-mono">
+                    <div className="flex flex-col justify-between gap-3.5">
                       {/* Total Box */}
-                      <div className="p-3.5 rounded-xl bg-charcoal-800 border border-charcoal-750 text-center">
-                        <span className="text-[11px] uppercase tracking-wider text-slate-400 font-bold">
-                          TỔNG TIỀN THANH TOÁN
+                      <div className="p-4 rounded-2xl bg-slate-900/80 border border-slate-800 text-center">
+                        <span className="text-xs text-slate-400 font-medium">
+                          Tổng tiền thanh toán
                         </span>
-                        <div className="text-2xl font-black text-gold-400 mt-0.5">
+                        <div className="text-2xl font-bold text-amber-300 mt-1">
                           {formatVND(grandTotal)}
                         </div>
                       </div>
 
                       {/* Methods */}
-                      <div className="grid grid-cols-3 gap-1.5 text-xs font-bold">
+                      <div className="grid grid-cols-3 gap-2 text-xs">
                         <button
                           type="button"
                           onClick={() => setPaymentMethod('CASH')}
-                          className={`py-2 px-1 rounded-lg border text-center transition-colors ${
+                          className={`py-2 px-2 rounded-xl border text-center transition-colors font-medium ${
                             paymentMethod === 'CASH'
-                              ? 'bg-charcoal-750 border-emerald-500/80 text-emerald-400 shadow-[0_0_10px_rgba(16,185,129,0.2)]'
-                              : 'bg-charcoal-800 border-charcoal-700 text-slate-400'
+                              ? 'bg-emerald-500/15 border-emerald-500/50 text-emerald-300'
+                              : 'bg-slate-900 border-slate-800 text-slate-400 hover:text-white'
                           }`}
                         >
-                          TIỀN MẶT
+                          Tiền mặt
                         </button>
 
                         <button
                           type="button"
                           onClick={() => setPaymentMethod('BANK_TRANSFER')}
-                          className={`py-2 px-1 rounded-lg border text-center transition-colors ${
+                          className={`py-2 px-2 rounded-xl border text-center transition-colors font-medium ${
                             paymentMethod === 'BANK_TRANSFER'
-                              ? 'bg-charcoal-750 border-emerald-500/80 text-emerald-400 shadow-[0_0_10px_rgba(16,185,129,0.2)]'
-                              : 'bg-charcoal-800 border-charcoal-700 text-slate-400'
+                              ? 'bg-emerald-500/15 border-emerald-500/50 text-emerald-300'
+                              : 'bg-slate-900 border-slate-800 text-slate-400 hover:text-white'
                           }`}
                         >
-                          VIETQR
+                          VietQR
                         </button>
 
                         <button
                           type="button"
                           onClick={() => setPaymentMethod('MEMBER_WALLET')}
-                          className={`py-2 px-1 rounded-lg border text-center transition-colors ${
+                          className={`py-2 px-2 rounded-xl border text-center transition-colors font-medium ${
                             paymentMethod === 'MEMBER_WALLET'
-                              ? 'bg-charcoal-750 border-emerald-500/80 text-emerald-400 shadow-[0_0_10px_rgba(16,185,129,0.2)]'
-                              : 'bg-charcoal-800 border-charcoal-700 text-slate-400'
+                              ? 'bg-emerald-500/15 border-emerald-500/50 text-emerald-300'
+                              : 'bg-slate-900 border-slate-800 text-slate-400 hover:text-white'
                           }`}
                         >
-                          VÍ VIP
+                          Ví VIP
                         </button>
                       </div>
 
                       {paymentMethod === 'CASH' && (
-                        <div className="p-3 rounded-lg bg-charcoal-800 border border-charcoal-750 flex flex-col gap-2 text-xs">
+                        <div className="p-3 rounded-xl bg-slate-900/60 border border-slate-800 flex flex-col gap-2 text-xs">
                           <div className="flex justify-between items-center">
                             <span className="text-slate-300">Khách đưa:</span>
                             <input
@@ -394,33 +394,33 @@ export const PosCashierView: React.FC = () => {
                               value={cashReceived || ''}
                               onChange={(e) => setCashReceived(Number(e.target.value))}
                               placeholder="0"
-                              className="w-32 px-2 py-1 text-right rounded bg-charcoal-900 border border-charcoal-700 text-white font-bold"
+                              className="w-32 px-2.5 py-1 text-right rounded-lg bg-slate-950 border border-slate-800 text-white font-semibold"
                             />
                           </div>
-                          <div className="flex justify-between items-center pt-1 border-t border-charcoal-700 font-bold">
+                          <div className="flex justify-between items-center pt-1.5 border-t border-slate-800 font-semibold">
                             <span className="text-slate-400">Tiền thối:</span>
-                            <span className="text-emerald-400 font-black">{formatVND(cashChange)}</span>
+                            <span className="text-emerald-400">{formatVND(cashChange)}</span>
                           </div>
                         </div>
                       )}
 
                       {paymentMethod === 'BANK_TRANSFER' && (
-                        <div className="p-2.5 rounded-lg bg-charcoal-800 border border-charcoal-700 flex items-center gap-3">
-                          <img src={vietQrUrl} alt="VietQR" className="w-16 h-16 bg-white p-0.5 rounded object-contain" />
-                          <div className="text-[11px] text-slate-300">
-                            <p className="font-bold text-white">{settings.bankName}</p>
-                            <p className="text-gold-400 font-bold">{settings.bankAccountNo}</p>
-                            <p className="text-slate-400 font-sans">{settings.bankAccountName}</p>
+                        <div className="p-3 rounded-xl bg-slate-900/60 border border-slate-800 flex items-center gap-3">
+                          <img src={vietQrUrl} alt="VietQR" className="w-16 h-16 bg-white p-1 rounded-lg object-contain shadow-sm" />
+                          <div className="text-xs text-slate-300">
+                            <p className="font-semibold text-white">{settings.bankName}</p>
+                            <p className="text-amber-300 font-bold">{settings.bankAccountNo}</p>
+                            <p className="text-slate-400">{settings.bankAccountName}</p>
                           </div>
                         </div>
                       )}
 
                       {paymentMethod === 'MEMBER_WALLET' && (
-                        <div className="p-2.5 rounded-lg bg-charcoal-800 border border-charcoal-700 text-xs text-slate-300 font-sans">
+                        <div className="p-3 rounded-xl bg-slate-900/60 border border-slate-800 text-xs text-slate-300">
                           {selectedSession.customerName ? (
                             <p>Hội viên: <b>{selectedSession.customerName}</b> ({selectedSession.customerTier})</p>
                           ) : (
-                            <p className="text-amber-400 font-mono">Chưa gắn thẻ hội viên!</p>
+                            <p className="text-amber-400">Bàn này chưa gắn thẻ hội viên!</p>
                           )}
                         </div>
                       )}
@@ -430,27 +430,27 @@ export const PosCashierView: React.FC = () => {
               </div>
 
               {/* Bottom Actions */}
-              <div className="pt-3 border-t border-charcoal-750 flex gap-2 font-mono">
+              <div className="pt-3.5 border-t border-slate-800 flex gap-2.5">
                 <button
                   type="button"
                   onClick={() => handleCheckout(true)}
-                  className="flex-1 py-2.5 px-4 rounded-xl bg-gold-500 hover:bg-amber-400 text-charcoal-950 font-black text-xs transition-colors tracking-wider"
+                  className="flex-1 py-2.5 px-4 rounded-xl bg-amber-400 hover:bg-amber-300 text-slate-950 font-bold text-xs transition-colors shadow-md"
                 >
-                  IN HÓA ĐƠN & TRẢ BÀN
+                  In hóa đơn & Trả bàn
                 </button>
 
                 <button
                   type="button"
                   onClick={() => handleCheckout(false)}
-                  className="py-2.5 px-4 rounded-xl bg-charcoal-800 hover:bg-charcoal-750 text-slate-300 text-xs font-bold border border-charcoal-700 transition-colors"
+                  className="py-2.5 px-4 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-medium transition-colors"
                 >
-                  CHỐT KHÔNG IN
+                  Chốt không in
                 </button>
               </div>
             </div>
           ) : (
-            <div className="p-12 rounded-xl bg-charcoal-850 border border-charcoal-750 text-center flex flex-col items-center justify-center text-slate-400 text-xs font-mono">
-              <span className="text-gold-400 font-bold mb-1">[QUẦY THU NGÂN]</span>
+            <div className="p-16 rounded-2xl bg-[#0e121b] border border-slate-800 text-center flex flex-col items-center justify-center text-slate-400 text-xs">
+              <span className="text-amber-300 font-semibold mb-1">Quầy thu ngân</span>
               <span>Chọn một bàn bên danh sách để bắt đầu thanh toán</span>
             </div>
           )}

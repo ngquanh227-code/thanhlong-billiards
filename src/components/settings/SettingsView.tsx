@@ -123,97 +123,82 @@ export const SettingsView: React.FC = () => {
   };
 
   return (
-    <div className="flex flex-col gap-4 p-4 lg:p-6 max-w-7xl mx-auto w-full">
+    <div className="flex flex-col gap-6 p-4 lg:p-8 max-w-7xl mx-auto w-full select-none">
       {/* Top Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-charcoal-800">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-800">
         <div>
-          <div className="flex items-center gap-2 mb-1">
-            <span className="text-[11px] font-mono font-bold tracking-wider px-2 py-0.5 rounded bg-charcoal-800 text-gold-400 border border-charcoal-700">
-              [HỆ THỐNG]
-            </span>
-            <h1 className="text-xl font-bold text-white tracking-tight font-heading">
-              Cài Đặt Hệ Thống & Quán
-            </h1>
-          </div>
-          <p className="text-xs text-slate-400">
-            Quản lý số lượng bàn, giao diện sáng/tối, bảng giá theo giờ và đồng bộ Supabase Cloud
+          <h1 className="text-xl sm:text-2xl font-bold text-white tracking-tight">
+            Cài đặt hệ thống
+          </h1>
+          <p className="text-xs text-slate-400 mt-1">
+            Quản lý số lượng bàn, giao diện hiển thị, biểu phí giờ chơi và đồng bộ máy chủ
           </p>
         </div>
 
         <div className="flex items-center gap-2">
           <button
             onClick={handleExportBackup}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-charcoal-800 hover:bg-charcoal-750 text-slate-200 border border-charcoal-700 text-xs font-mono font-semibold transition-colors"
+            className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-slate-900/80 hover:bg-slate-800 text-slate-200 border border-slate-800 text-xs font-medium transition-colors"
           >
-            <span className="text-gold-400 font-bold">[SAO LƯU]</span>
-            <span>JSON</span>
+            <span>Sao lưu dữ liệu</span>
           </button>
 
-          <label className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-charcoal-800 hover:bg-charcoal-750 text-slate-200 border border-charcoal-700 text-xs font-mono font-semibold cursor-pointer transition-colors">
-            <span className="text-emerald-400 font-bold">[NẠP LẠI]</span>
-            <span>PHỤC HỒI</span>
+          <label className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-slate-900/80 hover:bg-slate-800 text-slate-200 border border-slate-800 text-xs font-medium cursor-pointer transition-colors">
+            <span>Khôi phục JSON</span>
             <input type="file" accept=".json" onChange={handleImportBackup} className="hidden" />
           </label>
         </div>
       </div>
 
       {/* Row 1: Giao diện Sáng / Tối (Theme Mode) */}
-      <div className="p-4 rounded-xl bg-charcoal-850 border border-charcoal-750 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <div className="p-5 rounded-2xl bg-slate-900/60 border border-slate-800/80 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <div className="flex items-center gap-2">
-            <span className="text-xs font-mono font-bold text-amber-400 px-2 py-0.5 rounded bg-charcoal-800 border border-charcoal-700">
-              [GIAO DIỆN]
-            </span>
-            <span className="text-sm font-bold text-white font-heading">Chế Độ Hiển Thị</span>
-            <span className="text-[11px] px-2 py-0.5 rounded bg-charcoal-800 text-slate-300 font-mono">
-              {theme === 'dark' ? '● ĐANG BẬT TỐI' : '○ ĐANG BẬT SÁNG'}
+          <div className="flex items-center gap-2.5">
+            <span className="text-sm font-semibold text-white">Chế độ hiển thị</span>
+            <span className="text-[11px] px-2.5 py-0.5 rounded-full bg-slate-800 text-slate-300 font-medium">
+              {theme === 'dark' ? 'Giao diện tối' : 'Giao diện sáng'}
             </span>
           </div>
           <p className="text-xs text-slate-400 mt-1">
-            Tùy chỉnh tông màu phù hợp với ánh sáng quán: Chế độ Tối dịu mắt cho ban đêm, Chế độ Sáng rõ nét cho ban ngày.
+            Tùy chỉnh tông màu phù hợp với không gian quán: Tối nhẹ nhàng dịu mắt hoặc Sáng rõ nét ban ngày.
           </p>
         </div>
 
-        <div className="flex items-center gap-2.5">
+        <div className="flex items-center gap-2">
           <button
             onClick={() => setTheme('dark')}
-            className={`flex items-center gap-2 px-3.5 py-2 rounded-lg text-xs font-mono transition-all ${
+            className={`px-4 py-2 rounded-xl text-xs transition-all ${
               theme === 'dark'
-                ? 'bg-charcoal-700 text-white border border-charcoal-600 font-bold shadow-sm'
-                : 'bg-charcoal-800/60 text-slate-400 hover:text-white border border-charcoal-750 font-medium'
+                ? 'bg-slate-800 text-white border border-slate-700 font-semibold shadow-sm'
+                : 'bg-slate-900/80 text-slate-400 hover:text-white border border-slate-800 font-medium'
             }`}
           >
-            <span>[TỐI / DARK]</span>
-            {theme === 'dark' && <span className="text-emerald-400 font-bold">●</span>}
+            Tối (Dark)
           </button>
 
           <button
             onClick={() => setTheme('light')}
-            className={`flex items-center gap-2 px-3.5 py-2 rounded-lg text-xs font-mono transition-all ${
+            className={`px-4 py-2 rounded-xl text-xs transition-all ${
               theme === 'light'
-                ? 'bg-charcoal-700 text-white border border-charcoal-600 font-bold shadow-sm'
-                : 'bg-charcoal-800/60 text-slate-400 hover:text-white border border-charcoal-750 font-medium'
+                ? 'bg-slate-800 text-white border border-slate-700 font-semibold shadow-sm'
+                : 'bg-slate-900/80 text-slate-400 hover:text-white border border-slate-800 font-medium'
             }`}
           >
-            <span>[SÁNG / LIGHT]</span>
-            {theme === 'light' && <span className="text-emerald-400 font-bold">●</span>}
+            Sáng (Light)
           </button>
         </div>
       </div>
 
       {/* Row 2: Quản lý số lượng bàn & danh sách bàn (Table Management) */}
-      <div className="p-4 rounded-xl bg-charcoal-850 border border-charcoal-750 flex flex-col gap-3">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-charcoal-800">
+      <div className="p-5 rounded-2xl bg-slate-900/60 border border-slate-800/80 flex flex-col gap-4">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-slate-800">
           <div>
-            <div className="flex items-center gap-2">
-              <span className="text-xs font-mono font-bold text-emerald-400 px-2 py-0.5 rounded bg-charcoal-800 border border-charcoal-700">
-                [DANH MỤC BÀN]
-              </span>
-              <h2 className="text-sm font-bold text-white font-heading">
-                Quản Lý Danh Sách Bàn Của Quán
+            <div className="flex items-center gap-2.5">
+              <h2 className="text-sm font-semibold text-white">
+                Danh mục bàn câu lạc bộ
               </h2>
-              <span className="text-xs font-mono font-bold text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-2 py-0.5 rounded">
-                TỔNG {tables.length} BÀN
+              <span className="text-xs font-medium text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-2.5 py-0.5 rounded-full">
+                {tables.length} bàn
               </span>
             </div>
             <p className="text-xs text-slate-400 mt-1">
@@ -223,9 +208,9 @@ export const SettingsView: React.FC = () => {
 
           <button
             onClick={handleOpenAddTable}
-            className="flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white font-mono font-bold text-xs transition-colors"
+            className="flex items-center justify-center gap-1.5 px-3.5 py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-semibold text-xs transition-colors"
           >
-            <span>+ THÊM BÀN MỚI</span>
+            <span>+ Thêm bàn mới</span>
           </button>
         </div>
 
@@ -291,15 +276,12 @@ export const SettingsView: React.FC = () => {
       </div>
 
       {/* Row 3: Grid 2 Columns (Thông tin quán & Cloud Sync) */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
         {/* 1. General Club Information */}
-        <div className="p-4 rounded-xl bg-charcoal-850 border border-charcoal-750">
-          <div className="flex items-center gap-2 mb-3">
-            <span className="text-xs font-mono font-bold text-gold-400 px-2 py-0.5 rounded bg-charcoal-800 border border-charcoal-700">
-              [CƠ SỞ]
-            </span>
-            <h3 className="text-sm font-bold text-white font-heading">
-              Thông Tin Quán & Hóa Đơn POS
+        <div className="p-5 rounded-2xl bg-slate-900/60 border border-slate-800/80">
+          <div className="flex items-center gap-2 mb-4">
+            <h3 className="text-sm font-semibold text-white">
+              Thông tin quán & Hóa đơn thanh toán
             </h3>
           </div>
 
@@ -310,7 +292,7 @@ export const SettingsView: React.FC = () => {
                 type="text"
                 value={formSettings.clubName}
                 onChange={(e) => setFormSettings({ ...formSettings, clubName: e.target.value })}
-                className="w-full px-3 py-1.5 rounded-lg bg-charcoal-800 border border-charcoal-700 text-white focus:outline-none focus:border-charcoal-600 font-medium"
+                className="w-full px-3.5 py-2 rounded-xl bg-slate-800/60 border border-slate-700/80 text-white focus:outline-none focus:border-slate-500 font-medium"
               />
             </div>
 
@@ -321,7 +303,7 @@ export const SettingsView: React.FC = () => {
                   type="text"
                   value={formSettings.phone}
                   onChange={(e) => setFormSettings({ ...formSettings, phone: e.target.value })}
-                  className="w-full px-3 py-1.5 rounded-lg bg-charcoal-800 border border-charcoal-700 text-white font-mono focus:outline-none focus:border-charcoal-600"
+                  className="w-full px-3.5 py-2 rounded-xl bg-slate-800/60 border border-slate-700/80 text-white focus:outline-none focus:border-slate-500"
                 />
               </div>
 
@@ -331,7 +313,7 @@ export const SettingsView: React.FC = () => {
                   type="text"
                   value={formSettings.wifiPassword}
                   onChange={(e) => setFormSettings({ ...formSettings, wifiPassword: e.target.value })}
-                  className="w-full px-3 py-1.5 rounded-lg bg-charcoal-800 border border-charcoal-700 text-white font-mono focus:outline-none focus:border-charcoal-600"
+                  className="w-full px-3.5 py-2 rounded-xl bg-slate-800/60 border border-slate-700/80 text-white focus:outline-none focus:border-slate-500"
                 />
               </div>
             </div>
@@ -342,75 +324,70 @@ export const SettingsView: React.FC = () => {
                 type="text"
                 value={formSettings.address}
                 onChange={(e) => setFormSettings({ ...formSettings, address: e.target.value })}
-                className="w-full px-3 py-1.5 rounded-lg bg-charcoal-800 border border-charcoal-700 text-white focus:outline-none focus:border-charcoal-600"
+                className="w-full px-3.5 py-2 rounded-xl bg-slate-800/60 border border-slate-700/80 text-white focus:outline-none focus:border-slate-500"
               />
             </div>
 
             {/* Bank VietQR */}
-            <div className="pt-2 border-t border-charcoal-800 flex flex-col gap-2">
-              <span className="text-slate-400 font-mono font-bold text-[11px] uppercase tracking-wider">
-                [TÀI KHOẢN NHẬN CHUYỂN KHOẢN VIETQR]
+            <div className="pt-3 border-t border-slate-800 flex flex-col gap-2.5">
+              <span className="text-slate-300 font-semibold text-xs">
+                Tài khoản nhận chuyển khoản VietQR
               </span>
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
                 <div>
-                  <label className="text-slate-400 text-[10px] block mb-0.5">Ngân Hàng:</label>
+                  <label className="text-slate-400 text-[11px] block mb-1">Ngân hàng:</label>
                   <input
                     type="text"
                     value={formSettings.bankName}
                     onChange={(e) => setFormSettings({ ...formSettings, bankName: e.target.value })}
-                    className="w-full px-2 py-1.5 rounded-lg bg-charcoal-800 border border-charcoal-700 text-white font-medium"
+                    className="w-full px-3 py-2 rounded-xl bg-slate-800/60 border border-slate-700/80 text-white font-medium"
                   />
                 </div>
                 <div>
-                  <label className="text-slate-400 text-[10px] block mb-0.5">Số Tài Khoản:</label>
+                  <label className="text-slate-400 text-[11px] block mb-1">Số tài khoản:</label>
                   <input
                     type="text"
                     value={formSettings.bankAccountNo}
                     onChange={(e) => setFormSettings({ ...formSettings, bankAccountNo: e.target.value })}
-                    className="w-full px-2 py-1.5 rounded-lg bg-charcoal-800 border border-charcoal-700 text-white font-mono font-bold text-gold-400"
+                    className="w-full px-3 py-2 rounded-xl bg-slate-800/60 border border-slate-700/80 text-amber-300 font-semibold"
                   />
                 </div>
                 <div>
-                  <label className="text-slate-400 text-[10px] block mb-0.5">Chủ Tài Khoản:</label>
+                  <label className="text-slate-400 text-[11px] block mb-1">Chủ tài khoản:</label>
                   <input
                     type="text"
                     value={formSettings.bankAccountName}
                     onChange={(e) => setFormSettings({ ...formSettings, bankAccountName: e.target.value })}
-                    className="w-full px-2 py-1.5 rounded-lg bg-charcoal-800 border border-charcoal-700 text-white uppercase font-bold"
+                    className="w-full px-3 py-2 rounded-xl bg-slate-800/60 border border-slate-700/80 text-white uppercase font-medium"
                   />
                 </div>
               </div>
             </div>
 
-            <div className="flex justify-end pt-2">
+            <div className="flex justify-end pt-3">
               <button
                 type="submit"
-                className="px-4 py-2 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white font-mono font-bold text-xs transition-colors"
+                className="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-medium text-xs transition-colors"
               >
-                LƯU CẤU HÌNH QUÁN
+                Lưu cấu hình quán
               </button>
             </div>
           </form>
         </div>
 
         {/* 2. Supabase Cloud Sync Configuration */}
-        <div className="p-4 rounded-xl bg-charcoal-850 border border-charcoal-750 flex flex-col justify-between">
+        <div className="p-5 rounded-2xl bg-slate-900/60 border border-slate-800/80 flex flex-col justify-between">
           <div>
             <div className="flex items-center justify-between mb-3">
-              <div className="flex items-center gap-2">
-                <span className="text-xs font-mono font-bold text-cyan-400 px-2 py-0.5 rounded bg-charcoal-800 border border-charcoal-700">
-                  [CLOUD SYNC]
-                </span>
-                <h3 className="text-sm font-bold text-white font-heading">
-                  Đồng Bộ Dữ Liệu Supabase
-                </h3>
-              </div>
-              <span className={`px-2 py-0.5 rounded text-[10px] font-mono font-bold ${
+              <h3 className="text-sm font-semibold text-white">
+                Đồng bộ dữ liệu trực tuyến
+              </h3>
+              <span className={`px-2.5 py-0.5 rounded-full text-[11px] font-medium ${
                 formSettings.isCloudSyncEnabled
                   ? 'bg-cyan-500/10 text-cyan-400 border border-cyan-500/20'
-                  : 'bg-charcoal-800 text-slate-400'
+                  : 'bg-slate-800 text-slate-400'
               }`}>
-                {formSettings.isCloudSyncEnabled ? '● ĐANG BẬT' : '○ TẮT (OFFLINE)'}
+                {formSettings.isCloudSyncEnabled ? 'Đang bật' : 'Chế độ ngoại tuyến'}
               </span>
             </div>
 
@@ -426,7 +403,7 @@ export const SettingsView: React.FC = () => {
                   placeholder="https://xyzcompany.supabase.co"
                   value={formSettings.supabaseUrl || ''}
                   onChange={(e) => setFormSettings({ ...formSettings, supabaseUrl: e.target.value })}
-                  className="w-full px-3 py-2 rounded-lg bg-charcoal-800 border border-charcoal-700 text-white font-mono focus:outline-none focus:border-charcoal-600"
+                  className="w-full px-3.5 py-2 rounded-xl bg-slate-800/60 border border-slate-700/80 text-white focus:outline-none focus:border-slate-500"
                 />
               </div>
 
@@ -437,11 +414,11 @@ export const SettingsView: React.FC = () => {
                   placeholder="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
                   value={formSettings.supabaseAnonKey || ''}
                   onChange={(e) => setFormSettings({ ...formSettings, supabaseAnonKey: e.target.value })}
-                  className="w-full px-3 py-2 rounded-lg bg-charcoal-800 border border-charcoal-700 text-white font-mono focus:outline-none focus:border-charcoal-600"
+                  className="w-full px-3.5 py-2 rounded-xl bg-slate-800/60 border border-slate-700/80 text-white focus:outline-none focus:border-slate-500"
                 />
               </div>
 
-              <div className="flex items-center gap-2 mt-1">
+              <div className="flex items-center gap-2.5 mt-1">
                 <input
                   type="checkbox"
                   id="enableCloudSync"
@@ -456,39 +433,36 @@ export const SettingsView: React.FC = () => {
             </div>
           </div>
 
-          <div className="pt-4 border-t border-charcoal-800 flex justify-between items-center mt-4">
+          <div className="pt-4 border-t border-slate-800 flex justify-between items-center mt-4">
             <button
               onClick={() => {
                 if (window.confirm('Khôi phục toàn bộ dữ liệu mẫu (6 bàn bida, các bàn đang chơi và menu)?')) {
                   resetAllDemoData();
                 }
               }}
-              className="px-3 py-1.5 rounded bg-rose-950/40 hover:bg-rose-900/60 border border-rose-800/40 text-rose-300 text-xs font-mono font-semibold transition-colors"
+              className="px-3.5 py-2 rounded-xl bg-rose-950/30 hover:bg-rose-900/40 border border-rose-800/30 text-rose-300 text-xs font-medium transition-colors"
             >
-              [RESET] DỮ LIỆU GỐC
+              Khôi phục dữ liệu gốc
             </button>
 
             <button
               onClick={() => updateSettings(formSettings)}
-              className="px-4 py-2 rounded-lg bg-cyan-600 hover:bg-cyan-500 text-white font-mono font-bold text-xs transition-colors"
+              className="px-4 py-2 rounded-xl bg-cyan-700 hover:bg-cyan-600 text-white font-medium text-xs transition-colors"
             >
-              LƯU KẾT NỐI CLOUD
+              Lưu kết nối Cloud
             </button>
           </div>
         </div>
       </div>
 
       {/* Row 4: Pricing Rules for Table Types */}
-      <div className="p-4 rounded-xl bg-charcoal-850 border border-charcoal-750">
+      <div className="p-5 rounded-2xl bg-slate-900/60 border border-slate-800/80">
         <div className="flex items-center gap-2 mb-1.5">
-          <span className="text-xs font-mono font-bold text-emerald-400 px-2 py-0.5 rounded bg-charcoal-800 border border-charcoal-700">
-            [BẢNG GIÁ]
-          </span>
-          <h3 className="text-sm font-bold text-white font-heading">
-            Biểu Phí Giờ Chơi Từng Loại Bàn (Pool, Carom, VIP, Snooker)
+          <h3 className="text-sm font-semibold text-white">
+            Biểu phí giờ chơi theo loại bàn (Pool, Carom, VIP, Snooker)
           </h3>
         </div>
-        <p className="text-xs text-slate-400 mb-3">
+        <p className="text-xs text-slate-400 mb-4">
           Giá chơi được chốt cố định theo từng lượt chơi để đảm bảo không làm thay đổi các hóa đơn cũ khi cập nhật giá.
         </p>
 

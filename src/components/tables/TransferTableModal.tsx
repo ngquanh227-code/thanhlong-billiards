@@ -30,51 +30,51 @@ export const TransferTableModal: React.FC<TransferTableModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/80 backdrop-blur-sm select-none">
-      <div className="relative w-full max-w-md rounded-2xl bg-[#0c1018] border border-charcoal-700 shadow-2xl overflow-hidden flex flex-col">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-5 bg-black/80 backdrop-blur-sm select-none">
+      <div className="relative w-full max-w-md rounded-2xl bg-slate-900 border border-slate-800 shadow-2xl overflow-hidden flex flex-col">
         {/* Header */}
-        <div className="flex items-center justify-between p-3.5 sm:p-4 border-b border-charcoal-750 bg-charcoal-850">
-          <div className="flex items-center gap-2.5">
-            <span className="font-mono text-xs font-black px-2.5 py-1 rounded bg-charcoal-800 text-gold-400 border border-charcoal-700">
-              CHUYỂN
+        <div className="flex items-center justify-between p-4 border-b border-slate-800 bg-slate-900/90">
+          <div className="flex items-center gap-3">
+            <span className="text-xs font-semibold px-2.5 py-1 rounded-full bg-slate-800 text-amber-300 border border-slate-700/60">
+              Chuyển bàn
             </span>
             <div>
-              <h3 className="text-sm sm:text-base font-bold text-white tracking-wide">
-                CHUYỂN BÀN CHƠI
+              <h3 className="text-base font-semibold text-white">
+                Chuyển bàn chơi
               </h3>
-              <p className="text-[11px] text-slate-400 font-mono">
-                Từ bàn: <span className="text-gold-400 font-bold">{sourceTable.code}</span>
+              <p className="text-xs text-slate-400 mt-0.5">
+                Bàn nguồn: <span className="text-amber-300 font-medium">{sourceTable.code}</span>
               </p>
             </div>
           </div>
           <button
             onClick={onClose}
-            className="p-1 px-2.5 text-slate-400 hover:text-white rounded-lg hover:bg-charcoal-800 font-mono text-xs font-bold transition-colors"
+            className="p-1.5 px-3 text-slate-400 hover:text-white rounded-xl hover:bg-slate-800 text-xs font-semibold transition-colors"
           >
             ✕
           </button>
         </div>
 
         {/* Form Body */}
-        <form onSubmit={handleSubmit} className="p-4 sm:p-5 flex flex-col gap-3.5">
-          <div className="p-3 rounded-xl bg-amber-500/10 border border-amber-500/20 text-xs text-amber-300">
+        <form onSubmit={handleSubmit} className="p-5 flex flex-col gap-4">
+          <div className="p-3.5 rounded-xl bg-amber-500/10 border border-amber-500/20 text-xs text-amber-300 leading-relaxed">
             Thời gian chơi lũy kế và toàn bộ danh sách đồ ăn/nước uống đã gọi sẽ tự động được chuyển nguyên vẹn sang bàn đích.
           </div>
 
-          <div className="flex flex-col gap-1.5 font-mono">
-            <label className="text-xs font-bold text-slate-300">
-              CHỌN BÀN ĐÍCH (CÁC BÀN TRỐNG):
+          <div className="flex flex-col gap-1.5">
+            <label className="text-xs font-medium text-slate-300">
+              Chọn bàn trống muốn chuyển tới:
             </label>
 
             {availableTables.length === 0 ? (
-              <div className="p-4 rounded-xl bg-charcoal-850 border border-charcoal-700 text-center text-xs text-rose-400 font-sans">
-                Hiện tại không có bàn nào còn trống để chuyển!
+              <div className="p-4 rounded-xl bg-slate-800/60 border border-slate-700/60 text-center text-xs text-rose-400">
+                Hiện tại không có bàn nào còn trống để chuyển.
               </div>
             ) : (
               <select
                 value={targetTableId}
                 onChange={(e) => setTargetTableId(e.target.value)}
-                className="w-full px-3 py-2.5 text-xs rounded-xl bg-charcoal-800 border border-charcoal-700 text-white focus:outline-none focus:border-gold-500 cursor-pointer"
+                className="w-full px-3.5 py-2.5 text-xs rounded-xl bg-slate-800/80 border border-slate-700 text-white focus:outline-none focus:border-slate-500 cursor-pointer"
               >
                 {availableTables.map((t) => (
                   <option key={t.id} value={t.id}>
@@ -85,20 +85,20 @@ export const TransferTableModal: React.FC<TransferTableModalProps> = ({
             )}
           </div>
 
-          <div className="flex items-center justify-end gap-2 pt-3 border-t border-charcoal-750 font-mono">
+          <div className="flex items-center justify-end gap-2.5 pt-4 border-t border-slate-800">
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2 text-xs font-bold text-slate-400 hover:text-white rounded-xl hover:bg-charcoal-800 transition-colors"
+              className="px-4 py-2.5 text-xs font-medium text-slate-400 hover:text-white rounded-xl hover:bg-slate-800 transition-colors"
             >
-              HỦY
+              Hủy
             </button>
             <button
               type="submit"
               disabled={availableTables.length === 0}
-              className="px-4 py-2.5 rounded-xl bg-gold-500 hover:bg-amber-400 disabled:opacity-50 text-charcoal-950 font-black text-xs transition-colors"
+              className="px-5 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-400 disabled:opacity-40 text-slate-950 font-semibold text-xs transition-colors"
             >
-              ✓ XÁC NHẬN CHUYỂN
+              Xác nhận chuyển bàn
             </button>
           </div>
         </form>
