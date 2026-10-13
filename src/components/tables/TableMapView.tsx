@@ -207,19 +207,19 @@ export const TableMapView: React.FC = () => {
 
           <div className="flex items-center gap-2 text-xs">
             {/* View mode toggle */}
-            <div className="h-9 flex items-center bg-slate-900/60 p-0.5 rounded-lg border border-slate-800">
+            <div className="h-10 flex items-center bg-slate-900/60 p-1 rounded-xl border border-slate-800">
               <button
                 onClick={() => setViewMode('GRID')}
-                className={`h-full px-3 rounded-md font-medium text-xs transition-colors flex items-center justify-center ${
-                  viewMode === 'GRID' ? 'bg-slate-800 text-white' : 'text-slate-400 hover:text-white'
+                className={`h-full px-3.5 rounded-lg font-semibold text-xs transition-colors flex items-center justify-center ${
+                  viewMode === 'GRID' ? 'bg-slate-800 text-white shadow-sm' : 'text-slate-400 hover:text-white'
                 }`}
               >
                 Lưới
               </button>
               <button
                 onClick={() => setViewMode('LIST')}
-                className={`h-full px-3 rounded-md font-medium text-xs transition-colors flex items-center justify-center ${
-                  viewMode === 'LIST' ? 'bg-slate-800 text-white' : 'text-slate-400 hover:text-white'
+                className={`h-full px-3.5 rounded-lg font-semibold text-xs transition-colors flex items-center justify-center ${
+                  viewMode === 'LIST' ? 'bg-slate-800 text-white shadow-sm' : 'text-slate-400 hover:text-white'
                 }`}
               >
                 Danh sách
@@ -231,14 +231,14 @@ export const TableMapView: React.FC = () => {
               <div className="flex items-center gap-1.5">
                 <button
                   onClick={handleQuickAddTable}
-                  className="h-9 px-3 rounded-lg bg-slate-900 hover:bg-slate-800 text-slate-300 border border-slate-800 hover:border-slate-700 font-medium flex items-center justify-center transition-colors"
+                  className="h-10 px-3.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-slate-300 border border-slate-800 hover:border-slate-700 font-semibold flex items-center justify-center transition-all active:scale-[0.98]"
                   title="Thêm nhanh 1 bàn tiếp theo"
                 >
                   + Tạo nhanh
                 </button>
                 <button
                   onClick={handleOpenAddTable}
-                  className="h-9 px-3.5 rounded-lg bg-amber-500 hover:bg-amber-400 text-slate-950 font-semibold flex items-center justify-center transition-colors shadow-sm"
+                  className="h-10 px-4 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold flex items-center justify-center transition-all shadow-sm active:scale-[0.98]"
                   title="Thêm bàn mới với thông tin chi tiết"
                 >
                   + Thêm bàn
@@ -249,7 +249,7 @@ export const TableMapView: React.FC = () => {
             {availableTables.length > 0 && !isAdmin && (
               <button
                 onClick={() => setActiveOpenModalTable(availableTables[0])}
-                className="h-9 px-3.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white font-medium flex items-center justify-center transition-colors shadow-sm"
+                className="h-10 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold flex items-center justify-center transition-all shadow-sm active:scale-[0.98]"
               >
                 + Mở bàn
               </button>
@@ -258,7 +258,7 @@ export const TableMapView: React.FC = () => {
             {/* Mobile trigger to view panel */}
             <button
               onClick={() => setIsMobilePanelOpen(true)}
-              className="lg:hidden h-9 px-3 rounded-lg bg-slate-800 border border-slate-700 text-slate-200 font-medium flex items-center justify-center"
+              className="lg:hidden h-10 px-3.5 rounded-xl bg-slate-800 border border-slate-700 text-slate-200 font-semibold flex items-center justify-center active:scale-[0.98]"
             >
               Điều khiển
             </button>
@@ -271,7 +271,7 @@ export const TableMapView: React.FC = () => {
           <div className="flex items-center bg-slate-900/60 p-1 rounded-xl border border-slate-800 text-xs overflow-x-auto no-scrollbar gap-1">
             <button
               onClick={() => setStatusFilter('ALL')}
-              className={`h-7.5 px-3 rounded-lg font-medium transition-all whitespace-nowrap flex items-center justify-center ${
+              className={`h-8 px-3.5 rounded-lg font-semibold transition-all whitespace-nowrap flex items-center justify-center ${
                 statusFilter === 'ALL'
                   ? 'bg-slate-800 text-white shadow-sm'
                   : 'text-slate-400 hover:text-white'
@@ -281,9 +281,9 @@ export const TableMapView: React.FC = () => {
             </button>
             <button
               onClick={() => setStatusFilter('PLAYING')}
-              className={`h-7.5 px-3 rounded-lg font-medium transition-all whitespace-nowrap flex items-center justify-center ${
+              className={`h-8 px-3.5 rounded-lg font-semibold transition-all whitespace-nowrap flex items-center justify-center ${
                 statusFilter === 'PLAYING'
-                  ? 'bg-emerald-500/20 text-emerald-300 shadow-sm'
+                  ? 'bg-emerald-500/20 text-emerald-300 shadow-sm border border-emerald-500/30'
                   : 'text-slate-400 hover:text-white'
               }`}
             >
@@ -291,7 +291,7 @@ export const TableMapView: React.FC = () => {
             </button>
             <button
               onClick={() => setStatusFilter('AVAILABLE')}
-              className={`h-7.5 px-3 rounded-lg font-medium transition-all whitespace-nowrap flex items-center justify-center ${
+              className={`h-8 px-3.5 rounded-lg font-semibold transition-all whitespace-nowrap flex items-center justify-center ${
                 statusFilter === 'AVAILABLE'
                   ? 'bg-slate-800 text-white shadow-sm'
                   : 'text-slate-400 hover:text-white'
@@ -302,9 +302,9 @@ export const TableMapView: React.FC = () => {
             {waitingCount > 0 && (
               <button
                 onClick={() => setStatusFilter('WAITING_PAYMENT')}
-                className={`h-7.5 px-3 rounded-lg font-medium transition-all whitespace-nowrap flex items-center justify-center ${
+                className={`h-8 px-3.5 rounded-lg font-semibold transition-all whitespace-nowrap flex items-center justify-center ${
                   statusFilter === 'WAITING_PAYMENT'
-                    ? 'bg-amber-500/20 text-amber-300 shadow-sm'
+                    ? 'bg-amber-500/20 text-amber-300 shadow-sm border border-amber-500/30'
                     : 'text-slate-400 hover:text-white'
                 }`}
               >
@@ -315,11 +315,11 @@ export const TableMapView: React.FC = () => {
 
           {/* Type Selector Dropdown & Search Bar */}
           <div className="flex items-center gap-2">
-            <div className="h-8.5 bg-slate-900/60 px-2.5 rounded-lg border border-slate-800 flex items-center shrink-0">
+            <div className="h-9 bg-slate-900/60 px-3 rounded-xl border border-slate-800 flex items-center shrink-0">
               <select
                 value={typeFilter}
                 onChange={(e) => setTypeFilter(e.target.value)}
-                className="h-full bg-transparent text-xs text-slate-300 focus:outline-none cursor-pointer font-medium"
+                className="h-full bg-transparent text-xs text-slate-300 focus:outline-none cursor-pointer font-semibold"
               >
                 <option value="ALL" className="bg-slate-900 text-white">Tất cả loại bàn</option>
                 <option value="POOL" className="bg-slate-900 text-white">Bàn Lỗ (Pool)</option>
@@ -329,13 +329,13 @@ export const TableMapView: React.FC = () => {
               </select>
             </div>
 
-            <div className="w-full sm:w-56 h-8.5">
+            <div className="w-full sm:w-60 h-9">
               <input
                 type="text"
                 placeholder="Tìm mã hoặc tên bàn..."
                 value={searchCode}
                 onChange={(e) => setSearchCode(e.target.value)}
-                className="w-full h-full px-3 text-xs rounded-lg bg-slate-900 border border-slate-800 text-white placeholder-slate-500 focus:outline-none focus:border-slate-700 transition-colors"
+                className="w-full h-full px-3.5 text-xs rounded-xl bg-slate-900 border border-slate-800 text-white placeholder-slate-500 focus:outline-none focus:border-slate-700 transition-colors font-medium"
               />
             </div>
           </div>

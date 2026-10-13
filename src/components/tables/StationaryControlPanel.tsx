@@ -190,14 +190,14 @@ export const StationaryControlPanel: React.FC<StationaryControlPanelProps> = ({
               {isPaused ? (
                 <button
                   onClick={() => onResumeTable(table)}
-                  className="h-8.5 px-2 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white font-medium flex items-center justify-center transition-colors text-center"
+                  className="h-10 px-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-semibold flex items-center justify-center transition-all shadow-sm active:scale-[0.98]"
                 >
                   Tiếp tục
                 </button>
               ) : (
                 <button
                   onClick={() => onPauseTable(table)}
-                  className="h-8.5 px-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-amber-300 border border-slate-700/60 font-medium flex items-center justify-center transition-colors text-center"
+                  className="h-10 px-2 rounded-xl bg-slate-800 hover:bg-slate-750 text-amber-300 border border-slate-700/60 font-semibold flex items-center justify-center transition-all active:scale-[0.98]"
                 >
                   Tạm dừng
                 </button>
@@ -205,14 +205,14 @@ export const StationaryControlPanel: React.FC<StationaryControlPanelProps> = ({
 
               <button
                 onClick={() => onTransferTable(table)}
-                className="h-8.5 px-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700/60 font-medium flex items-center justify-center transition-colors text-center"
+                className="h-10 px-2 rounded-xl bg-slate-800 hover:bg-slate-750 text-slate-200 border border-slate-700/60 font-semibold flex items-center justify-center transition-all active:scale-[0.98]"
               >
                 Đổi bàn
               </button>
 
               <button
                 onClick={() => onMergeTable(table)}
-                className="h-8.5 px-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700/60 font-medium flex items-center justify-center transition-colors text-center"
+                className="h-10 px-2 rounded-xl bg-slate-800 hover:bg-slate-750 text-slate-200 border border-slate-700/60 font-semibold flex items-center justify-center transition-all active:scale-[0.98]"
               >
                 Gộp bàn
               </button>
@@ -227,7 +227,7 @@ export const StationaryControlPanel: React.FC<StationaryControlPanelProps> = ({
 
                 <button
                   onClick={() => onOpenOrderModal(table)}
-                  className="h-7 px-2.5 rounded-md bg-slate-800 hover:bg-slate-700 text-amber-300 text-xs font-medium flex items-center transition-colors border border-slate-700/60"
+                  className="h-8 px-3 rounded-lg bg-amber-500/15 hover:bg-amber-500/25 text-amber-300 text-xs font-semibold flex items-center transition-all border border-amber-500/30 active:scale-[0.98]"
                 >
                   + Thêm món
                 </button>
@@ -238,14 +238,14 @@ export const StationaryControlPanel: React.FC<StationaryControlPanelProps> = ({
                   Chưa có món nào. Bấm <b>"+ Thêm món"</b> để gọi đồ uống/đồ ăn.
                 </div>
               ) : (
-                <div className="space-y-1.5 max-h-44 overflow-y-auto pr-0.5">
+                <div className="space-y-1.5 max-h-48 overflow-y-auto pr-0.5">
                   {session.orders.map((ord) => (
                     <div
                       key={ord.id}
                       className="p-2.5 rounded-xl bg-slate-900/70 border border-slate-800/80 flex items-center justify-between text-xs"
                     >
                       <div className="flex-1 min-w-0 pr-2">
-                        <span className="font-medium text-white truncate block text-xs">{ord.name}</span>
+                        <span className="font-semibold text-white truncate block text-xs">{ord.name}</span>
                         <span className="text-[11px] text-slate-400">
                           {formatVND(ord.price)} / {ord.unit}
                         </span>
@@ -255,26 +255,26 @@ export const StationaryControlPanel: React.FC<StationaryControlPanelProps> = ({
                       <div className="flex items-center gap-1.5 mr-2">
                         <button
                           onClick={() => onUpdateOrderItemQty(table.id, ord.id, -1)}
-                          className="w-6 h-6 rounded-md bg-slate-800 hover:bg-slate-700 flex items-center justify-center text-slate-200 text-xs font-semibold border border-slate-700/50"
+                          className="w-7 h-7 rounded-lg bg-slate-800 hover:bg-slate-750 flex items-center justify-center text-slate-200 text-xs font-bold border border-slate-700/60 active:scale-95 transition-all"
                         >
                           −
                         </button>
-                        <span className="font-semibold text-white px-1 text-xs">{ord.quantity}</span>
+                        <span className="font-bold text-white px-1.5 text-xs font-mono">{ord.quantity}</span>
                         <button
                           onClick={() => onUpdateOrderItemQty(table.id, ord.id, 1)}
-                          className="w-6 h-6 rounded-md bg-slate-800 hover:bg-slate-700 flex items-center justify-center text-slate-200 text-xs font-semibold border border-slate-700/50"
+                          className="w-7 h-7 rounded-lg bg-slate-800 hover:bg-slate-750 flex items-center justify-center text-slate-200 text-xs font-bold border border-slate-700/60 active:scale-95 transition-all"
                         >
                           +
                         </button>
                       </div>
 
                       <div className="text-right flex items-center gap-2">
-                        <span className="font-semibold text-slate-200 text-xs">
+                        <span className="font-bold text-slate-200 text-xs font-mono">
                           {formatVND(ord.price * ord.quantity)}
                         </span>
                         <button
                           onClick={() => onRemoveOrderItem(table.id, ord.id)}
-                          className="text-slate-500 hover:text-rose-400 text-xs px-1 py-0.5 rounded transition-colors"
+                          className="text-slate-500 hover:text-rose-400 text-xs px-1.5 py-0.5 rounded transition-colors"
                           title="Xóa món"
                         >
                           Xóa

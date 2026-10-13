@@ -350,10 +350,10 @@ export const PosCashierView: React.FC = () => {
                         <button
                           type="button"
                           onClick={() => setPaymentMethod('CASH')}
-                          className={`py-2 px-2 rounded-xl border text-center transition-colors font-medium ${
+                          className={`h-11 rounded-xl border text-center transition-all font-semibold flex items-center justify-center ${
                             paymentMethod === 'CASH'
-                              ? 'bg-emerald-500/15 border-emerald-500/50 text-emerald-300'
-                              : 'bg-slate-900 border-slate-800 text-slate-400 hover:text-white'
+                              ? 'bg-amber-500/15 border-amber-500/40 text-amber-300 shadow-sm'
+                              : 'bg-slate-900/60 border-slate-800 text-slate-400 hover:text-white hover:bg-slate-800/60'
                           }`}
                         >
                           Tiền mặt
@@ -362,10 +362,10 @@ export const PosCashierView: React.FC = () => {
                         <button
                           type="button"
                           onClick={() => setPaymentMethod('BANK_TRANSFER')}
-                          className={`py-2 px-2 rounded-xl border text-center transition-colors font-medium ${
+                          className={`h-11 rounded-xl border text-center transition-all font-semibold flex items-center justify-center ${
                             paymentMethod === 'BANK_TRANSFER'
-                              ? 'bg-emerald-500/15 border-emerald-500/50 text-emerald-300'
-                              : 'bg-slate-900 border-slate-800 text-slate-400 hover:text-white'
+                              ? 'bg-cyan-500/15 border-cyan-500/40 text-cyan-300 shadow-sm'
+                              : 'bg-slate-900/60 border-slate-800 text-slate-400 hover:text-white hover:bg-slate-800/60'
                           }`}
                         >
                           VietQR
@@ -374,10 +374,10 @@ export const PosCashierView: React.FC = () => {
                         <button
                           type="button"
                           onClick={() => setPaymentMethod('MEMBER_WALLET')}
-                          className={`py-2 px-2 rounded-xl border text-center transition-colors font-medium ${
+                          className={`h-11 rounded-xl border text-center transition-all font-semibold flex items-center justify-center ${
                             paymentMethod === 'MEMBER_WALLET'
-                              ? 'bg-emerald-500/15 border-emerald-500/50 text-emerald-300'
-                              : 'bg-slate-900 border-slate-800 text-slate-400 hover:text-white'
+                              ? 'bg-purple-500/15 border-purple-500/40 text-purple-300 shadow-sm'
+                              : 'bg-slate-900/60 border-slate-800 text-slate-400 hover:text-white hover:bg-slate-800/60'
                           }`}
                         >
                           Ví VIP

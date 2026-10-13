@@ -114,37 +114,16 @@ export const TableCard: React.FC<TableCardProps> = ({
               </span>
             )}
 
-            {/* Admin discrete action button */}
-            {isAdmin && (
-              <div className="flex items-center gap-1" onClick={(e) => e.stopPropagation()}>
-                <button
-                  onClick={() => onEditTable && onEditTable(table)}
-                  className="text-xs text-amber-400 hover:text-amber-300 hover:underline px-1 py-0.5 transition-colors font-medium"
-                  title="Chỉnh sửa thông tin bàn"
-                >
-                  Sửa
-                </button>
-                {isAvailable && onDeleteTable && (
-                  <button
-                    onClick={() => onDeleteTable(table)}
-                    className="text-xs text-slate-500 hover:text-rose-400 hover:underline px-1 py-0.5 transition-colors"
-                    title="Xóa bàn"
-                  >
-                    Xóa
-                  </button>
-                )}
-              </div>
-            )}
           </div>
         </div>
 
         {/* Center: Table Content */}
-        <div className="py-3">
+        <div className="py-3.5">
           {session && feeInfo ? (
-            <div className="flex flex-col gap-2">
+            <div className="flex flex-col gap-2.5">
               <div className="flex items-baseline justify-between">
                 <span className="text-xs text-slate-400">Thời gian chơi</span>
-                <span className="text-xl font-semibold text-white tracking-tight">
+                <span className="text-xl font-bold text-white tracking-tight font-mono">
                   {formatSecondsToTimer(feeInfo.netSeconds)}
                 </span>
               </div>
@@ -156,11 +135,11 @@ export const TableCard: React.FC<TableCardProps> = ({
                 </span>
               </div>
 
-              <div className="flex items-center justify-between text-xs text-slate-400 pt-1 border-t border-slate-800/50">
-                <span className="truncate max-w-[140px] text-slate-300">
+              <div className="flex items-center justify-between text-xs text-slate-400 pt-1.5 border-t border-slate-800/60">
+                <span className="truncate max-w-[140px] text-slate-300 font-medium">
                   {session.customerName || 'Khách vãng lai'}
                 </span>
-                <span>
+                <span className="text-slate-400">
                   {session.orders?.length > 0 ? `${session.orders.length} món` : 'Chưa gọi món'}
                 </span>
               </div>
@@ -171,7 +150,7 @@ export const TableCard: React.FC<TableCardProps> = ({
             </div>
           ) : (
             <div className="py-4 flex flex-col items-center justify-center text-center">
-              <span className="text-base font-semibold text-slate-200">
+              <span className="text-base font-bold text-slate-200">
                 {formatVND(table.hourlyRate)} / giờ
               </span>
               <span className="text-xs text-slate-400 mt-1">
@@ -187,7 +166,7 @@ export const TableCard: React.FC<TableCardProps> = ({
         {isAvailable && (
           <button
             onClick={() => onOpenTable(table)}
-            className="w-full h-10 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-semibold text-xs sm:text-sm flex items-center justify-center transition-colors shadow-sm active:scale-[0.99]"
+            className="w-full h-11 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-semibold text-xs sm:text-sm flex items-center justify-center transition-all shadow-sm active:scale-[0.98]"
           >
             Mở bàn
           </button>
@@ -197,14 +176,14 @@ export const TableCard: React.FC<TableCardProps> = ({
           <div className="flex items-center gap-2">
             <button
               onClick={() => onOrderMenu(table)}
-              className="flex-1 h-10 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold flex items-center justify-center transition-colors active:scale-[0.99]"
+              className="flex-1 h-11 rounded-xl bg-slate-800 hover:bg-slate-750 text-slate-200 text-xs font-semibold flex items-center justify-center transition-all border border-slate-700/60 active:scale-[0.98]"
             >
               Gọi món
             </button>
 
             <button
               onClick={() => onCheckout(table, session)}
-              className="flex-1 h-10 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs sm:text-sm flex items-center justify-center transition-colors shadow-sm active:scale-[0.99]"
+              className="flex-1 h-11 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs sm:text-sm flex items-center justify-center transition-all shadow-sm active:scale-[0.98]"
             >
               Thanh toán
             </button>
@@ -214,7 +193,7 @@ export const TableCard: React.FC<TableCardProps> = ({
         {isMaintenance && (
           <button
             onClick={() => onToggleMaintenance(table)}
-            className="w-full h-10 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-medium flex items-center justify-center transition-colors"
+            className="w-full h-11 rounded-xl bg-slate-800 hover:bg-slate-750 text-slate-300 text-xs font-medium flex items-center justify-center transition-all"
           >
             Mở lại bàn
           </button>

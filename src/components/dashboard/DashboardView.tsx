@@ -55,13 +55,13 @@ export const DashboardView: React.FC<DashboardViewProps> = ({ onNavigateTab }) =
         <div className="flex items-center gap-2">
           <button
             onClick={() => onNavigateTab('tables')}
-            className="h-9 px-4 rounded-lg bg-slate-900 hover:bg-slate-800 text-slate-200 border border-slate-800 text-xs font-medium flex items-center justify-center transition-colors"
+            className="h-10 px-4 rounded-xl bg-slate-900 hover:bg-slate-800 text-slate-200 border border-slate-800 text-xs font-semibold flex items-center justify-center transition-all active:scale-[0.98]"
           >
             Sơ đồ bàn
           </button>
           <button
             onClick={() => onNavigateTab('pos')}
-            className="h-9 px-4 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white font-medium text-xs flex items-center justify-center transition-colors shadow-sm"
+            className="h-10 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-semibold text-xs flex items-center justify-center transition-all shadow-sm active:scale-[0.98]"
           >
             Thu ngân
           </button>
