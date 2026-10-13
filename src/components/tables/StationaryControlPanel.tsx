@@ -393,12 +393,15 @@ export const StationaryControlPanel: React.FC<StationaryControlPanelProps> = ({
 
       {/* Footer: Thanh toán */}
       {(isPlaying || isWaiting) && session && (
-        <div className="p-3 bg-slate-900/90 border-t border-slate-800 shrink-0">
+        <div className="p-3 sm:p-4 bg-slate-900/95 border-t border-slate-800 shrink-0">
           <button
             onClick={() => onCheckoutTable(table, session)}
-            className="w-full h-10.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs flex items-center justify-center transition-all shadow-md active:scale-[0.99]"
+            className="w-full h-14 rounded-2xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-sm sm:text-base flex items-center justify-between px-5 transition-all shadow-lg shadow-amber-500/10 active:scale-[0.99]"
           >
-            Thanh toán ({feeCalc ? formatVND(feeCalc.grandTotal) : ''})
+            <span className="font-bold tracking-tight">Thanh toán</span>
+            <span className="font-extrabold text-base sm:text-lg bg-black/10 px-3 py-1 rounded-xl">
+              {feeCalc ? formatVND(feeCalc.grandTotal) : ''}
+            </span>
           </button>
         </div>
       )}

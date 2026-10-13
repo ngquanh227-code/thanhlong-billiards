@@ -187,7 +187,7 @@ export const TableCard: React.FC<TableCardProps> = ({
         {isAvailable && (
           <button
             onClick={() => onOpenTable(table)}
-            className="w-full h-9 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white font-medium text-xs flex items-center justify-center transition-colors shadow-sm active:scale-[0.99]"
+            className="w-full h-10 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-semibold text-xs sm:text-sm flex items-center justify-center transition-colors shadow-sm active:scale-[0.99]"
           >
             Mở bàn
           </button>
@@ -197,14 +197,14 @@ export const TableCard: React.FC<TableCardProps> = ({
           <div className="flex items-center gap-2">
             <button
               onClick={() => onOrderMenu(table)}
-              className="flex-1 h-9 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-medium flex items-center justify-center transition-colors active:scale-[0.99]"
+              className="flex-1 h-10 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold flex items-center justify-center transition-colors active:scale-[0.99]"
             >
               Gọi món
             </button>
 
             <button
               onClick={() => onCheckout(table, session)}
-              className="flex-1 h-9 rounded-lg bg-amber-500 hover:bg-amber-400 text-slate-950 font-semibold text-xs flex items-center justify-center transition-colors shadow-sm active:scale-[0.99]"
+              className="flex-1 h-10 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs sm:text-sm flex items-center justify-center transition-colors shadow-sm active:scale-[0.99]"
             >
               Thanh toán
             </button>
@@ -214,7 +214,7 @@ export const TableCard: React.FC<TableCardProps> = ({
         {isMaintenance && (
           <button
             onClick={() => onToggleMaintenance(table)}
-            className="w-full h-9 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-medium flex items-center justify-center transition-colors"
+            className="w-full h-10 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-medium flex items-center justify-center transition-colors"
           >
             Mở lại bàn
           </button>

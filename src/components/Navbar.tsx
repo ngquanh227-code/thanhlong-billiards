@@ -11,17 +11,9 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenShiftModal, onNavigateTab 
   const {
     tables,
     shifts,
-    currentStaff,
     isAdmin,
     toggleRole,
-    staff,
-    switchCurrentStaff,
     currentTime,
-    resetAllDemoData,
-    soundEnabled,
-    toggleSound,
-    theme,
-    toggleTheme,
   } = useApp();
 
   const playingCount = tables.filter((t) => t.status === 'PLAYING').length;
@@ -127,64 +119,16 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenShiftModal, onNavigateTab 
           </button>
 
           {/* Admin / Staff Role Switcher */}
-          <div className="flex items-center gap-1.5">
-            <button
-              onClick={toggleRole}
-              className={`h-8.5 px-3 rounded-lg text-xs font-medium flex items-center justify-center whitespace-nowrap transition-all border ${
-                isAdmin
-                  ? 'bg-amber-500/15 text-amber-300 border-amber-500/35 hover:bg-amber-500/20'
-                  : 'bg-slate-800/80 text-slate-300 border-slate-700 hover:text-white hover:bg-slate-700/60'
-              }`}
-              title="Chuyển đổi giữa quyền Quản trị (sửa quán) và Nhân viên (vận hành)"
-            >
-              {isAdmin ? 'Quản trị viên' : 'Nhân viên'}
-            </button>
-
-            <div className="hidden lg:flex items-center h-8.5 bg-slate-900/60 px-2 rounded-lg border border-slate-800">
-              <select
-                value={currentStaff.id}
-                onChange={(e) => switchCurrentStaff(e.target.value)}
-                className="h-full bg-transparent text-xs text-slate-300 focus:outline-none cursor-pointer font-medium"
-              >
-                {staff.map((s) => (
-                  <option key={s.id} value={s.id} className="bg-slate-900 text-white">
-                    {s.name}
-                  </option>
-                ))}
-              </select>
-            </div>
-          </div>
-
-          {/* Quick Sound & Theme Controls */}
           <button
-            onClick={toggleTheme}
-            className="h-8.5 px-3 rounded-lg bg-slate-900/60 hover:bg-slate-800 text-slate-300 border border-slate-800 hover:border-slate-700 text-xs font-medium flex items-center justify-center whitespace-nowrap transition-colors"
-            title="Đổi giao diện Sáng / Tối"
-          >
-            {theme === 'dark' ? 'Tối' : 'Sáng'}
-          </button>
-
-          <button
-            onClick={toggleSound}
-            className={`h-8.5 px-3 rounded-lg border text-xs font-medium flex items-center justify-center whitespace-nowrap transition-colors ${
-              soundEnabled
-                ? 'bg-slate-900/60 text-emerald-400 border-slate-800 hover:border-slate-700'
-                : 'bg-slate-900/60 text-slate-500 border-slate-800'
+            onClick={toggleRole}
+            className={`h-8.5 px-3.5 rounded-lg text-xs font-medium flex items-center justify-center whitespace-nowrap transition-all border ${
+              isAdmin
+                ? 'bg-amber-500/15 text-amber-300 border-amber-500/35 hover:bg-amber-500/20 font-semibold'
+                : 'bg-slate-800/80 text-slate-300 border-slate-700 hover:text-white hover:bg-slate-700/60'
             }`}
-            title={soundEnabled ? 'Tắt âm thanh' : 'Bật âm thanh'}
+            title="Chuyển đổi giữa quyền Quản trị (sửa quán) và Nhân viên (vận hành)"
           >
-            {soundEnabled ? 'Âm thanh' : 'Tắt âm'}
-          </button>
-
-          {/* Reset Demo Data button */}
-          <button
-            onClick={() => {
-              if (window.confirm('Khôi phục toàn bộ dữ liệu mẫu ban đầu của quán?')) resetAllDemoData();
-            }}
-            className="hidden xl:flex h-8.5 px-2.5 rounded-lg text-slate-500 hover:text-rose-400 hover:bg-rose-500/10 text-xs font-medium items-center justify-center whitespace-nowrap transition-colors"
-            title="Khôi phục dữ liệu ban đầu"
-          >
-            Đặt lại
+            {isAdmin ? 'Quản trị viên' : 'Nhân viên'}
           </button>
         </div>
       </div>

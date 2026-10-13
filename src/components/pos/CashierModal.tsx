@@ -487,21 +487,21 @@ export const CashierModal: React.FC<CashierModalProps> = ({
               <button
                 type="button"
                 onClick={onClose}
-                className="flex-1 py-2.5 text-xs font-medium text-slate-400 hover:text-white rounded-xl hover:bg-slate-800 transition-colors"
+                className="flex-1 h-12 text-xs font-medium text-slate-400 hover:text-white rounded-xl hover:bg-slate-800 transition-colors flex items-center justify-center"
               >
                 Hủy
               </button>
               <button
                 type="button"
                 onClick={handlePrintAndSettle}
-                className="flex-1 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-750 text-slate-200 border border-slate-700 font-medium text-xs transition-colors"
+                className="flex-1 h-12 rounded-xl bg-slate-800 hover:bg-slate-750 text-slate-200 border border-slate-700 font-semibold text-xs flex items-center justify-center transition-colors"
               >
                 In & Trả bàn
               </button>
               <button
                 type="button"
                 onClick={handleSettleOnly}
-                className="flex-[2] py-2.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-semibold text-xs transition-colors shadow-sm"
+                className="flex-[2] h-12 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-sm flex items-center justify-center transition-all shadow-md active:scale-[0.99]"
               >
                 Chốt thanh toán
               </button>

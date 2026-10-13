@@ -10,6 +10,8 @@ export const SettingsView: React.FC = () => {
     pricingRules,
     theme,
     setTheme,
+    soundEnabled,
+    toggleSound,
     addTable,
     updateTable,
     deleteTable,
@@ -150,42 +152,75 @@ export const SettingsView: React.FC = () => {
         </div>
       </div>
 
-      {/* Row 1: Giao diện Sáng / Tối (Theme Mode) */}
-      <div className="p-5 rounded-2xl bg-slate-900/60 border border-slate-800/80 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div>
-          <div className="flex items-center gap-2.5">
-            <span className="text-sm font-semibold text-white">Chế độ hiển thị</span>
-            <span className="text-[11px] px-2.5 py-0.5 rounded-full bg-slate-800 text-slate-300 font-medium">
-              {theme === 'dark' ? 'Giao diện tối' : 'Giao diện sáng'}
-            </span>
+      {/* Row 1: Giao diện Sáng / Tối (Theme Mode) & Âm thanh hệ thống */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        {/* Theme Card */}
+        <div className="p-5 rounded-2xl bg-slate-900/60 border border-slate-800/80 flex flex-col justify-between gap-3">
+          <div>
+            <div className="flex items-center gap-2.5">
+              <span className="text-sm font-semibold text-white">Chế độ hiển thị</span>
+              <span className="text-[11px] px-2.5 py-0.5 rounded-full bg-slate-800 text-slate-300 font-medium">
+                {theme === 'dark' ? 'Giao diện tối' : 'Giao diện sáng'}
+              </span>
+            </div>
+            <p className="text-xs text-slate-400 mt-1">
+              Tùy chỉnh tông màu: Tối dịu mắt ban đêm hoặc Sáng rõ nét ban ngày.
+            </p>
           </div>
-          <p className="text-xs text-slate-400 mt-1">
-            Tùy chỉnh tông màu phù hợp với không gian quán: Tối nhẹ nhàng dịu mắt hoặc Sáng rõ nét ban ngày.
-          </p>
+
+          <div className="flex items-center gap-2 pt-2">
+            <button
+              onClick={() => setTheme('dark')}
+              className={`flex-1 h-9 rounded-lg text-xs transition-all flex items-center justify-center ${
+                theme === 'dark'
+                  ? 'bg-amber-500 text-slate-950 font-bold shadow-sm'
+                  : 'bg-slate-800 text-slate-400 hover:text-slate-200 border border-slate-700/60 font-medium'
+              }`}
+            >
+              Tối (Dark)
+            </button>
+
+            <button
+              onClick={() => setTheme('light')}
+              className={`flex-1 h-9 rounded-lg text-xs transition-all flex items-center justify-center ${
+                theme === 'light'
+                  ? 'bg-amber-500 text-slate-950 font-bold shadow-sm'
+                  : 'bg-slate-800 text-slate-400 hover:text-slate-200 border border-slate-700/60 font-medium'
+              }`}
+            >
+              Sáng (Light)
+            </button>
+          </div>
         </div>
 
-        <div className="flex items-center gap-2">
-          <button
-            onClick={() => setTheme('dark')}
-            className={`px-4 py-2 rounded-xl text-xs transition-all ${
-              theme === 'dark'
-                ? 'bg-amber-500 text-slate-950 font-semibold shadow-sm'
-                : 'bg-slate-800 text-slate-400 hover:text-slate-200 border border-slate-700/60 font-medium'
-            }`}
-          >
-            Tối (Dark)
-          </button>
+        {/* Sound Card */}
+        <div className="p-5 rounded-2xl bg-slate-900/60 border border-slate-800/80 flex flex-col justify-between gap-3">
+          <div>
+            <div className="flex items-center gap-2.5">
+              <span className="text-sm font-semibold text-white">Âm thanh thông báo</span>
+              <span className={`text-[11px] px-2.5 py-0.5 rounded-full font-medium ${
+                soundEnabled ? 'bg-emerald-500/15 text-emerald-300' : 'bg-slate-800 text-slate-400'
+              }`}>
+                {soundEnabled ? 'Đang bật' : 'Đang tắt'}
+              </span>
+            </div>
+            <p className="text-xs text-slate-400 mt-1">
+              Phát hiệu ứng âm thanh click, mở bàn, hoàn thành hóa đơn và chuông cảnh báo.
+            </p>
+          </div>
 
-          <button
-            onClick={() => setTheme('light')}
-            className={`px-4 py-2 rounded-xl text-xs transition-all ${
-              theme === 'light'
-                ? 'bg-amber-500 text-slate-950 font-semibold shadow-sm'
-                : 'bg-slate-800 text-slate-400 hover:text-slate-200 border border-slate-700/60 font-medium'
-            }`}
-          >
-            Sáng (Light)
-          </button>
+          <div className="flex items-center gap-2 pt-2">
+            <button
+              onClick={toggleSound}
+              className={`flex-1 h-9 rounded-lg text-xs font-semibold flex items-center justify-center transition-all ${
+                soundEnabled
+                  ? 'bg-emerald-600 hover:bg-emerald-500 text-white shadow-sm'
+                  : 'bg-slate-800 hover:bg-slate-750 text-slate-300 border border-slate-700/60'
+              }`}
+            >
+              {soundEnabled ? 'Bật âm thanh' : 'Tắt âm thanh'}
+            </button>
+          </div>
         </div>
       </div>
 
