@@ -22,7 +22,7 @@ export default function App() {
 
   // Guard admin-only tabs
   useEffect(() => {
-    const adminOnlyTabs = ['reports', 'settings', 'staff', 'inventory'];
+    const adminOnlyTabs = ['reports', 'staff', 'inventory'];
     if (!isAdmin && adminOnlyTabs.includes(currentTab)) {
       setCurrentTab('tables');
     }

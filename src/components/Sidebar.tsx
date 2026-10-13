@@ -22,13 +22,13 @@ export const Sidebar: React.FC<SidebarProps> = ({
     { id: 'menu', label: 'Thực đơn & Order' },
     { id: 'members', label: 'Hội viên & Khách' },
     { id: 'dashboard', label: 'Tổng quan quán' },
+    { id: 'settings', label: 'Cài đặt hệ thống' },
   ];
 
   const adminNavItems = [
     { id: 'staff', label: 'Nhân sự & Ca trực' },
     { id: 'inventory', label: 'Kho hàng & Sổ quỹ' },
     { id: 'reports', label: 'Báo cáo doanh thu' },
-    { id: 'settings', label: 'Cài đặt hệ thống' },
   ];
 
   const handleSelect = (tabId: string) => {

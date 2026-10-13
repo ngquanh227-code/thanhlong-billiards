@@ -5,6 +5,7 @@ import { formatVND } from '../../services/calculation';
 
 export const SettingsView: React.FC = () => {
   const {
+    isAdmin,
     tables,
     settings,
     pricingRules,
@@ -37,6 +38,7 @@ export const SettingsView: React.FC = () => {
   });
 
   const handleOpenAddTable = () => {
+    if (!isAdmin) return;
     setEditingTable(null);
     const nextIndex = tables.length + 1;
     const padded = nextIndex < 10 ? `0${nextIndex}` : `${nextIndex}`;
@@ -52,6 +54,7 @@ export const SettingsView: React.FC = () => {
   };
 
   const handleOpenEditTable = (table: TableItem) => {
+    if (!isAdmin) return;
     setEditingTable(table);
     setTableForm({
       code: table.code,
@@ -66,6 +69,7 @@ export const SettingsView: React.FC = () => {
 
   const handleSaveTable = (e: React.FormEvent) => {
     e.preventDefault();
+    if (!isAdmin) return;
     if (!tableForm.code || !tableForm.name) return;
 
     if (editingTable) {
@@ -85,6 +89,7 @@ export const SettingsView: React.FC = () => {
   };
 
   const handleDeleteTable = (table: TableItem) => {
+    if (!isAdmin) return;
     if (window.confirm(`Bạn có chắc chắn muốn xóa "${table.code} - ${table.name}" khỏi danh sách bàn của quán?`)) {
       deleteTable(table.id);
     }
@@ -92,10 +97,12 @@ export const SettingsView: React.FC = () => {
 
   const handleSaveSettings = (e: React.FormEvent) => {
     e.preventDefault();
+    if (!isAdmin) return;
     updateSettings(formSettings);
   };
 
   const handleSavePricing = (rule: PricingRule) => {
+    if (!isAdmin) return;
     updatePricingRule(rule);
   };
 
@@ -129,27 +136,44 @@ export const SettingsView: React.FC = () => {
       {/* Top Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-800">
         <div>
-          <h1 className="text-xl sm:text-2xl font-bold text-white tracking-tight">
-            Cài đặt hệ thống
-          </h1>
+          <div className="flex items-center gap-2.5">
+            <h1 className="text-xl sm:text-2xl font-bold text-white tracking-tight">
+              Cài đặt hệ thống
+            </h1>
+            <span className={`text-[11px] px-2.5 py-0.5 rounded-full font-medium ${
+              isAdmin
+                ? 'bg-amber-500/15 text-amber-300 border border-amber-500/25'
+                : 'bg-emerald-500/15 text-emerald-300 border border-emerald-500/25'
+            }`}>
+              {isAdmin ? 'Quản trị viên' : 'Nhân viên'}
+            </span>
+          </div>
           <p className="text-xs text-slate-400 mt-1">
-            Quản lý số lượng bàn, giao diện hiển thị, biểu phí giờ chơi và đồng bộ máy chủ
+            {isAdmin
+              ? 'Quản lý toàn diện: tùy chỉnh hiển thị, quy mô bàn, biểu phí và đồng bộ dữ liệu.'
+              : 'Tùy chỉnh giao diện, âm thanh và tra cứu thông tin quán. Chức năng nâng cao yêu cầu quyền Quản trị viên.'}
           </p>
         </div>
 
-        <div className="flex items-center gap-2">
-          <button
-            onClick={handleExportBackup}
-            className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-slate-900/80 hover:bg-slate-800 text-slate-200 border border-slate-800 text-xs font-medium transition-colors"
-          >
-            <span>Sao lưu dữ liệu</span>
-          </button>
+        {isAdmin ? (
+          <div className="flex items-center gap-2">
+            <button
+              onClick={handleExportBackup}
+              className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-slate-900/80 hover:bg-slate-800 text-slate-200 border border-slate-800 text-xs font-medium transition-colors"
+            >
+              <span>Sao lưu dữ liệu</span>
+            </button>
 
-          <label className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-slate-900/80 hover:bg-slate-800 text-slate-200 border border-slate-800 text-xs font-medium cursor-pointer transition-colors">
-            <span>Khôi phục JSON</span>
-            <input type="file" accept=".json" onChange={handleImportBackup} className="hidden" />
-          </label>
-        </div>
+            <label className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-slate-900/80 hover:bg-slate-800 text-slate-200 border border-slate-800 text-xs font-medium cursor-pointer transition-colors">
+              <span>Khôi phục JSON</span>
+              <input type="file" accept=".json" onChange={handleImportBackup} className="hidden" />
+            </label>
+          </div>
+        ) : (
+          <div className="text-xs text-slate-400 font-medium px-3 py-1.5 rounded-xl bg-slate-900/60 border border-slate-800">
+            Chế độ nhân viên
+          </div>
+        )}
       </div>
 
       {/* Row 1: Giao diện Sáng / Tối (Theme Mode) & Âm thanh hệ thống */}
@@ -235,18 +259,27 @@ export const SettingsView: React.FC = () => {
               <span className="text-xs font-medium text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-2.5 py-0.5 rounded-full">
                 {tables.length} bàn
               </span>
+              {!isAdmin && (
+                <span className="text-[11px] font-medium text-slate-400 bg-slate-800 px-2 py-0.5 rounded-md">
+                  Chỉ xem
+                </span>
+              )}
             </div>
             <p className="text-xs text-slate-400 mt-1">
-              Thêm, sửa mã bàn, đổi giá giờ hoặc gỡ bỏ bàn theo quy mô thực tế của quán.
+              {isAdmin
+                ? 'Thêm, sửa mã bàn, đổi giá giờ hoặc gỡ bỏ bàn theo quy mô thực tế của quán.'
+                : 'Xem danh sách bàn và đơn giá niêm yết. Quyền thêm, sửa hoặc xóa bàn yêu cầu tài khoản Quản trị viên.'}
             </p>
           </div>
 
-          <button
-            onClick={handleOpenAddTable}
-            className="flex items-center justify-center gap-1.5 px-3.5 py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-semibold text-xs transition-colors"
-          >
-            <span>+ Thêm bàn mới</span>
-          </button>
+          {isAdmin && (
+            <button
+              onClick={handleOpenAddTable}
+              className="flex items-center justify-center gap-1.5 px-3.5 py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-semibold text-xs transition-colors"
+            >
+              <span>+ Thêm bàn mới</span>
+            </button>
+          )}
         </div>
 
         {/* Table list grid */}
@@ -288,22 +321,24 @@ export const SettingsView: React.FC = () => {
                   </div>
                 </div>
 
-                <div className="flex items-center gap-1.5 shrink-0">
-                  <button
-                    onClick={() => handleOpenEditTable(tbl)}
-                    className="px-2.5 py-1.5 rounded bg-charcoal-800 hover:bg-charcoal-750 text-slate-200 hover:text-white border border-charcoal-700 text-xs font-mono font-semibold transition-colors"
-                    title="Chỉnh sửa thông tin bàn"
-                  >
-                    SỬA
-                  </button>
-                  <button
-                    onClick={() => handleDeleteTable(tbl)}
-                    className="px-2.5 py-1.5 rounded bg-charcoal-800 hover:bg-rose-950/60 text-slate-400 hover:text-rose-400 border border-charcoal-700 text-xs font-mono font-semibold transition-colors"
-                    title="Xóa bàn khỏi quán"
-                  >
-                    XÓA
-                  </button>
-                </div>
+                {isAdmin && (
+                  <div className="flex items-center gap-1.5 shrink-0">
+                    <button
+                      onClick={() => handleOpenEditTable(tbl)}
+                      className="px-2.5 py-1.5 rounded bg-charcoal-800 hover:bg-charcoal-750 text-slate-200 hover:text-white border border-charcoal-700 text-xs font-mono font-semibold transition-colors"
+                      title="Chỉnh sửa thông tin bàn"
+                    >
+                      SỬA
+                    </button>
+                    <button
+                      onClick={() => handleDeleteTable(tbl)}
+                      className="px-2.5 py-1.5 rounded bg-charcoal-800 hover:bg-rose-950/60 text-slate-400 hover:text-rose-400 border border-charcoal-700 text-xs font-mono font-semibold transition-colors"
+                      title="Xóa bàn khỏi quán"
+                    >
+                      XÓA
+                    </button>
+                  </div>
+                )}
               </div>
             );
           })}
@@ -314,10 +349,15 @@ export const SettingsView: React.FC = () => {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
         {/* 1. General Club Information */}
         <div className="p-5 rounded-2xl bg-slate-900/60 border border-slate-800/80">
-          <div className="flex items-center gap-2 mb-4">
+          <div className="flex items-center justify-between mb-4">
             <h3 className="text-sm font-semibold text-white">
               Thông tin quán & Hóa đơn thanh toán
             </h3>
+            {!isAdmin && (
+              <span className="text-[11px] px-2 py-0.5 rounded bg-slate-800 text-slate-400 font-medium">
+                Chỉ xem
+              </span>
+            )}
           </div>
 
           <form onSubmit={handleSaveSettings} className="flex flex-col gap-3 text-xs">
@@ -325,9 +365,14 @@ export const SettingsView: React.FC = () => {
               <label className="text-slate-300 font-medium block mb-1">Tên thương hiệu câu lạc bộ:</label>
               <input
                 type="text"
+                readOnly={!isAdmin}
                 value={formSettings.clubName}
                 onChange={(e) => setFormSettings({ ...formSettings, clubName: e.target.value })}
-                className="w-full px-3.5 py-2 rounded-xl bg-slate-800/60 border border-slate-700/80 text-white focus:outline-none focus:border-slate-500 font-medium"
+                className={`w-full px-3.5 py-2 rounded-xl border text-white font-medium ${
+                  isAdmin
+                    ? 'bg-slate-800/60 border-slate-700/80 focus:outline-none focus:border-slate-500'
+                    : 'bg-slate-800/30 border-slate-800 text-slate-300 cursor-default'
+                }`}
               />
             </div>
 
@@ -336,9 +381,14 @@ export const SettingsView: React.FC = () => {
                 <label className="text-slate-300 font-medium block mb-1">Số điện thoại hotline:</label>
                 <input
                   type="text"
+                  readOnly={!isAdmin}
                   value={formSettings.phone}
                   onChange={(e) => setFormSettings({ ...formSettings, phone: e.target.value })}
-                  className="w-full px-3.5 py-2 rounded-xl bg-slate-800/60 border border-slate-700/80 text-white focus:outline-none focus:border-slate-500"
+                  className={`w-full px-3.5 py-2 rounded-xl border text-white ${
+                    isAdmin
+                      ? 'bg-slate-800/60 border-slate-700/80 focus:outline-none focus:border-slate-500'
+                      : 'bg-slate-800/30 border-slate-800 text-slate-300 cursor-default'
+                  }`}
                 />
               </div>
 
@@ -346,9 +396,14 @@ export const SettingsView: React.FC = () => {
                 <label className="text-slate-300 font-medium block mb-1">Mật khẩu Wi-Fi cho khách:</label>
                 <input
                   type="text"
+                  readOnly={!isAdmin}
                   value={formSettings.wifiPassword}
                   onChange={(e) => setFormSettings({ ...formSettings, wifiPassword: e.target.value })}
-                  className="w-full px-3.5 py-2 rounded-xl bg-slate-800/60 border border-slate-700/80 text-white focus:outline-none focus:border-slate-500"
+                  className={`w-full px-3.5 py-2 rounded-xl border text-white ${
+                    isAdmin
+                      ? 'bg-slate-800/60 border-slate-700/80 focus:outline-none focus:border-slate-500'
+                      : 'bg-slate-800/30 border-slate-800 text-slate-300 cursor-default'
+                  }`}
                 />
               </div>
             </div>
@@ -357,9 +412,14 @@ export const SettingsView: React.FC = () => {
               <label className="text-slate-300 font-medium block mb-1">Địa chỉ quán:</label>
               <input
                 type="text"
+                readOnly={!isAdmin}
                 value={formSettings.address}
                 onChange={(e) => setFormSettings({ ...formSettings, address: e.target.value })}
-                className="w-full px-3.5 py-2 rounded-xl bg-slate-800/60 border border-slate-700/80 text-white focus:outline-none focus:border-slate-500"
+                className={`w-full px-3.5 py-2 rounded-xl border text-white ${
+                  isAdmin
+                    ? 'bg-slate-800/60 border-slate-700/80 focus:outline-none focus:border-slate-500'
+                    : 'bg-slate-800/30 border-slate-800 text-slate-300 cursor-default'
+                }`}
               />
             </div>
 
@@ -373,132 +433,196 @@ export const SettingsView: React.FC = () => {
                   <label className="text-slate-400 text-[11px] block mb-1">Ngân hàng:</label>
                   <input
                     type="text"
+                    readOnly={!isAdmin}
                     value={formSettings.bankName}
                     onChange={(e) => setFormSettings({ ...formSettings, bankName: e.target.value })}
-                    className="w-full px-3 py-2 rounded-xl bg-slate-800/60 border border-slate-700/80 text-white font-medium"
+                    className={`w-full px-3 py-2 rounded-xl border font-medium ${
+                      isAdmin
+                        ? 'bg-slate-800/60 border-slate-700/80 text-white'
+                        : 'bg-slate-800/30 border-slate-800 text-slate-300 cursor-default'
+                    }`}
                   />
                 </div>
                 <div>
                   <label className="text-slate-400 text-[11px] block mb-1">Số tài khoản:</label>
                   <input
                     type="text"
+                    readOnly={!isAdmin}
                     value={formSettings.bankAccountNo}
                     onChange={(e) => setFormSettings({ ...formSettings, bankAccountNo: e.target.value })}
-                    className="w-full px-3 py-2 rounded-xl bg-slate-800/60 border border-slate-700/80 text-amber-300 font-semibold"
+                    className={`w-full px-3 py-2 rounded-xl border font-semibold ${
+                      isAdmin
+                        ? 'bg-slate-800/60 border-slate-700/80 text-amber-300'
+                        : 'bg-slate-800/30 border-slate-800 text-amber-300/80 cursor-default'
+                    }`}
                   />
                 </div>
                 <div>
                   <label className="text-slate-400 text-[11px] block mb-1">Chủ tài khoản:</label>
                   <input
                     type="text"
+                    readOnly={!isAdmin}
                     value={formSettings.bankAccountName}
                     onChange={(e) => setFormSettings({ ...formSettings, bankAccountName: e.target.value })}
-                    className="w-full px-3 py-2 rounded-xl bg-slate-800/60 border border-slate-700/80 text-white uppercase font-medium"
+                    className={`w-full px-3 py-2 rounded-xl border uppercase font-medium ${
+                      isAdmin
+                        ? 'bg-slate-800/60 border-slate-700/80 text-white'
+                        : 'bg-slate-800/30 border-slate-800 text-slate-300 cursor-default'
+                    }`}
                   />
                 </div>
               </div>
             </div>
 
             <div className="flex justify-end pt-3">
-              <button
-                type="submit"
-                className="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-medium text-xs transition-colors"
-              >
-                Lưu cấu hình quán
-              </button>
+              {isAdmin ? (
+                <button
+                  type="submit"
+                  className="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-medium text-xs transition-colors"
+                >
+                  Lưu cấu hình quán
+                </button>
+              ) : (
+                <span className="text-[11px] text-slate-500">
+                  Thông tin dùng để in hóa đơn & hướng dẫn khách chuyển khoản.
+                </span>
+              )}
             </div>
           </form>
         </div>
 
         {/* 2. Supabase Cloud Sync Configuration */}
-        <div className="p-5 rounded-2xl bg-slate-900/60 border border-slate-800/80 flex flex-col justify-between">
-          <div>
-            <div className="flex items-center justify-between mb-3">
-              <h3 className="text-sm font-semibold text-white">
-                Đồng bộ dữ liệu trực tuyến
-              </h3>
-              <span className={`px-2.5 py-0.5 rounded-full text-[11px] font-medium ${
-                formSettings.isCloudSyncEnabled
-                  ? 'bg-cyan-500/10 text-cyan-400 border border-cyan-500/20'
-                  : 'bg-slate-800 text-slate-400'
-              }`}>
-                {formSettings.isCloudSyncEnabled ? 'Đang bật' : 'Chế độ ngoại tuyến'}
-              </span>
+        {isAdmin ? (
+          <div className="p-5 rounded-2xl bg-slate-900/60 border border-slate-800/80 flex flex-col justify-between">
+            <div>
+              <div className="flex items-center justify-between mb-3">
+                <h3 className="text-sm font-semibold text-white">
+                  Đồng bộ dữ liệu trực tuyến
+                </h3>
+                <span className={`px-2.5 py-0.5 rounded-full text-[11px] font-medium ${
+                  formSettings.isCloudSyncEnabled
+                    ? 'bg-cyan-500/10 text-cyan-400 border border-cyan-500/20'
+                    : 'bg-slate-800 text-slate-400'
+                }`}>
+                  {formSettings.isCloudSyncEnabled ? 'Đang bật' : 'Chế độ ngoại tuyến'}
+                </span>
+              </div>
+
+              <p className="text-xs text-slate-400 mb-4 leading-relaxed">
+                Hệ thống đang hoạt động với cơ sở dữ liệu nội bộ bảo mật cao (Offline-First). Bạn có thể kết nối dự án Supabase để đồng bộ nhiều thiết bị máy tính, iPad và điện thoại.
+              </p>
+
+              <div className="flex flex-col gap-3 text-xs">
+                <div>
+                  <label className="text-slate-300 font-medium block mb-1">Supabase Project URL:</label>
+                  <input
+                    type="text"
+                    placeholder="https://xyzcompany.supabase.co"
+                    value={formSettings.supabaseUrl || ''}
+                    onChange={(e) => setFormSettings({ ...formSettings, supabaseUrl: e.target.value })}
+                    className="w-full px-3.5 py-2 rounded-xl bg-slate-800/60 border border-slate-700/80 text-white focus:outline-none focus:border-slate-500"
+                  />
+                </div>
+
+                <div>
+                  <label className="text-slate-300 font-medium block mb-1">Supabase Anon Public API Key:</label>
+                  <input
+                    type="password"
+                    placeholder="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+                    value={formSettings.supabaseAnonKey || ''}
+                    onChange={(e) => setFormSettings({ ...formSettings, supabaseAnonKey: e.target.value })}
+                    className="w-full px-3.5 py-2 rounded-xl bg-slate-800/60 border border-slate-700/80 text-white focus:outline-none focus:border-slate-500"
+                  />
+                </div>
+
+                <div className="flex items-center gap-2.5 mt-1">
+                  <input
+                    type="checkbox"
+                    id="enableCloudSync"
+                    checked={formSettings.isCloudSyncEnabled}
+                    onChange={(e) => setFormSettings({ ...formSettings, isCloudSyncEnabled: e.target.checked })}
+                    className="w-4 h-4 rounded text-emerald-600 focus:ring-0 cursor-pointer"
+                  />
+                  <label htmlFor="enableCloudSync" className="text-slate-300 cursor-pointer font-medium text-xs">
+                    Kích hoạt đồng bộ hóa trên đám mây (Cloud Sync)
+                  </label>
+                </div>
+              </div>
             </div>
 
-            <p className="text-xs text-slate-400 mb-4 leading-relaxed">
-              Hệ thống đang hoạt động với cơ sở dữ liệu nội bộ bảo mật cao (Offline-First). Bạn có thể kết nối dự án Supabase để đồng bộ nhiều thiết bị máy tính, iPad và điện thoại.
-            </p>
+            <div className="pt-4 border-t border-slate-800 flex justify-between items-center mt-4">
+              <button
+                onClick={() => {
+                  if (window.confirm('Khôi phục toàn bộ dữ liệu mẫu (6 bàn bida, các bàn đang chơi và menu)?')) {
+                    resetAllDemoData();
+                  }
+                }}
+                className="px-3.5 py-2 rounded-xl bg-rose-950/30 hover:bg-rose-900/40 border border-rose-800/30 text-rose-300 text-xs font-medium transition-colors"
+              >
+                Khôi phục dữ liệu gốc
+              </button>
 
-            <div className="flex flex-col gap-3 text-xs">
-              <div>
-                <label className="text-slate-300 font-medium block mb-1">Supabase Project URL:</label>
-                <input
-                  type="text"
-                  placeholder="https://xyzcompany.supabase.co"
-                  value={formSettings.supabaseUrl || ''}
-                  onChange={(e) => setFormSettings({ ...formSettings, supabaseUrl: e.target.value })}
-                  className="w-full px-3.5 py-2 rounded-xl bg-slate-800/60 border border-slate-700/80 text-white focus:outline-none focus:border-slate-500"
-                />
-              </div>
-
-              <div>
-                <label className="text-slate-300 font-medium block mb-1">Supabase Anon Public API Key:</label>
-                <input
-                  type="password"
-                  placeholder="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
-                  value={formSettings.supabaseAnonKey || ''}
-                  onChange={(e) => setFormSettings({ ...formSettings, supabaseAnonKey: e.target.value })}
-                  className="w-full px-3.5 py-2 rounded-xl bg-slate-800/60 border border-slate-700/80 text-white focus:outline-none focus:border-slate-500"
-                />
-              </div>
-
-              <div className="flex items-center gap-2.5 mt-1">
-                <input
-                  type="checkbox"
-                  id="enableCloudSync"
-                  checked={formSettings.isCloudSyncEnabled}
-                  onChange={(e) => setFormSettings({ ...formSettings, isCloudSyncEnabled: e.target.checked })}
-                  className="w-4 h-4 rounded text-emerald-600 focus:ring-0 cursor-pointer"
-                />
-                <label htmlFor="enableCloudSync" className="text-slate-300 cursor-pointer font-medium text-xs">
-                  Kích hoạt đồng bộ hóa trên đám mây (Cloud Sync)
-                </label>
-              </div>
+              <button
+                onClick={() => updateSettings(formSettings)}
+                className="px-4 py-2 rounded-xl bg-cyan-700 hover:bg-cyan-600 text-white font-medium text-xs transition-colors"
+              >
+                Lưu kết nối Cloud
+              </button>
             </div>
           </div>
+        ) : (
+          <div className="p-5 rounded-2xl bg-slate-900/60 border border-slate-800/80 flex flex-col justify-between">
+            <div>
+              <div className="flex items-center justify-between mb-3">
+                <h3 className="text-sm font-semibold text-white">
+                  Đồng bộ dữ liệu & Máy chủ
+                </h3>
+                <span className="px-2.5 py-0.5 rounded-full text-[11px] font-medium bg-amber-500/10 text-amber-300 border border-amber-500/20">
+                  Nâng cao (Chỉ Admin)
+                </span>
+              </div>
 
-          <div className="pt-4 border-t border-slate-800 flex justify-between items-center mt-4">
-            <button
-              onClick={() => {
-                if (window.confirm('Khôi phục toàn bộ dữ liệu mẫu (6 bàn bida, các bàn đang chơi và menu)?')) {
-                  resetAllDemoData();
-                }
-              }}
-              className="px-3.5 py-2 rounded-xl bg-rose-950/30 hover:bg-rose-900/40 border border-rose-800/30 text-rose-300 text-xs font-medium transition-colors"
-            >
-              Khôi phục dữ liệu gốc
-            </button>
+              <p className="text-xs text-slate-400 mb-4 leading-relaxed">
+                Hệ thống đang hoạt động với cơ sở dữ liệu nội bộ bảo mật cao (Offline-First). Tính năng liên kết đám mây Supabase đa thiết bị và khôi phục dữ liệu gốc là quyền hạn của Quản trị viên.
+              </p>
 
-            <button
-              onClick={() => updateSettings(formSettings)}
-              className="px-4 py-2 rounded-xl bg-cyan-700 hover:bg-cyan-600 text-white font-medium text-xs transition-colors"
-            >
-              Lưu kết nối Cloud
-            </button>
+              <div className="p-3.5 rounded-xl bg-slate-800/30 border border-slate-800 flex flex-col gap-1.5 text-xs">
+                <div className="flex items-center justify-between">
+                  <span className="text-slate-400">Trạng thái lưu trữ:</span>
+                  <span className="text-emerald-400 font-medium">Bảo mật nội bộ an toàn</span>
+                </div>
+                <div className="flex items-center justify-between">
+                  <span className="text-slate-400">Đồng bộ đa thiết bị:</span>
+                  <span className="text-slate-300 font-medium">
+                    {formSettings.isCloudSyncEnabled ? 'Đang kích hoạt' : 'Ngoại tuyến (Offline)'}
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            <div className="pt-4 border-t border-slate-800 text-[11px] text-slate-500">
+              Vui lòng chuyển sang tài khoản Quản trị viên để cấu hình kết nối đám mây.
+            </div>
           </div>
-        </div>
+        )}
       </div>
 
       {/* Row 4: Pricing Rules for Table Types */}
       <div className="p-5 rounded-2xl bg-slate-900/60 border border-slate-800/80">
-        <div className="flex items-center gap-2 mb-1.5">
+        <div className="flex items-center justify-between mb-1.5">
           <h3 className="text-sm font-semibold text-white">
             Biểu phí giờ chơi theo loại bàn (Pool, Carom, VIP, Snooker)
           </h3>
+          {!isAdmin && (
+            <span className="text-[11px] px-2 py-0.5 rounded bg-slate-800 text-slate-400 font-medium">
+              Chỉ xem
+            </span>
+          )}
         </div>
         <p className="text-xs text-slate-400 mb-4">
-          Giá chơi được chốt cố định theo từng lượt chơi để đảm bảo không làm thay đổi các hóa đơn cũ khi cập nhật giá.
+          {isAdmin
+            ? 'Giá chơi được chốt cố định theo từng lượt chơi để đảm bảo không làm thay đổi các hóa đơn cũ khi cập nhật giá.'
+            : 'Đơn giá niêm yết theo loại bàn. Quyền điều chỉnh biểu phí giờ chơi yêu cầu tài khoản Quản trị viên.'}
         </p>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
@@ -520,12 +644,18 @@ export const SettingsView: React.FC = () => {
                   <input
                     type="number"
                     step="5000"
+                    disabled={!isAdmin}
                     value={rule.defaultHourlyRate}
                     onChange={(e) => {
+                      if (!isAdmin) return;
                       const updated = { ...rule, defaultHourlyRate: Number(e.target.value) };
                       handleSavePricing(updated);
                     }}
-                    className="w-full px-2 py-1 rounded bg-charcoal-800 border border-charcoal-700 text-white font-mono font-medium"
+                    className={`w-full px-2 py-1 rounded border font-mono font-medium ${
+                      isAdmin
+                        ? 'bg-charcoal-800 border-charcoal-700 text-white'
+                        : 'bg-charcoal-850 border-charcoal-800 text-slate-300 cursor-default'
+                    }`}
                   />
                 </div>
 
@@ -534,12 +664,18 @@ export const SettingsView: React.FC = () => {
                   <input
                     type="number"
                     step="5000"
+                    disabled={!isAdmin}
                     value={rule.peakHourRate}
                     onChange={(e) => {
+                      if (!isAdmin) return;
                       const updated = { ...rule, peakHourRate: Number(e.target.value) };
                       handleSavePricing(updated);
                     }}
-                    className="w-full px-2 py-1 rounded bg-charcoal-800 border border-charcoal-700 text-gold-400 font-mono font-medium"
+                    className={`w-full px-2 py-1 rounded border font-mono font-medium ${
+                      isAdmin
+                        ? 'bg-charcoal-800 border-charcoal-700 text-gold-400'
+                        : 'bg-charcoal-850 border-charcoal-800 text-gold-400/80 cursor-default'
+                    }`}
                   />
                 </div>
 
@@ -548,23 +684,35 @@ export const SettingsView: React.FC = () => {
                     <label className="text-slate-400 text-[10px] block mb-0.5">Tối thiểu (phút):</label>
                     <input
                       type="number"
+                      disabled={!isAdmin}
                       value={rule.minimumMinutes}
                       onChange={(e) => {
+                        if (!isAdmin) return;
                         const updated = { ...rule, minimumMinutes: Number(e.target.value) };
                         handleSavePricing(updated);
                       }}
-                      className="w-full px-2 py-1 rounded bg-charcoal-800 border border-charcoal-700 text-white font-mono"
+                      className={`w-full px-2 py-1 rounded border font-mono ${
+                        isAdmin
+                          ? 'bg-charcoal-800 border-charcoal-700 text-white'
+                          : 'bg-charcoal-850 border-charcoal-800 text-slate-300 cursor-default'
+                      }`}
                     />
                   </div>
                   <div>
                     <label className="text-slate-400 text-[10px] block mb-0.5">Làm tròn (phút):</label>
                     <select
+                      disabled={!isAdmin}
                       value={rule.roundingMinutes}
                       onChange={(e) => {
+                        if (!isAdmin) return;
                         const updated = { ...rule, roundingMinutes: Number(e.target.value) as any };
                         handleSavePricing(updated);
                       }}
-                      className="w-full px-2 py-1 rounded bg-charcoal-800 border border-charcoal-700 text-white font-mono"
+                      className={`w-full px-2 py-1 rounded border font-mono ${
+                        isAdmin
+                          ? 'bg-charcoal-800 border-charcoal-700 text-white'
+                          : 'bg-charcoal-850 border-charcoal-800 text-slate-300 cursor-default'
+                      }`}
                     >
                       <option value="1">1 phút</option>
                       <option value="5">5 phút</option>
@@ -579,8 +727,8 @@ export const SettingsView: React.FC = () => {
         </div>
       </div>
 
-      {/* Modal: Thêm / Sửa Bàn */}
-      {isTableModalOpen && (
+      {/* Modal: Thêm / Sửa Bàn (Admin Only) */}
+      {isTableModalOpen && isAdmin && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
           <div className="w-full max-w-md rounded-xl bg-charcoal-900 border border-charcoal-750 p-5 flex flex-col gap-4 shadow-xl">
             <div className="flex items-center justify-between pb-3 border-b border-charcoal-800">
