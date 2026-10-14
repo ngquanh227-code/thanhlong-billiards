@@ -37,29 +37,15 @@ export const CashierModal: React.FC<CashierModalProps> = ({
   if (!isOpen || !table || !session) return null;
 
   const now = new Date();
-  const feeCalc = calculateTableFee(session, pricingRule, now);
+  const feeCalc = calculateTableFee(session, pricingRule, now, settings);
 
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>('CASH');
-  const [customDiscount, setCustomDiscount] = useState<number>(feeCalc.discountAmount);
-  const [customSurcharge, setCustomSurcharge] = useState<number>(session.surcharge || 0);
   const [cashReceived, setCashReceived] = useState<number>(0);
   const [bankRef, setBankRef] = useState<string>('');
   const [showReceiptPreview, setShowReceiptPreview] = useState<boolean>(false);
-  const [pointsToRedeem, setPointsToRedeem] = useState<number>(0);
-  const [vatRate, setVatRate] = useState<number>(0);
 
   const customer = customers.find((c) => c.id === session.customerId);
-
-  const pointsDiscountValue = (pointsToRedeem / 100) * 10000;
-
-  const subtotalBeforeVat = Math.max(
-    0,
-    feeCalc.tableFee - customDiscount - pointsDiscountValue + feeCalc.fnbFee + customSurcharge
-  );
-
-  const vatAmount = Math.round(subtotalBeforeVat * (vatRate / 100));
-  const calculatedGrandTotal = subtotalBeforeVat + vatAmount;
-
+  const calculatedGrandTotal = feeCalc.grandTotal;
   const cashChange = Math.max(0, cashReceived - calculatedGrandTotal);
 
   const handleQuickCash = (amount: number) => {
@@ -87,12 +73,12 @@ export const CashierModal: React.FC<CashierModalProps> = ({
     onConfirmCheckout(
       session.id,
       paymentMethod,
-      customDiscount + pointsDiscountValue,
-      customSurcharge + vatAmount,
+      feeCalc.discountAmount || 0,
+      feeCalc.surcharge || 0,
       cashReceived || calculatedGrandTotal,
       cashChange,
       bankRef,
-      pointsToRedeem
+      0
     );
     onClose();
   };
@@ -101,12 +87,12 @@ export const CashierModal: React.FC<CashierModalProps> = ({
     onConfirmCheckout(
       session.id,
       paymentMethod,
-      customDiscount + pointsDiscountValue,
-      customSurcharge + vatAmount,
+      feeCalc.discountAmount || 0,
+      feeCalc.surcharge || 0,
       cashReceived || calculatedGrandTotal,
       cashChange,
       bankRef,
-      pointsToRedeem
+      0
     );
     onClose();
   };
@@ -165,8 +151,8 @@ export const CashierModal: React.FC<CashierModalProps> = ({
                 durationMinutes={feeCalc.billedMinutes}
                 tableFee={feeCalc.tableFee}
                 fnbFee={feeCalc.fnbFee}
-                discountAmount={customDiscount + pointsDiscountValue}
-                surcharge={customSurcharge + vatAmount}
+                discountAmount={feeCalc.discountAmount || 0}
+                surcharge={feeCalc.surcharge || 0}
                 finalTotal={calculatedGrandTotal}
                 cashReceived={cashReceived}
                 cashChange={cashChange}
@@ -233,72 +219,7 @@ export const CashierModal: React.FC<CashierModalProps> = ({
                 )}
               </div>
 
-              {/* Discounts, Loyalty Points & VAT Controls */}
-              <div className="p-4 rounded-2xl bg-slate-800/60 border border-slate-700/60 flex flex-col gap-2.5 text-xs">
-                <div className="flex items-center justify-between gap-3">
-                  <span className="text-slate-300 font-medium">Giảm giá / Ưu đãi:</span>
-                  <input
-                    type="number"
-                    step="5000"
-                    value={customDiscount}
-                    onChange={(e) => setCustomDiscount(Math.max(0, Number(e.target.value)))}
-                    className="w-32 px-2.5 py-1 text-right text-xs rounded-xl bg-slate-900 border border-slate-700 text-rose-300 font-semibold focus:outline-none focus:border-slate-500"
-                  />
-                </div>
 
-                {/* Redeem Member Points if customer linked */}
-                {customer && customer.points > 0 && (
-                  <div className="flex items-center justify-between gap-3 pt-2 border-t border-slate-700/60">
-                    <span className="text-amber-300 font-medium">Đổi điểm ({customer.points} điểm):</span>
-                    <select
-                      value={pointsToRedeem}
-                      onChange={(e) => setPointsToRedeem(Number(e.target.value))}
-                      className="px-2.5 py-1 text-xs rounded-xl bg-slate-900 border border-slate-700 text-amber-300 font-medium"
-                    >
-                      <option value="0">Không dùng điểm</option>
-                      {customer.points >= 100 && <option value="100">Dùng 100 điểm (-10.000đ)</option>}
-                      {customer.points >= 200 && <option value="200">Dùng 200 điểm (-20.000đ)</option>}
-                      {customer.points >= 500 && <option value="500">Dùng 500 điểm (-50.000đ)</option>}
-                      {customer.points >= 1000 && <option value="1000">Dùng 1000 điểm (-100.000đ)</option>}
-                    </select>
-                  </div>
-                )}
-
-                <div className="flex items-center justify-between gap-3">
-                  <span className="text-slate-300 font-medium">Phụ thu khác:</span>
-                  <input
-                    type="number"
-                    step="5000"
-                    value={customSurcharge}
-                    onChange={(e) => setCustomSurcharge(Math.max(0, Number(e.target.value)))}
-                    className="w-32 px-2.5 py-1 text-right text-xs rounded-xl bg-slate-900 border border-slate-700 text-white font-medium focus:outline-none focus:border-slate-500"
-                  />
-                </div>
-
-                {/* VAT Selector */}
-                <div className="flex items-center justify-between gap-3 pt-2 border-t border-slate-700/60">
-                  <span className="text-slate-300 font-medium">Thuế VAT:</span>
-                  <div className="flex items-center gap-1.5">
-                    {[0, 8, 10].map((rate) => (
-                      <button
-                        key={rate}
-                        type="button"
-                        onClick={() => setVatRate(rate)}
-                        className={`px-2.5 py-0.5 rounded-lg text-xs font-medium transition-colors ${
-                          vatRate === rate
-                            ? 'bg-slate-700 text-white font-semibold'
-                            : 'bg-slate-900 text-slate-400 hover:text-white'
-                        }`}
-                      >
-                        {rate === 0 ? '0%' : `${rate}%`}
-                      </button>
-                    ))}
-                    {vatRate > 0 && (
-                      <span className="text-slate-400 ml-1">+{formatVND(vatAmount)}</span>
-                    )}
-                  </div>
-                </div>
-              </div>
             </div>
           )}
 

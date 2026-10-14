@@ -28,24 +28,13 @@ export const PosCashierView: React.FC = () => {
   const selectedSession = selectedTable ? getActiveSessionForTable(selectedTable.id) : undefined;
   const currentRule = selectedTable ? pricingRules.find((r) => r.type === selectedTable.type) : undefined;
 
-  const feeCalc = selectedSession ? calculateTableFee(selectedSession, currentRule, currentTime) : null;
+  const feeCalc = selectedSession ? calculateTableFee(selectedSession, currentRule, currentTime, settings) : null;
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>('CASH');
-  const [customDiscount, setCustomDiscount] = useState<number>(0);
-  const [customSurcharge, setCustomSurcharge] = useState<number>(0);
   const [cashReceived, setCashReceived] = useState<number>(0);
   const [bankRef] = useState<string>('');
   const [showPrintPreview, setShowPrintPreview] = useState<boolean>(false);
 
-  React.useEffect(() => {
-    if (feeCalc) {
-      setCustomDiscount(feeCalc.discountAmount);
-    }
-  }, [selectedTableId, feeCalc?.discountAmount]);
-
-  const grandTotal = feeCalc
-    ? Math.max(0, feeCalc.tableFee - customDiscount + feeCalc.fnbFee + customSurcharge)
-    : 0;
-
+  const grandTotal = feeCalc ? feeCalc.grandTotal : 0;
   const cashChange = Math.max(0, cashReceived - grandTotal);
 
   const handleCheckout = (shouldPrint: boolean) => {
@@ -56,8 +45,8 @@ export const PosCashierView: React.FC = () => {
     completeCheckout(
       selectedSession.id,
       paymentMethod,
-      customDiscount,
-      customSurcharge,
+      feeCalc?.discountAmount || 0,
+      feeCalc?.surcharge || 0,
       cashReceived || grandTotal,
       cashChange,
       bankRef
@@ -258,8 +247,8 @@ export const PosCashierView: React.FC = () => {
                       durationMinutes={feeCalc.billedMinutes}
                       tableFee={feeCalc.tableFee}
                       fnbFee={feeCalc.fnbFee}
-                      discountAmount={customDiscount}
-                      surcharge={customSurcharge}
+                      discountAmount={feeCalc?.discountAmount || 0}
+                      surcharge={feeCalc?.surcharge || 0}
                       finalTotal={grandTotal}
                       cashReceived={cashReceived}
                       cashChange={cashChange}
@@ -308,29 +297,7 @@ export const PosCashierView: React.FC = () => {
                         )}
                       </div>
 
-                      {/* Discount & Surcharge */}
-                      <div className="p-3.5 rounded-2xl bg-slate-900/60 border border-slate-800 flex flex-col gap-2.5 text-xs">
-                        <div className="flex justify-between items-center">
-                          <span className="text-slate-300 font-medium">Giảm giá:</span>
-                          <input
-                            type="number"
-                            step="5000"
-                            value={customDiscount}
-                            onChange={(e) => setCustomDiscount(Math.max(0, Number(e.target.value)))}
-                            className="w-28 px-2.5 py-1 text-right rounded-lg bg-slate-950 border border-slate-800 text-rose-400 font-semibold"
-                          />
-                        </div>
-                        <div className="flex justify-between items-center">
-                          <span className="text-slate-300 font-medium">Phụ thu:</span>
-                          <input
-                            type="number"
-                            step="5000"
-                            value={customSurcharge}
-                            onChange={(e) => setCustomSurcharge(Math.max(0, Number(e.target.value)))}
-                            className="w-28 px-2.5 py-1 text-right rounded-lg bg-slate-950 border border-slate-800 text-white font-medium"
-                          />
-                        </div>
-                      </div>
+
                     </div>
 
                     {/* Payment Terminal */}
