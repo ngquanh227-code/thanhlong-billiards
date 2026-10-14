@@ -1,8 +1,15 @@
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
 import { TableItem, TableSession, MenuItem, ShiftRecord, CashTransaction } from '../types';
 
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || '';
-const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || '';
+const supabaseUrl =
+  import.meta.env.VITE_SUPABASE_URL ||
+  import.meta.env.NEXT_PUBLIC_SUPABASE_URL ||
+  'https://fvfzxfwnnplmuemqqsei.supabase.co';
+
+const supabaseAnonKey =
+  import.meta.env.VITE_SUPABASE_ANON_KEY ||
+  import.meta.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY ||
+  'sb_publishable_5bXkPb_olHIuGFzhPYyksw_tKUUgnEV';
 
 export const isSupabaseConfigured = (): boolean => {
   return Boolean(supabaseUrl && supabaseAnonKey && supabaseUrl.startsWith('https://'));
