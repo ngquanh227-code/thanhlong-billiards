@@ -6,7 +6,6 @@ export const ReportsView: React.FC = () => {
   const {
     sessions,
     tables,
-    staff,
     transactions,
   } = useApp();
 
@@ -39,16 +38,6 @@ export const ReportsView: React.FC = () => {
     };
   }).sort((a, b) => b.totalRevenue - a.totalRevenue);
 
-  // Top Staff by revenue handled
-  const staffPerformance = staff.map((st) => {
-    const staffSessions = completedSessions.filter((s) => s.staffId === st.id);
-    const rev = staffSessions.reduce((sum, s) => sum + (s.finalTotal || 0), 0);
-    return {
-      staff: st,
-      sessionCount: staffSessions.length,
-      totalRevenue: rev,
-    };
-  }).sort((a, b) => b.totalRevenue - a.totalRevenue);
 
   const handleExportCSV = () => {
     const headers = ['Mã Hóa Đơn', 'Bàn', 'Khách Hàng', 'Bắt Đầu', 'Kết Thúc', 'Tiền Giờ', 'Tiền Menu', 'Tổng Tiền', 'Hình Thức'];
@@ -159,79 +148,44 @@ export const ReportsView: React.FC = () => {
         </div>
       </div>
 
-      {/* 2-Columns: Top Tables Performance & Staff Productivity */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
-        {/* Top Tables Performance */}
-        <div className="p-5 rounded-2xl bg-slate-900/60 border border-slate-800/80">
-          <h3 className="text-sm font-semibold text-white mb-3.5">
-            Xếp hạng doanh thu theo bàn
-          </h3>
+      {/* Top Tables Performance */}
+      <div className="p-5 rounded-2xl bg-slate-900/60 border border-slate-800/80">
+        <h3 className="text-sm font-semibold text-white mb-3.5">
+          Xếp hạng doanh thu theo bàn
+        </h3>
 
-          <div className="space-y-2.5 max-h-80 overflow-y-auto pr-1">
-            {tablePerformance.slice(0, 8).map((item, index) => (
-              <div
-                key={item.table.id}
-                className="p-3.5 rounded-xl bg-slate-850 border border-slate-800 flex items-center justify-between text-xs"
-              >
-                <div className="flex items-center gap-3">
-                  <span className={`w-6 h-6 rounded-lg font-semibold flex items-center justify-center text-xs ${
-                    index === 0
-                      ? 'bg-amber-500/20 text-amber-300 border border-amber-500/30'
-                      : index === 1
-                      ? 'bg-slate-700 text-slate-200'
-                      : index === 2
-                      ? 'bg-amber-900/30 text-amber-400'
-                      : 'bg-slate-800 text-slate-400'
-                  }`}>
-                    #{index + 1}
-                  </span>
-                  <div>
-                    <span className="font-semibold text-white">{item.table.code}</span>
-                    <span className="text-slate-400 ml-1.5 text-[11px]">({item.table.type})</span>
-                    <div className="text-[11px] text-slate-400 mt-0.5">
-                      {item.sessionCount} lượt chơi • {formatDurationHuman(item.totalMinutes)}
-                    </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-3 max-h-96 overflow-y-auto pr-1">
+          {tablePerformance.slice(0, 8).map((item, index) => (
+            <div
+              key={item.table.id}
+              className="p-3.5 rounded-xl bg-slate-850 border border-slate-800 flex items-center justify-between text-xs"
+            >
+              <div className="flex items-center gap-3">
+                <span className={`w-6 h-6 rounded-lg font-semibold flex items-center justify-center text-xs shrink-0 ${
+                  index === 0
+                    ? 'bg-amber-500/20 text-amber-300 border border-amber-500/30'
+                    : index === 1
+                    ? 'bg-slate-700 text-slate-200'
+                    : index === 2
+                    ? 'bg-amber-900/30 text-amber-400'
+                    : 'bg-slate-800 text-slate-400'
+                }`}>
+                  #{index + 1}
+                </span>
+                <div>
+                  <span className="font-semibold text-white">{item.table.code}</span>
+                  <span className="text-slate-400 ml-1.5 text-[11px]">({item.table.type})</span>
+                  <div className="text-[11px] text-slate-400 mt-0.5">
+                    {item.sessionCount} lượt chơi • {formatDurationHuman(item.totalMinutes)}
                   </div>
-                </div>
-
-                <div className="text-right font-bold text-amber-300">
-                  {formatVND(item.totalRevenue)}
                 </div>
               </div>
-            ))}
-          </div>
-        </div>
 
-        {/* Staff Productivity */}
-        <div className="p-5 rounded-2xl bg-slate-900/60 border border-slate-800/80">
-          <h3 className="text-sm font-semibold text-white mb-3.5">
-            Doanh thu theo nhân sự phụ trách
-          </h3>
-
-          <div className="space-y-2.5 max-h-80 overflow-y-auto pr-1">
-            {staffPerformance.map((item) => (
-              <div
-                key={item.staff.id}
-                className="p-3.5 rounded-xl bg-slate-850 border border-slate-800 flex items-center justify-between text-xs"
-              >
-                <div className="flex items-center gap-3">
-                  <div className="w-6 h-6 rounded-lg bg-slate-800 border border-slate-700 text-amber-300 font-semibold text-xs flex items-center justify-center">
-                    {item.staff.code}
-                  </div>
-                  <div>
-                    <span className="font-semibold text-white">{item.staff.name}</span>
-                    <div className="text-[11px] text-slate-400 mt-0.5">
-                      {item.staff.role === 'ADMIN' ? 'Quản lý' : 'Nhân viên'} • {item.sessionCount} lượt hoàn tất
-                    </div>
-                  </div>
-                </div>
-
-                <div className="text-right font-bold text-white">
-                  {formatVND(item.totalRevenue)}
-                </div>
+              <div className="text-right font-bold text-amber-300 shrink-0">
+                {formatVND(item.totalRevenue)}
               </div>
-            ))}
-          </div>
+            </div>
+          ))}
         </div>
       </div>
     </div>
