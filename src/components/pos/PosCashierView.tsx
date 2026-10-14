@@ -70,7 +70,7 @@ export const PosCashierView: React.FC = () => {
     : '';
 
   return (
-    <div className="flex flex-col gap-4 p-4 sm:p-6 max-w-7xl mx-auto w-full select-none font-sans">
+    <div className="flex flex-col gap-4 p-4 sm:p-6 max-w-7xl mx-auto w-full select-none font-sans pb-24 lg:pb-12">
       {/* Top Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-slate-800/80">
         <div>

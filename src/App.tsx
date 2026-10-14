@@ -119,7 +119,7 @@ export default function App() {
           onCloseMobile={() => setIsMobileSidebarOpen(false)}
         />
 
-        <main className="flex-1 overflow-hidden h-full flex flex-col pb-14 lg:pb-0">
+        <main className={`flex-1 ${currentTab === 'tables' ? 'overflow-hidden' : 'overflow-y-auto'} h-full flex flex-col pb-16 lg:pb-0`}>
           {currentTab === 'dashboard' && <DashboardView onNavigateTab={setCurrentTab} />}
           {currentTab === 'tables' && <TableMapView />}
           {currentTab === 'pos' && <PosCashierView />}
