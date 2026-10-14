@@ -729,8 +729,8 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     }
 
     sounds.playClick();
-    logAudit('HỦY MÓN', `Hủy món ${item.name} (x${item.quantity}) tại ${session.tableCode}`);
-    addToast('info', 'Đã hủy món', `Đã hủy ${item.name} và hoàn lại kho.`);
+    logAudit('HỦY MÓN', `Hủy món ${item.name} (x${item.quantity}) tại ${session.tableCode} [Bởi: ${currentStaff.name} - ${currentStaff.role}]`);
+    addToast('info', 'Đã hủy món', `Đã hủy ${item.name} (x${item.quantity}) và hoàn kho.`);
   };
 
   // Update order item quantity
@@ -776,6 +776,12 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     }
 
     sounds.playClick();
+    if (delta > 0) {
+      logAudit('TĂNG MÓN', `Thêm +${delta} ${item.name} tại ${session.tableCode} (Tổng: ${newQty}) [${currentStaff.name}]`);
+    } else {
+      logAudit('GIẢM MÓN', `Giảm -${Math.abs(delta)} ${item.name} tại ${session.tableCode} (Còn: ${newQty}) [Bởi: ${currentStaff.name} - ${currentStaff.role}]`);
+      addToast('warning', 'Đã giảm món', `Đã giảm -${Math.abs(delta)} ${item.name} tại ${session.tableCode}.`);
+    }
   };
 
   // Complete Checkout (Thanh toán & Trả bàn)

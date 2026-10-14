@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import logoImg from '../../assets/logo.png';
 import { TableItem, TableSession, PricingRule, Customer, Staff } from '../../types';
 import { calculateTableFee, formatDurationHuman, formatSecondsToTimer, formatVND } from '../../services/calculation';
+import { useApp } from '../../context/AppContext';
+import { AdminPasswordModal } from '../auth/AdminPasswordModal';
 
 interface StationaryControlPanelProps {
   table: TableItem | null;
@@ -49,8 +51,20 @@ export const StationaryControlPanel: React.FC<StationaryControlPanelProps> = ({
   onEditTable,
   onCloseMobile,
 }) => {
+  const { verifyAdminPassword } = useApp();
   const [quickCustomerId, setQuickCustomerId] = useState<string>('');
   const [quickStaffId, setQuickStaffId] = useState<string>(currentStaff.id);
+  const [adminAuthModal, setAdminAuthModal] = useState<{
+    isOpen: boolean;
+    title: string;
+    description: string;
+    onSuccess: () => void;
+  }>({
+    isOpen: false,
+    title: '',
+    description: '',
+    onSuccess: () => {},
+  });
 
   if (!table) {
     return (
@@ -78,6 +92,38 @@ export const StationaryControlPanel: React.FC<StationaryControlPanelProps> = ({
 
   const handleQuickOpen = () => {
     onQuickOpenTable(table.id, quickCustomerId || undefined, quickStaffId || currentStaff.id, table.hourlyRate);
+  };
+
+  const handleDecreaseItem = (orderItemId: string) => {
+    if (isAdmin) {
+      onUpdateOrderItemQty(table.id, orderItemId, -1);
+    } else {
+      setAdminAuthModal({
+        isOpen: true,
+        title: 'Xác thực Quản lý để Giảm số lượng',
+        description: 'Chỉ Quản trị viên / Quản lý mới có quyền giảm bớt món đã phục vụ để phòng chống gian lận.',
+        onSuccess: () => {
+          setAdminAuthModal((prev) => ({ ...prev, isOpen: false }));
+          onUpdateOrderItemQty(table.id, orderItemId, -1);
+        },
+      });
+    }
+  };
+
+  const handleRemoveItem = (orderItemId: string) => {
+    if (isAdmin) {
+      onRemoveOrderItem(table.id, orderItemId);
+    } else {
+      setAdminAuthModal({
+        isOpen: true,
+        title: 'Xác thực Quản lý để Hủy món',
+        description: 'Chỉ Quản trị viên / Quản lý mới có quyền hủy món đã phục vụ để phòng chống gian lận.',
+        onSuccess: () => {
+          setAdminAuthModal((prev) => ({ ...prev, isOpen: false }));
+          onRemoveOrderItem(table.id, orderItemId);
+        },
+      });
+    }
   };
 
   return (
@@ -273,8 +319,13 @@ export const StationaryControlPanel: React.FC<StationaryControlPanelProps> = ({
                       {/* Stepper +/- */}
                       <div className="flex items-center gap-1 shrink-0">
                         <button
-                          onClick={() => onUpdateOrderItemQty(table.id, ord.id, -1)}
-                          className="w-7 h-7 rounded-lg bg-slate-800 hover:bg-slate-750 flex items-center justify-center text-slate-200 text-xs font-bold border border-slate-700/60 active:scale-95 transition-all"
+                          onClick={() => handleDecreaseItem(ord.id)}
+                          className={`w-7 h-7 rounded-lg flex items-center justify-center text-xs font-bold border transition-all active:scale-95 ${
+                            isAdmin
+                              ? 'bg-slate-800 hover:bg-slate-750 text-slate-200 border-slate-700/60'
+                              : 'bg-slate-800/60 hover:bg-amber-500/20 text-slate-400 hover:text-amber-300 border-slate-700/40'
+                          }`}
+                          title={isAdmin ? 'Giảm số lượng' : 'Yêu cầu mật khẩu Quản lý để giảm món'}
                         >
                           −
                         </button>
@@ -282,6 +333,7 @@ export const StationaryControlPanel: React.FC<StationaryControlPanelProps> = ({
                         <button
                           onClick={() => onUpdateOrderItemQty(table.id, ord.id, 1)}
                           className="w-7 h-7 rounded-lg bg-slate-800 hover:bg-slate-750 flex items-center justify-center text-slate-200 text-xs font-bold border border-slate-700/60 active:scale-95 transition-all"
+                          title="Thêm số lượng món"
                         >
                           +
                         </button>
@@ -292,9 +344,13 @@ export const StationaryControlPanel: React.FC<StationaryControlPanelProps> = ({
                           {formatVND(ord.price * ord.quantity)}
                         </span>
                         <button
-                          onClick={() => onRemoveOrderItem(table.id, ord.id)}
-                          className="text-slate-400 hover:text-rose-400 text-xs p-1 rounded transition-colors ml-0.5"
-                          title="Xóa món"
+                          onClick={() => handleRemoveItem(ord.id)}
+                          className={`text-xs p-1 rounded transition-colors ml-0.5 ${
+                            isAdmin
+                              ? 'text-slate-400 hover:text-rose-400'
+                              : 'text-slate-500 hover:text-amber-400'
+                          }`}
+                          title={isAdmin ? 'Xóa món' : 'Yêu cầu mật khẩu Quản lý để xóa món'}
                         >
                           ✕
                         </button>
@@ -410,6 +466,15 @@ export const StationaryControlPanel: React.FC<StationaryControlPanelProps> = ({
           </button>
         </div>
       )}
+      {/* Admin Auth Modal for item decrease/cancellation */}
+      <AdminPasswordModal
+        isOpen={adminAuthModal.isOpen}
+        onClose={() => setAdminAuthModal((prev) => ({ ...prev, isOpen: false }))}
+        onSuccess={adminAuthModal.onSuccess}
+        verifyPassword={verifyAdminPassword}
+        title={adminAuthModal.title}
+        description={adminAuthModal.description}
+      />
     </div>
   );
 };

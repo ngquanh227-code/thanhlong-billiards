@@ -6,6 +6,8 @@ interface AdminPasswordModalProps {
   onClose: () => void;
   onSuccess: () => void;
   verifyPassword: (password: string) => boolean;
+  title?: string;
+  description?: string;
 }
 
 export const AdminPasswordModal: React.FC<AdminPasswordModalProps> = ({
@@ -13,6 +15,8 @@ export const AdminPasswordModal: React.FC<AdminPasswordModalProps> = ({
   onClose,
   onSuccess,
   verifyPassword,
+  title,
+  description,
 }) => {
   const [passwordInput, setPasswordInput] = useState('');
   const [errorMsg, setErrorMsg] = useState('');
@@ -51,10 +55,10 @@ export const AdminPasswordModal: React.FC<AdminPasswordModalProps> = ({
         <div className="flex items-center justify-between pb-3 border-b border-slate-800 gap-2">
           <div className="min-w-0">
             <h3 className="text-sm sm:text-base font-bold text-white truncate">
-              Xác thực Quản trị viên
+              {title || 'Xác thực Quản trị viên'}
             </h3>
             <p className="text-[11px] text-slate-400 mt-0.5 truncate">
-              Nhập mật khẩu để truy cập doanh thu và cài đặt
+              {description || 'Nhập mật khẩu để truy cập doanh thu và cài đặt'}
             </p>
           </div>
           <button

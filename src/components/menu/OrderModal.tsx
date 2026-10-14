@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { TableItem, MenuItem, TableSession } from '../../types';
 import { formatVND } from '../../services/calculation';
+import { useApp } from '../../context/AppContext';
 
 interface OrderModalProps {
   table: TableItem | null;
@@ -22,6 +23,7 @@ export const OrderModal: React.FC<OrderModalProps> = ({
   onConfirmOrder,
   onRemoveExistingOrder,
 }) => {
+  const { isAdmin } = useApp();
   if (!isOpen || !table) return null;
 
   const [selectedCategory, setSelectedCategory] = useState<string>('ALL');
@@ -322,11 +324,11 @@ export const OrderModal: React.FC<OrderModalProps> = ({
                             <span className="font-semibold text-slate-300">
                               {formatVND(ord.price * ord.quantity)}
                             </span>
-                            {onRemoveExistingOrder && (
+                            {onRemoveExistingOrder && isAdmin && (
                               <button
                                 onClick={() => onRemoveExistingOrder(table.id, ord.id)}
                                 className="text-slate-400 hover:text-rose-400 p-1 text-xs"
-                                title="Hủy món đã gọi"
+                                title="Hủy món đã gọi (Chỉ Admin)"
                               >
                                 Xóa
                               </button>
