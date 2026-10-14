@@ -17,6 +17,7 @@ import {
 import { StorageService } from '../services/storage';
 import { calculateTableFee } from '../services/calculation';
 import { sounds } from '../services/sound';
+import { isSupabaseConfigured, SupabaseSync } from '../services/supabase';
 
 export interface ToastMessage {
   id: string;
@@ -43,9 +44,13 @@ interface AppContextType {
   currentBranch: string;
   soundEnabled: boolean;
   theme: 'dark' | 'light';
+  isCloudSyncActive: boolean;
 
   // Actions
   toggleRole: () => void;
+  verifyAdminPassword: (password: string) => boolean;
+  loginAsAdmin: (password: string) => boolean;
+  logoutAdmin: () => void;
   addToast: (type: 'success' | 'error' | 'info' | 'warning', title: string, message?: string) => void;
   removeToast: (id: string) => void;
   switchCurrentStaff: (staffId: string) => void;
@@ -168,17 +173,46 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     return () => clearInterval(timer);
   }, []);
 
-  // Save to LocalStorage
+  // Supabase Realtime Cloud Sync
+  useEffect(() => {
+    if (!isSupabaseConfigured()) return;
+
+    // Pull initial cloud state
+    SupabaseSync.pullAll().then((cloudData) => {
+      if (!cloudData) return;
+      if (cloudData.tables && cloudData.tables.length > 0) setTables(cloudData.tables);
+      if (cloudData.sessions) setSessions(cloudData.sessions);
+      if (cloudData.menu && cloudData.menu.length > 0) setMenu(cloudData.menu);
+      if (cloudData.shifts) setShifts(cloudData.shifts);
+      if (cloudData.transactions) setTransactions(cloudData.transactions);
+    });
+
+    // Realtime channel listener across all devices (PC & Phone)
+    const unsubscribe = SupabaseSync.subscribeRealtime((key, data) => {
+      if (key === 'tables' && Array.isArray(data)) setTables(data);
+      if (key === 'sessions' && Array.isArray(data)) setSessions(data);
+      if (key === 'menu' && Array.isArray(data)) setMenu(data);
+      if (key === 'shifts' && Array.isArray(data)) setShifts(data);
+      if (key === 'transactions' && Array.isArray(data)) setTransactions(data);
+    });
+
+    return () => unsubscribe();
+  }, []);
+
+  // Save to LocalStorage & Push to Supabase Cloud
   useEffect(() => {
     StorageService.saveTables(tables);
+    if (isSupabaseConfigured()) SupabaseSync.pushKey('tables', tables);
   }, [tables]);
 
   useEffect(() => {
     StorageService.saveSessions(sessions);
+    if (isSupabaseConfigured()) SupabaseSync.pushKey('sessions', sessions);
   }, [sessions]);
 
   useEffect(() => {
     StorageService.saveMenu(menu);
+    if (isSupabaseConfigured()) SupabaseSync.pushKey('menu', menu);
   }, [menu]);
 
   useEffect(() => {
@@ -195,10 +229,12 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
 
   useEffect(() => {
     StorageService.saveShifts(shifts);
+    if (isSupabaseConfigured()) SupabaseSync.pushKey('shifts', shifts);
   }, [shifts]);
 
   useEffect(() => {
     StorageService.saveTransactions(transactions);
+    if (isSupabaseConfigured()) SupabaseSync.pushKey('transactions', transactions);
   }, [transactions]);
 
   useEffect(() => {
@@ -239,26 +275,52 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
 
   const isAdmin = currentStaff.role === 'ADMIN' || (currentStaff.role as string) === 'OWNER' || (currentStaff.role as string) === 'MANAGER';
 
-  const toggleRole = () => {
-    const targetRole = isAdmin ? 'STAFF' : 'ADMIN';
-    const found = staff.find((s) => s.role === targetRole);
-    if (found) {
-      setCurrentStaff(found);
-      StorageService.setCurrentStaff(found);
-    } else {
-      const fallbackStaff: Staff = {
-        id: targetRole === 'ADMIN' ? 'staff-admin' : 'staff-staff',
-        code: targetRole === 'ADMIN' ? 'ADMIN' : 'NV-01',
-        name: targetRole === 'ADMIN' ? 'Nguyễn Thanh Long (Admin)' : 'Lê Hoàng Nam (Nhân Viên)',
+  const ADMIN_PASSWORD = (import.meta.env.VITE_ADMIN_PASSWORD || 'thanhlong2026').trim();
+
+  const verifyAdminPassword = (password: string): boolean => {
+    return password.trim() === ADMIN_PASSWORD;
+  };
+
+  const loginAsAdmin = (password: string): boolean => {
+    if (verifyAdminPassword(password)) {
+      const adminStaff = staff.find((s) => s.role === 'ADMIN') || {
+        id: 'staff-admin',
+        code: 'ADMIN',
+        name: 'Nguyễn Thanh Long (Admin)',
         phone: '0909000111',
-        role: targetRole,
+        role: 'ADMIN',
         isActive: true,
       };
-      setCurrentStaff(fallbackStaff);
-      StorageService.setCurrentStaff(fallbackStaff);
+      setCurrentStaff(adminStaff);
+      StorageService.setCurrentStaff(adminStaff);
+      sounds.playPaymentSuccess();
+      return true;
     }
     sounds.playClick();
-    addToast('info', `Chuyển quyền: ${!isAdmin ? 'QUẢN TRỊ VIÊN (ADMIN)' : 'NHÂN VIÊN (STAFF)'}`);
+    return false;
+  };
+
+  const logoutAdmin = () => {
+    const staffMember = staff.find((s) => s.role === 'STAFF') || {
+      id: 'staff-staff',
+      code: 'NV-01',
+      name: 'Lê Hoàng Nam (Nhân Viên)',
+      phone: '0909000111',
+      role: 'STAFF',
+      isActive: true,
+    };
+    setCurrentStaff(staffMember);
+    StorageService.setCurrentStaff(staffMember);
+    sounds.playClick();
+  };
+
+  const toggleRole = () => {
+    if (isAdmin) {
+      logoutAdmin();
+    } else {
+      // Direct toggle fallback (in UI we will guard with AdminPasswordModal)
+      loginAsAdmin(ADMIN_PASSWORD);
+    }
   };
 
   // Helper: get active session for table
@@ -1080,11 +1142,15 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
         currentStaff,
         isAdmin,
         toggleRole,
+        verifyAdminPassword,
+        loginAsAdmin,
+        logoutAdmin,
         currentTime,
         toasts,
         currentBranch,
         soundEnabled,
         theme,
+        isCloudSyncActive: isSupabaseConfigured(),
         setTheme,
         toggleTheme,
         addTable,

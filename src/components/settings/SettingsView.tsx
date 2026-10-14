@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useApp } from '../../context/AppContext';
 import { PricingRule, TableItem, TableType } from '../../types';
 import { formatVND } from '../../services/calculation';
+import { SQL_SETUP_SCRIPT } from '../../services/supabase';
 
 export const SettingsView: React.FC = () => {
   const {
@@ -13,6 +14,7 @@ export const SettingsView: React.FC = () => {
     setTheme,
     soundEnabled,
     toggleSound,
+    isCloudSyncActive,
     addTable,
     updateTable,
     deleteTable,
@@ -497,55 +499,46 @@ export const SettingsView: React.FC = () => {
             <div>
               <div className="flex items-center justify-between mb-3">
                 <h3 className="text-sm font-semibold text-white">
-                  Đồng bộ dữ liệu trực tuyến
+                  Đồng bộ dữ liệu trực tuyến (PC & Điện thoại)
                 </h3>
-                <span className={`px-2.5 py-0.5 rounded-full text-[11px] font-medium ${
-                  formSettings.isCloudSyncEnabled
-                    ? 'bg-cyan-500/10 text-cyan-400 border border-cyan-500/20'
+                <span className={`px-2.5 py-0.5 rounded-full text-[11px] font-medium flex items-center gap-1.5 ${
+                  isCloudSyncActive
+                    ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20'
                     : 'bg-slate-800 text-slate-400'
                 }`}>
-                  {formSettings.isCloudSyncEnabled ? 'Đang bật' : 'Chế độ ngoại tuyến'}
+                  <span className={`w-1.5 h-1.5 rounded-full ${isCloudSyncActive ? 'bg-emerald-400 animate-pulse' : 'bg-slate-500'}`} />
+                  {isCloudSyncActive ? 'Đang đồng bộ thời gian thực' : 'Chế độ ngoại tuyến (Local)'}
                 </span>
               </div>
 
-              <p className="text-xs text-slate-400 mb-4 leading-relaxed">
-                Hệ thống đang hoạt động với cơ sở dữ liệu nội bộ bảo mật cao (Offline-First). Bạn có thể kết nối dự án Supabase để đồng bộ nhiều thiết bị máy tính, iPad và điện thoại.
+              <p className="text-xs text-slate-400 mb-3 leading-relaxed">
+                Hệ thống tự động đồng bộ 2 chiều giữa máy tính thu ngân và điện thoại nhân viên khi kết nối Supabase Cloud.
               </p>
 
+              <div className="p-3.5 rounded-xl bg-slate-850 border border-slate-800 mb-3 text-xs flex flex-col gap-2">
+                <div className="flex items-center justify-between">
+                  <span className="font-semibold text-white">Mã SQL thiết lập Supabase:</span>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      navigator.clipboard.writeText(SQL_SETUP_SCRIPT);
+                      alert('Đã sao chép mã SQL thiết lập Supabase vào bộ nhớ tạm! Bạn chỉ cần dán vào mục SQL Editor trên Supabase và bấm Run.');
+                    }}
+                    className="px-2.5 py-1 rounded bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-[11px] transition-colors"
+                  >
+                    Sao chép mã SQL
+                  </button>
+                </div>
+                <p className="text-[11px] text-slate-400">
+                  Dán mã SQL này vào mục <strong>SQL Editor</strong> trên trang quản trị Supabase và bấm Run là hoàn tất cấu hình.
+                </p>
+              </div>
+
               <div className="flex flex-col gap-3 text-xs">
-                <div>
-                  <label className="text-slate-300 font-medium block mb-1">Supabase Project URL:</label>
-                  <input
-                    type="text"
-                    placeholder="https://xyzcompany.supabase.co"
-                    value={formSettings.supabaseUrl || ''}
-                    onChange={(e) => setFormSettings({ ...formSettings, supabaseUrl: e.target.value })}
-                    className="w-full px-3.5 py-2 rounded-xl bg-slate-800/60 border border-slate-700/80 text-white focus:outline-none focus:border-slate-500"
-                  />
-                </div>
-
-                <div>
-                  <label className="text-slate-300 font-medium block mb-1">Supabase Anon Public API Key:</label>
-                  <input
-                    type="password"
-                    placeholder="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
-                    value={formSettings.supabaseAnonKey || ''}
-                    onChange={(e) => setFormSettings({ ...formSettings, supabaseAnonKey: e.target.value })}
-                    className="w-full px-3.5 py-2 rounded-xl bg-slate-800/60 border border-slate-700/80 text-white focus:outline-none focus:border-slate-500"
-                  />
-                </div>
-
-                <div className="flex items-center gap-2.5 mt-1">
-                  <input
-                    type="checkbox"
-                    id="enableCloudSync"
-                    checked={formSettings.isCloudSyncEnabled}
-                    onChange={(e) => setFormSettings({ ...formSettings, isCloudSyncEnabled: e.target.checked })}
-                    className="w-4 h-4 rounded text-emerald-600 focus:ring-0 cursor-pointer"
-                  />
-                  <label htmlFor="enableCloudSync" className="text-slate-300 cursor-pointer font-medium text-xs">
-                    Kích hoạt đồng bộ hóa trên đám mây (Cloud Sync)
-                  </label>
+                <div className="p-3 rounded-xl bg-slate-800/40 border border-slate-750 text-[11px] text-slate-400 leading-relaxed">
+                  Để kích hoạt kết nối, bạn thêm 2 biến sau trên Vercel (<strong className="text-slate-300">Settings $\rightarrow$ Environment Variables</strong>):
+                  <br />• <code className="text-amber-300 font-mono">VITE_SUPABASE_URL</code>
+                  <br />• <code className="text-amber-300 font-mono">VITE_SUPABASE_ANON_KEY</code>
                 </div>
               </div>
             </div>
