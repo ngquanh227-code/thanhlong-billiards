@@ -314,10 +314,10 @@ const DEFAULT_CUSTOMERS: Customer[] = [
   },
 ];
 
-// Seed Staff (Chỉ 2 vai trò: ADMIN & NHÂN VIÊN)
+// Seed Staff (Mặc định mở web là Nhân viên, chỉ 2 vai trò: NHÂN VIÊN & ADMIN)
 const DEFAULT_STAFF: Staff[] = [
-  { id: 'staff-1', code: 'ADMIN', name: 'Nguyễn Thanh Long (Admin)', phone: '0909000111', role: 'ADMIN', isActive: true },
   { id: 'staff-2', code: 'NV-01', name: 'Lê Hoàng Nam (Nhân viên)', phone: '0909444555', role: 'STAFF', isActive: true },
+  { id: 'staff-1', code: 'ADMIN', name: 'Nguyễn Thanh Long (Admin)', phone: '0909000111', role: 'ADMIN', isActive: true },
 ];
 
 // Seed Pricing Rules
@@ -525,16 +525,48 @@ export const StorageService = {
     this.set(STORAGE_KEYS.AUDIT_LOGS, logs);
   },
 
-  // Current Active User/Role
+  // Current Active User/Role (Mặc định khi mở web luôn là NHÂN VIÊN)
   getCurrentStaff(): Staff {
-    const current = this.get(STORAGE_KEYS.CURRENT_USER, DEFAULT_STAFF[0]);
-    return {
-      ...current,
-      role: (current.role === 'OWNER' || current.role === 'MANAGER' || current.role === 'ADMIN') ? 'ADMIN' : 'STAFF',
-    };
+    const defaultStaff = DEFAULT_STAFF.find((s) => s.role === 'STAFF') || DEFAULT_STAFF[0];
+
+    try {
+      // Check if admin is currently logged in this session
+      const isAdminSession = sessionStorage.getItem('thanhlong_admin_session') === 'true';
+      if (isAdminSession) {
+        const adminStaff = DEFAULT_STAFF.find((s) => s.role === 'ADMIN') || {
+          id: 'staff-1',
+          code: 'ADMIN',
+          name: 'Nguyễn Thanh Long (Admin)',
+          phone: '0909000111',
+          role: 'ADMIN',
+          isActive: true,
+        };
+        return adminStaff;
+      }
+    } catch {
+      // Ignore if sessionStorage is not supported
+    }
+
+    const current = this.get<Staff | null>(STORAGE_KEYS.CURRENT_USER, null);
+    if (current && current.role === 'STAFF') {
+      return current;
+    }
+
+    // Clean up persistent storage so it never defaults to ADMIN
+    this.set(STORAGE_KEYS.CURRENT_USER, defaultStaff);
+    return defaultStaff;
   },
   setCurrentStaff(staff: Staff): void {
-    this.set(STORAGE_KEYS.CURRENT_USER, staff);
+    if (staff.role === 'ADMIN') {
+      try {
+        sessionStorage.setItem('thanhlong_admin_session', 'true');
+      } catch {}
+    } else {
+      try {
+        sessionStorage.removeItem('thanhlong_admin_session');
+      } catch {}
+      this.set(STORAGE_KEYS.CURRENT_USER, staff);
+    }
   },
 
   // Export Complete Backup JSON
