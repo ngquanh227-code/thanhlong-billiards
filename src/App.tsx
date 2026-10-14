@@ -79,7 +79,6 @@ export default function App() {
     <div className="h-screen w-screen overflow-hidden bg-slate-950 text-slate-100 flex flex-col font-sans selection:bg-emerald-600 selection:text-white">
       {/* Top Navbar */}
       <Navbar
-        onOpenShiftModal={() => setCurrentTab('staff')}
         onNavigateTab={(tab) => setCurrentTab(tab)}
       />
 

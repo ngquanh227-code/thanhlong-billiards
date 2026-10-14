@@ -91,14 +91,14 @@ export const MergeTableModal: React.FC<MergeTableModalProps> = ({
             <button
               type="button"
               onClick={onClose}
-              className="flex-1 h-11 text-xs font-semibold text-slate-400 hover:text-white rounded-xl hover:bg-slate-800 transition-colors flex items-center justify-center"
+              className="flex-1 h-11 text-xs font-semibold text-slate-400 hover:text-white rounded-xl hover:bg-slate-800 transition-colors flex items-center justify-center whitespace-nowrap"
             >
               Hủy
             </button>
             <button
               type="submit"
               disabled={eligibleTables.length === 0}
-              className="flex-[2] h-11 rounded-xl bg-purple-600 hover:bg-purple-500 disabled:opacity-40 text-white font-bold text-xs sm:text-sm shadow-sm transition-all flex items-center justify-center active:scale-[0.98]"
+              className="flex-[2] h-11 rounded-xl bg-purple-600 hover:bg-purple-500 disabled:opacity-40 text-white font-bold text-xs sm:text-sm shadow-sm transition-all flex items-center justify-center active:scale-[0.98] whitespace-nowrap"
             >
               Xác nhận gộp bàn
             </button>

@@ -190,14 +190,14 @@ export const StationaryControlPanel: React.FC<StationaryControlPanelProps> = ({
               {isPaused ? (
                 <button
                   onClick={() => onResumeTable(table)}
-                  className="h-10 px-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-semibold flex items-center justify-center transition-all shadow-sm active:scale-[0.98]"
+                  className="h-10 px-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-semibold flex items-center justify-center transition-all shadow-sm active:scale-[0.98] whitespace-nowrap"
                 >
                   Tiếp tục
                 </button>
               ) : (
                 <button
                   onClick={() => onPauseTable(table)}
-                  className="h-10 px-2 rounded-xl bg-slate-800 hover:bg-slate-750 text-amber-300 border border-slate-700/60 font-semibold flex items-center justify-center transition-all active:scale-[0.98]"
+                  className="h-10 px-2 rounded-xl bg-slate-800 hover:bg-slate-750 text-amber-300 border border-slate-700/60 font-semibold flex items-center justify-center transition-all active:scale-[0.98] whitespace-nowrap"
                 >
                   Tạm dừng
                 </button>
@@ -205,14 +205,14 @@ export const StationaryControlPanel: React.FC<StationaryControlPanelProps> = ({
 
               <button
                 onClick={() => onTransferTable(table)}
-                className="h-10 px-2 rounded-xl bg-slate-800 hover:bg-slate-750 text-slate-200 border border-slate-700/60 font-semibold flex items-center justify-center transition-all active:scale-[0.98]"
+                className="h-10 px-2 rounded-xl bg-slate-800 hover:bg-slate-750 text-slate-200 border border-slate-700/60 font-semibold flex items-center justify-center transition-all active:scale-[0.98] whitespace-nowrap"
               >
                 Đổi bàn
               </button>
 
               <button
                 onClick={() => onMergeTable(table)}
-                className="h-10 px-2 rounded-xl bg-slate-800 hover:bg-slate-750 text-slate-200 border border-slate-700/60 font-semibold flex items-center justify-center transition-all active:scale-[0.98]"
+                className="h-10 px-2 rounded-xl bg-slate-800 hover:bg-slate-750 text-slate-200 border border-slate-700/60 font-semibold flex items-center justify-center transition-all active:scale-[0.98] whitespace-nowrap"
               >
                 Gộp bàn
               </button>
@@ -361,13 +361,13 @@ export const StationaryControlPanel: React.FC<StationaryControlPanelProps> = ({
               <div className="pt-2 flex gap-2">
                 <button
                   onClick={() => onOpenTableModal(table)}
-                  className="flex-1 h-9 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 font-medium text-xs flex items-center justify-center transition-colors"
+                  className="flex-1 h-9 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 font-medium text-xs flex items-center justify-center transition-colors whitespace-nowrap"
                 >
                   Tùy chọn
                 </button>
                 <button
                   onClick={handleQuickOpen}
-                  className="flex-1 h-9 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white font-semibold text-xs flex items-center justify-center transition-colors shadow-sm"
+                  className="flex-1 h-9 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white font-semibold text-xs flex items-center justify-center transition-colors shadow-sm whitespace-nowrap"
                 >
                   Mở bàn ngay
                 </button>
@@ -383,7 +383,7 @@ export const StationaryControlPanel: React.FC<StationaryControlPanelProps> = ({
             <p className="text-xs text-slate-400">{table.notes || 'Bàn đang được căn chỉnh băng hoặc thay vải nỉ.'}</p>
             <button
               onClick={() => onToggleMaintenance(table)}
-              className="h-9 px-4 rounded-lg bg-slate-800 hover:bg-slate-700 text-white text-xs font-medium flex items-center justify-center transition-colors mx-auto"
+              className="h-9 px-4 rounded-lg bg-slate-800 hover:bg-slate-700 text-white text-xs font-medium flex items-center justify-center transition-colors mx-auto whitespace-nowrap"
             >
               Mở lại bàn
             </button>

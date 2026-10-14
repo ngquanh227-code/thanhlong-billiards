@@ -166,7 +166,7 @@ export const TableCard: React.FC<TableCardProps> = ({
         {isAvailable && (
           <button
             onClick={() => onOpenTable(table)}
-            className="w-full h-11 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-semibold text-xs sm:text-sm flex items-center justify-center transition-all shadow-sm active:scale-[0.98]"
+            className="w-full h-11 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-semibold text-xs sm:text-sm flex items-center justify-center transition-all shadow-sm active:scale-[0.98] whitespace-nowrap"
           >
             Mở bàn
           </button>
@@ -176,14 +176,14 @@ export const TableCard: React.FC<TableCardProps> = ({
           <div className="flex items-center gap-2">
             <button
               onClick={() => onOrderMenu(table)}
-              className="flex-1 h-11 rounded-xl bg-slate-800 hover:bg-slate-750 text-slate-200 text-xs font-semibold flex items-center justify-center transition-all border border-slate-700/60 active:scale-[0.98]"
+              className="flex-1 h-11 rounded-xl bg-slate-800 hover:bg-slate-750 text-slate-200 text-xs font-semibold flex items-center justify-center transition-all border border-slate-700/60 active:scale-[0.98] whitespace-nowrap"
             >
               Gọi món
             </button>
 
             <button
               onClick={() => onCheckout(table, session)}
-              className="flex-1 h-11 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs sm:text-sm flex items-center justify-center transition-all shadow-sm active:scale-[0.98]"
+              className="flex-1 h-11 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs sm:text-sm flex items-center justify-center transition-all shadow-sm active:scale-[0.98] whitespace-nowrap"
             >
               Thanh toán
             </button>
@@ -193,7 +193,7 @@ export const TableCard: React.FC<TableCardProps> = ({
         {isMaintenance && (
           <button
             onClick={() => onToggleMaintenance(table)}
-            className="w-full h-11 rounded-xl bg-slate-800 hover:bg-slate-750 text-slate-300 text-xs font-medium flex items-center justify-center transition-all"
+            className="w-full h-11 rounded-xl bg-slate-800 hover:bg-slate-750 text-slate-300 text-xs font-medium flex items-center justify-center transition-all whitespace-nowrap"
           >
             Mở lại bàn
           </button>

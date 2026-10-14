@@ -3,14 +3,12 @@ import { useApp } from '../context/AppContext';
 import logoImg from '../assets/logo.png';
 
 interface NavbarProps {
-  onOpenShiftModal?: () => void;
   onNavigateTab?: (tab: string) => void;
 }
 
-export const Navbar: React.FC<NavbarProps> = ({ onOpenShiftModal, onNavigateTab }) => {
+export const Navbar: React.FC<NavbarProps> = ({ onNavigateTab }) => {
   const {
     tables,
-    shifts,
     isAdmin,
     toggleRole,
     currentTime,
@@ -19,8 +17,6 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenShiftModal, onNavigateTab 
   const playingCount = tables.filter((t) => t.status === 'PLAYING').length;
   const waitingCount = tables.filter((t) => t.status === 'WAITING_PAYMENT').length;
   const availableCount = tables.filter((t) => t.status === 'AVAILABLE').length;
-
-  const currentShift = shifts.find((s) => s.status === 'OPEN');
 
   const formattedDate = currentTime.toLocaleDateString('vi-VN', {
     weekday: 'short',
@@ -105,28 +101,15 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenShiftModal, onNavigateTab 
 
         {/* Right Actions */}
         <div className="flex items-center gap-2 font-sans">
-          {/* Shift status button */}
-          <button
-            onClick={onOpenShiftModal}
-            className={`h-8.5 px-3 rounded-lg text-xs font-medium flex items-center justify-center whitespace-nowrap transition-colors border ${
-              currentShift
-                ? 'bg-emerald-500/10 hover:bg-emerald-500/15 border-emerald-500/25 text-emerald-300'
-                : 'bg-amber-500/10 hover:bg-amber-500/15 border-amber-500/25 text-amber-300'
-            }`}
-            title="Xem và quản lý ca trực"
-          >
-            {currentShift ? (currentShift.shiftName.includes('(') ? currentShift.shiftName.split('(')[0].trim() : currentShift.shiftName) : 'Mở ca trực'}
-          </button>
-
           {/* Admin / Staff Role Switcher */}
           <button
             onClick={toggleRole}
-            className={`h-8.5 px-3.5 rounded-lg text-xs font-medium flex items-center justify-center whitespace-nowrap transition-all border ${
+            className={`h-9 px-4 rounded-xl text-xs font-semibold flex items-center justify-center whitespace-nowrap transition-all border active:scale-95 ${
               isAdmin
-                ? 'bg-amber-500/15 text-amber-300 border-amber-500/35 hover:bg-amber-500/20 font-semibold'
+                ? 'bg-amber-500/15 text-amber-300 border-amber-500/35 hover:bg-amber-500/20'
                 : 'bg-slate-800/80 text-slate-300 border-slate-700 hover:text-white hover:bg-slate-700/60'
             }`}
-            title="Chuyển đổi giữa quyền Quản trị (sửa quán) và Nhân viên (vận hành)"
+            title="Chuyển đổi giữa quyền Quản trị và Nhân viên"
           >
             {isAdmin ? 'Quản trị viên' : 'Nhân viên'}
           </button>

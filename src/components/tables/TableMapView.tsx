@@ -38,10 +38,7 @@ export const TableMapView: React.FC = () => {
     addToast,
   } = useApp();
 
-  const [typeFilter, setTypeFilter] = useState<string>('ALL');
   const [statusFilter, setStatusFilter] = useState<string>('ALL');
-  const [searchCode, setSearchCode] = useState<string>('');
-  const [viewMode, setViewMode] = useState<'GRID' | 'LIST'>('GRID');
 
   // Currently selected table for the stationary panel
   const [selectedTableId, setSelectedTableId] = useState<string>(() => {
@@ -110,20 +107,6 @@ export const TableMapView: React.FC = () => {
     }
   };
 
-  const handleQuickAddTable = () => {
-    const nextIdx = tables.length + 1;
-    const padded = nextIdx < 10 ? `0${nextIdx}` : `${nextIdx}`;
-    addTable({
-      code: `Bàn ${padded}`,
-      name: 'Bàn Bida Tiêu Chuẩn',
-      type: 'POOL',
-      hourlyRate: 60000,
-      area: 'Khu Sảnh Lỗ',
-      notes: '',
-    });
-    addToast('success', 'Thêm bàn thành công', `Đã tạo Bàn ${padded}`);
-  };
-
   const handleSaveTable = (e: React.FormEvent) => {
     e.preventDefault();
     if (!tableForm.code || !tableForm.name) return;
@@ -146,15 +129,9 @@ export const TableMapView: React.FC = () => {
     setIsTableModalOpen(false);
   };
 
-  // Filter logic
+  // Filter logic: Only by status
   const filteredTables = tables.filter((table) => {
-    const matchesType = typeFilter === 'ALL' || table.type === typeFilter;
-    const matchesStatus = statusFilter === 'ALL' || table.status === statusFilter;
-    const matchesSearch =
-      table.code.toLowerCase().includes(searchCode.toLowerCase()) ||
-      table.name.toLowerCase().includes(searchCode.toLowerCase()) ||
-      table.area.toLowerCase().includes(searchCode.toLowerCase());
-    return matchesType && matchesStatus && matchesSearch;
+    return statusFilter === 'ALL' || table.status === statusFilter;
   });
 
   const playingCount = tables.filter((t) => t.status === 'PLAYING').length;
@@ -190,66 +167,38 @@ export const TableMapView: React.FC = () => {
       {/* Left Column: Tables Grid, Filters & Bar */}
       <div className="flex-1 h-full overflow-y-auto p-4 sm:p-6 flex flex-col gap-4">
         {/* Top Header Controls */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-slate-800/80">
-          <div>
-            <div className="flex items-center gap-2.5">
-              <h1 className="text-xl font-bold text-white tracking-tight">
+        {/* Top Header Controls */}
+        <div className="flex items-center justify-between gap-4 pb-3 border-b border-slate-800/80">
+          <div className="flex flex-col gap-0.5 min-w-0">
+            <div className="flex items-center gap-2.5 flex-wrap">
+              <h1 className="text-xl sm:text-2xl font-bold text-white tracking-tight whitespace-nowrap">
                 Sơ đồ bàn
               </h1>
-              <span className="text-xs text-slate-400 font-medium">
+              <span className="text-xs text-slate-400 font-medium whitespace-nowrap bg-slate-800/70 px-2.5 py-1 rounded-lg border border-slate-700/50">
                 {tables.length} bàn ({playingCount} đang chơi, {availableCount} trống)
               </span>
             </div>
-            <p className="text-xs text-slate-400 mt-0.5">
+            <p className="text-xs text-slate-400 hidden sm:block truncate">
               Theo dõi thời gian chơi và gọi món thời gian thực
             </p>
           </div>
 
-          <div className="flex items-center gap-2 text-xs">
-            {/* View mode toggle */}
-            <div className="h-10 flex items-center bg-slate-900/60 p-1 rounded-xl border border-slate-800">
-              <button
-                onClick={() => setViewMode('GRID')}
-                className={`h-full px-3.5 rounded-lg font-semibold text-xs transition-colors flex items-center justify-center ${
-                  viewMode === 'GRID' ? 'bg-slate-800 text-white shadow-sm' : 'text-slate-400 hover:text-white'
-                }`}
-              >
-                Lưới
-              </button>
-              <button
-                onClick={() => setViewMode('LIST')}
-                className={`h-full px-3.5 rounded-lg font-semibold text-xs transition-colors flex items-center justify-center ${
-                  viewMode === 'LIST' ? 'bg-slate-800 text-white shadow-sm' : 'text-slate-400 hover:text-white'
-                }`}
-              >
-                Danh sách
-              </button>
-            </div>
-
-            {/* Admin Add Table Actions */}
+          <div className="flex items-center gap-2 text-xs shrink-0">
+            {/* Admin Add Table Action */}
             {isAdmin && (
-              <div className="flex items-center gap-1.5">
-                <button
-                  onClick={handleQuickAddTable}
-                  className="h-10 px-3.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-slate-300 border border-slate-800 hover:border-slate-700 font-semibold flex items-center justify-center transition-all active:scale-[0.98]"
-                  title="Thêm nhanh 1 bàn tiếp theo"
-                >
-                  + Tạo nhanh
-                </button>
-                <button
-                  onClick={handleOpenAddTable}
-                  className="h-10 px-4 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold flex items-center justify-center transition-all shadow-sm active:scale-[0.98]"
-                  title="Thêm bàn mới với thông tin chi tiết"
-                >
-                  + Thêm bàn
-                </button>
-              </div>
+              <button
+                onClick={handleOpenAddTable}
+                className="h-10 px-4 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold flex items-center justify-center transition-all shadow-sm active:scale-[0.98] whitespace-nowrap"
+                title="Thêm bàn mới với thông tin chi tiết"
+              >
+                + Thêm bàn
+              </button>
             )}
 
             {availableTables.length > 0 && !isAdmin && (
               <button
                 onClick={() => setActiveOpenModalTable(availableTables[0])}
-                className="h-10 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold flex items-center justify-center transition-all shadow-sm active:scale-[0.98]"
+                className="h-10 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold flex items-center justify-center transition-all shadow-sm active:scale-[0.98] whitespace-nowrap"
               >
                 + Mở bàn
               </button>
@@ -258,259 +207,107 @@ export const TableMapView: React.FC = () => {
             {/* Mobile trigger to view panel */}
             <button
               onClick={() => setIsMobilePanelOpen(true)}
-              className="lg:hidden h-10 px-3.5 rounded-xl bg-slate-800 border border-slate-700 text-slate-200 font-semibold flex items-center justify-center active:scale-[0.98]"
+              className="lg:hidden h-10 px-3.5 rounded-xl bg-slate-800 border border-slate-700 text-slate-200 font-semibold flex items-center justify-center active:scale-[0.98] whitespace-nowrap"
             >
-              Điều khiển
+              Bảng điều khiển
             </button>
           </div>
         </div>
 
-        {/* Filter and Search Bar (Harmonized, Single-tier, No Redundancies) */}
-        <div className="flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-2.5">
-          {/* Status Filters */}
-          <div className="flex items-center bg-slate-900/60 p-1 rounded-xl border border-slate-800 text-xs overflow-x-auto no-scrollbar gap-1">
+        {/* Status Filters Only (Simplified, Elegant, Clean) */}
+        <div className="flex items-center gap-2 overflow-x-auto no-scrollbar py-0.5">
+          <button
+            onClick={() => setStatusFilter('ALL')}
+            className={`h-9 px-4 rounded-xl font-semibold text-xs transition-all whitespace-nowrap shrink-0 flex items-center justify-center ${
+              statusFilter === 'ALL'
+                ? 'bg-slate-800 text-white shadow-sm border border-slate-700'
+                : 'bg-slate-900/60 text-slate-400 hover:text-white border border-slate-800/80 hover:border-slate-700'
+            }`}
+          >
+            Tất cả ({tables.length})
+          </button>
+          <button
+            onClick={() => setStatusFilter('PLAYING')}
+            className={`h-9 px-4 rounded-xl font-semibold text-xs transition-all whitespace-nowrap shrink-0 flex items-center justify-center ${
+              statusFilter === 'PLAYING'
+                ? 'bg-emerald-500/20 text-emerald-300 shadow-sm border border-emerald-500/40'
+                : 'bg-slate-900/60 text-slate-400 hover:text-white border border-slate-800/80 hover:border-slate-700'
+            }`}
+          >
+            Đang chơi ({playingCount})
+          </button>
+          <button
+            onClick={() => setStatusFilter('AVAILABLE')}
+            className={`h-9 px-4 rounded-xl font-semibold text-xs transition-all whitespace-nowrap shrink-0 flex items-center justify-center ${
+              statusFilter === 'AVAILABLE'
+                ? 'bg-slate-800 text-white shadow-sm border border-slate-700'
+                : 'bg-slate-900/60 text-slate-400 hover:text-white border border-slate-800/80 hover:border-slate-700'
+            }`}
+          >
+            Bàn trống ({availableCount})
+          </button>
+          {waitingCount > 0 && (
             <button
-              onClick={() => setStatusFilter('ALL')}
-              className={`h-8 px-3.5 rounded-lg font-semibold transition-all whitespace-nowrap flex items-center justify-center ${
-                statusFilter === 'ALL'
-                  ? 'bg-slate-800 text-white shadow-sm'
-                  : 'text-slate-400 hover:text-white'
+              onClick={() => setStatusFilter('WAITING_PAYMENT')}
+              className={`h-9 px-4 rounded-xl font-semibold text-xs transition-all whitespace-nowrap shrink-0 flex items-center justify-center ${
+                statusFilter === 'WAITING_PAYMENT'
+                  ? 'bg-amber-500/20 text-amber-300 shadow-sm border border-amber-500/40'
+                  : 'bg-slate-900/60 text-slate-400 hover:text-white border border-slate-800/80 hover:border-slate-700'
               }`}
             >
-              Tất cả ({tables.length})
+              Chờ tính ({waitingCount})
             </button>
-            <button
-              onClick={() => setStatusFilter('PLAYING')}
-              className={`h-8 px-3.5 rounded-lg font-semibold transition-all whitespace-nowrap flex items-center justify-center ${
-                statusFilter === 'PLAYING'
-                  ? 'bg-emerald-500/20 text-emerald-300 shadow-sm border border-emerald-500/30'
-                  : 'text-slate-400 hover:text-white'
-              }`}
-            >
-              Đang chơi ({playingCount})
-            </button>
-            <button
-              onClick={() => setStatusFilter('AVAILABLE')}
-              className={`h-8 px-3.5 rounded-lg font-semibold transition-all whitespace-nowrap flex items-center justify-center ${
-                statusFilter === 'AVAILABLE'
-                  ? 'bg-slate-800 text-white shadow-sm'
-                  : 'text-slate-400 hover:text-white'
-              }`}
-            >
-              Bàn trống ({availableCount})
-            </button>
-            {waitingCount > 0 && (
-              <button
-                onClick={() => setStatusFilter('WAITING_PAYMENT')}
-                className={`h-8 px-3.5 rounded-lg font-semibold transition-all whitespace-nowrap flex items-center justify-center ${
-                  statusFilter === 'WAITING_PAYMENT'
-                    ? 'bg-amber-500/20 text-amber-300 shadow-sm border border-amber-500/30'
-                    : 'text-slate-400 hover:text-white'
-                }`}
-              >
-                Chờ tính ({waitingCount})
-              </button>
-            )}
-          </div>
-
-          {/* Type Selector Dropdown & Search Bar */}
-          <div className="flex items-center gap-2">
-            <div className="h-9 bg-slate-900/60 px-3 rounded-xl border border-slate-800 flex items-center shrink-0">
-              <select
-                value={typeFilter}
-                onChange={(e) => setTypeFilter(e.target.value)}
-                className="h-full bg-transparent text-xs text-slate-300 focus:outline-none cursor-pointer font-semibold"
-              >
-                <option value="ALL" className="bg-slate-900 text-white">Tất cả loại bàn</option>
-                <option value="POOL" className="bg-slate-900 text-white">Bàn Lỗ (Pool)</option>
-                <option value="CAROM" className="bg-slate-900 text-white">Carom (3 Băng / Libre)</option>
-                <option value="VIP" className="bg-slate-900 text-white">Phòng VIP</option>
-                <option value="SNOOKER" className="bg-slate-900 text-white">Snooker</option>
-              </select>
-            </div>
-
-            <div className="w-full sm:w-60 h-9">
-              <input
-                type="text"
-                placeholder="Tìm mã hoặc tên bàn..."
-                value={searchCode}
-                onChange={(e) => setSearchCode(e.target.value)}
-                className="w-full h-full px-3.5 text-xs rounded-xl bg-slate-900 border border-slate-800 text-white placeholder-slate-500 focus:outline-none focus:border-slate-700 transition-colors font-medium"
-              />
-            </div>
-          </div>
+          )}
         </div>
 
-        {/* Grid or List View Mode */}
-        {viewMode === 'GRID' ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4 pb-6">
-            {filteredTables.map((table) => {
-              const activeSession = getActiveSessionForTable(table.id);
-              const rule = pricingRules.find((r) => r.type === table.type);
+        {/* Tables Grid Map */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4 pb-6">
+          {filteredTables.map((table) => {
+            const activeSession = getActiveSessionForTable(table.id);
+            const rule = pricingRules.find((r) => r.type === table.type);
 
-              return (
-                <TableCard
-                  key={table.id}
-                  table={table}
-                  session={activeSession}
-                  pricingRule={rule}
-                  currentTime={currentTime}
-                  isSelected={selectedTableId === table.id}
-                  isAdmin={isAdmin}
-                  onEditTable={handleOpenEditTable}
-                  onDeleteTable={handleDeleteTable}
-                  onSelectTable={(tbl) => {
-                    handleSelectTable(tbl);
-                    if (window.innerWidth < 1024) {
-                      setIsMobilePanelOpen(true);
-                    }
-                  }}
-                  onOpenTable={(tbl) => {
-                    handleSelectTable(tbl);
-                    setActiveOpenModalTable(tbl);
-                  }}
-                  onPauseTable={(tbl) => pauseTable(tbl.id)}
-                  onResumeTable={(tbl) => resumeTable(tbl.id)}
-                  onTransferTable={(tbl) => {
-                    handleSelectTable(tbl);
-                    setActiveTransferModalTable(tbl);
-                  }}
-                  onOrderMenu={(tbl) => {
-                    handleSelectTable(tbl);
-                    setActiveOrderModalTable(tbl);
-                  }}
-                  onCheckout={(tbl, sess) => {
-                    handleSelectTable(tbl);
-                    setActiveCheckoutData({ table: tbl, session: sess });
-                  }}
-                  onToggleMaintenance={(tbl) =>
-                    setTableMaintenance(tbl.id, tbl.status !== 'MAINTENANCE')
+            return (
+              <TableCard
+                key={table.id}
+                table={table}
+                session={activeSession}
+                pricingRule={rule}
+                currentTime={currentTime}
+                isSelected={selectedTableId === table.id}
+                isAdmin={isAdmin}
+                onEditTable={handleOpenEditTable}
+                onDeleteTable={handleDeleteTable}
+                onSelectTable={(tbl) => {
+                  handleSelectTable(tbl);
+                  if (window.innerWidth < 1024) {
+                    setIsMobilePanelOpen(true);
                   }
-                />
-              );
-            })}
-          </div>
-        ) : (
-          /* List View */
-          <div className="rounded-2xl bg-slate-900/50 border border-slate-800 overflow-hidden mb-6 shadow-sm">
-            <div className="overflow-x-auto">
-              <table className="w-full text-left text-xs">
-                <thead>
-                  <tr className="border-b border-slate-800 text-slate-400 font-medium text-[11px]">
-                    <th className="py-3 px-4">Bàn</th>
-                    <th className="py-3 px-4">Loại</th>
-                    <th className="py-3 px-4">Khu vực</th>
-                    <th className="py-3 px-4">Trạng thái</th>
-                    <th className="py-3 px-4">Khách hàng</th>
-                    <th className="py-3 px-4">Thời gian</th>
-                    <th className="py-3 px-4">Món gọi</th>
-                    <th className="py-3 px-4">Tạm tính</th>
-                    <th className="py-3 px-4 text-right">Thao tác</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-slate-800/60">
-                  {filteredTables.map((tbl) => {
-                    const sess = getActiveSessionForTable(tbl.id);
-                    const rule = pricingRules.find((r) => r.type === tbl.type);
-                    const fee = sess ? calculateTableFee(sess, rule, currentTime) : null;
-                    const isSelected = selectedTableId === tbl.id;
-
-                    return (
-                      <tr
-                        key={tbl.id}
-                        onClick={() => {
-                          handleSelectTable(tbl);
-                          if (window.innerWidth < 1024) {
-                            setIsMobilePanelOpen(true);
-                          }
-                        }}
-                        className={`cursor-pointer transition-colors ${
-                          isSelected ? 'bg-slate-800/80 text-white font-medium' : 'hover:bg-slate-800/40 text-slate-300'
-                        }`}
-                      >
-                        <td className="py-3 px-4 font-semibold text-white">
-                          {tbl.code}
-                        </td>
-                        <td className="py-3 px-4 text-slate-400">{tbl.type}</td>
-                        <td className="py-3 px-4 text-slate-400">{tbl.area}</td>
-                        <td className="py-3 px-4">
-                          <span className={`px-2 py-0.5 rounded-full text-[11px] font-medium ${
-                            tbl.status === 'PLAYING'
-                              ? 'bg-emerald-500/15 text-emerald-300'
-                              : tbl.status === 'AVAILABLE'
-                              ? 'bg-slate-800 text-slate-400'
-                              : tbl.status === 'WAITING_PAYMENT'
-                              ? 'bg-amber-500/15 text-amber-300'
-                              : 'bg-slate-800/60 text-slate-500'
-                          }`}>
-                            {tbl.status === 'PLAYING' ? 'Đang chơi' : tbl.status === 'AVAILABLE' ? 'Bàn trống' : tbl.status === 'WAITING_PAYMENT' ? 'Chờ tính' : 'Bảo trì'}
-                          </span>
-                        </td>
-                        <td className="py-3 px-4 text-slate-200">
-                          {sess?.customerName || (tbl.status === 'PLAYING' ? 'Khách lẻ' : '---')}
-                        </td>
-                        <td className="py-3 px-4 text-slate-300">
-                          {fee ? formatSecondsToTimer(fee.netSeconds) : '---'}
-                        </td>
-                        <td className="py-3 px-4 text-slate-300">
-                          {sess?.orders?.length || 0}
-                        </td>
-                        <td className="py-3 px-4 font-semibold text-amber-300">
-                          {fee ? formatVND(fee.grandTotal) : '---'}
-                        </td>
-                        <td className="py-3 px-4 text-right" onClick={(e) => e.stopPropagation()}>
-                          <div className="flex items-center justify-end gap-1.5">
-                            {isAdmin && (
-                              <>
-                                <button
-                                  onClick={() => handleOpenEditTable(tbl)}
-                                  className="px-2 py-1 rounded-md text-amber-300 hover:text-amber-200 hover:bg-slate-800 text-xs font-medium transition-colors"
-                                  title="Sửa thông tin bàn"
-                                >
-                                  Sửa
-                                </button>
-                                {tbl.status === 'AVAILABLE' && (
-                                  <button
-                                    onClick={() => handleDeleteTable(tbl)}
-                                    className="px-2 py-1 rounded-md text-slate-400 hover:text-rose-400 hover:bg-slate-800 text-xs font-medium transition-colors"
-                                    title="Xóa bàn"
-                                  >
-                                    Xóa
-                                  </button>
-                                )}
-                              </>
-                            )}
-                            {tbl.status === 'AVAILABLE' ? (
-                              <button
-                                onClick={() => {
-                                  handleSelectTable(tbl);
-                                  setActiveOpenModalTable(tbl);
-                                }}
-                                className="px-3 py-1 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white font-medium text-xs transition-colors"
-                              >
-                                Mở bàn
-                              </button>
-                            ) : sess ? (
-                              <button
-                                onClick={() => {
-                                  handleSelectTable(tbl);
-                                  setActiveCheckoutData({ table: tbl, session: sess });
-                                }}
-                                className="px-3 py-1 rounded-lg bg-amber-400 hover:bg-amber-300 text-slate-950 font-semibold text-xs transition-colors"
-                              >
-                                Thanh toán
-                              </button>
-                            ) : null}
-                          </div>
-                        </td>
-                      </tr>
-                    );
-                  })}
-                </tbody>
-              </table>
-            </div>
-          </div>
-        )}
+                }}
+                onOpenTable={(tbl) => {
+                  handleSelectTable(tbl);
+                  setActiveOpenModalTable(tbl);
+                }}
+                onPauseTable={(tbl) => pauseTable(tbl.id)}
+                onResumeTable={(tbl) => resumeTable(tbl.id)}
+                onTransferTable={(tbl) => {
+                  handleSelectTable(tbl);
+                  setActiveTransferModalTable(tbl);
+                }}
+                onOrderMenu={(tbl) => {
+                  handleSelectTable(tbl);
+                  setActiveOrderModalTable(tbl);
+                }}
+                onCheckout={(tbl, sess) => {
+                  handleSelectTable(tbl);
+                  setActiveCheckoutData({ table: tbl, session: sess });
+                }}
+                onToggleMaintenance={(tbl) =>
+                  setTableMaintenance(tbl.id, tbl.status !== 'MAINTENANCE')
+                }
+              />
+            );
+          })}
+        </div>
       </div>
 
       {/* Right Column: Stationary Inspector Panel on Desktop */}
