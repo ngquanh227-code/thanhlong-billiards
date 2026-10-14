@@ -12,7 +12,6 @@ import { InventoryView } from './components/inventory/InventoryView';
 import { ReportsView } from './components/reports/ReportsView';
 import { SettingsView } from './components/settings/SettingsView';
 import { AiAssistantModal } from './components/ai/AiAssistantModal';
-import { DraggableAiBubble } from './components/ai/DraggableAiBubble';
 import { sounds } from './services/sound';
 
 export default function App() {
@@ -208,11 +207,6 @@ export default function App() {
         </button>
       </nav>
 
-      {/* Draggable Floating AI Chat Bubble */}
-      <DraggableAiBubble
-        isOpen={isAiModalOpen}
-        onToggle={() => setIsAiModalOpen((prev) => !prev)}
-      />
 
       {/* AI Assistant Modal */}
       <AiAssistantModal

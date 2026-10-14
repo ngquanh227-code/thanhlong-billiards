@@ -222,22 +222,13 @@ export const AiAssistantModal: React.FC<AiAssistantModalProps> = ({
             </div>
           </div>
 
-          <div className="flex items-center gap-2">
-            <button
-              onClick={onClose}
-              className="h-8 px-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white flex items-center justify-center text-xs font-semibold transition-colors"
-              title="Thu nhỏ về bong bóng chat"
-            >
-              Thu nhỏ
-            </button>
-            <button
-              onClick={onClose}
-              className="h-8 px-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-white flex items-center justify-center text-xs font-semibold transition-colors"
-              title="Đóng cửa sổ"
-            >
-              Đóng
-            </button>
-          </div>
+          <button
+            onClick={onClose}
+            className="h-8 px-3.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white flex items-center justify-center text-xs font-semibold transition-colors"
+            title="Đóng cửa sổ Trợ lý AI"
+          >
+            Đóng
+          </button>
         </div>
 
         {/* Chat Message Stream */}
