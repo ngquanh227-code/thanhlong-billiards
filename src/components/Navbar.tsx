@@ -35,8 +35,8 @@ export const Navbar: React.FC<NavbarProps> = ({ onNavigateTab }) => {
         {/* Brand */}
         <div
           className="flex items-center gap-3 cursor-pointer group shrink-0"
-          onClick={() => onNavigateTab && onNavigateTab('dashboard')}
-          title="Về trang tổng quan"
+          onClick={() => onNavigateTab && onNavigateTab(isAdmin ? 'dashboard' : 'tables')}
+          title={isAdmin ? "Về trang tổng quan" : "Về sơ đồ bàn"}
         >
           <img
             src={logoImg}

@@ -22,7 +22,7 @@ export default function App() {
 
   // Guard admin-only tabs
   useEffect(() => {
-    const adminOnlyTabs = ['reports', 'staff', 'inventory'];
+    const adminOnlyTabs = ['dashboard', 'members', 'reports', 'staff', 'inventory'];
     if (!isAdmin && adminOnlyTabs.includes(currentTab)) {
       setCurrentTab('tables');
     }
@@ -39,8 +39,10 @@ export default function App() {
 
       if (e.key === 'F1') {
         e.preventDefault();
-        setCurrentTab('dashboard');
-        sounds.playClick();
+        if (isAdmin) {
+          setCurrentTab('dashboard');
+          sounds.playClick();
+        }
       } else if (e.key === 'F2') {
         e.preventDefault();
         setCurrentTab('menu');

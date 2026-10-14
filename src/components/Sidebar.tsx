@@ -20,15 +20,15 @@ export const Sidebar: React.FC<SidebarProps> = ({
     { id: 'tables', label: 'Sơ đồ bàn' },
     { id: 'pos', label: 'Quầy thu ngân' },
     { id: 'menu', label: 'Thực đơn & Order' },
-    { id: 'members', label: 'Hội viên & Khách' },
-    { id: 'dashboard', label: 'Tổng quan quán' },
     { id: 'settings', label: 'Cài đặt hệ thống' },
   ];
 
   const adminNavItems = [
-    { id: 'staff', label: 'Nhân sự & Ca trực' },
-    { id: 'inventory', label: 'Kho hàng & Sổ quỹ' },
+    { id: 'dashboard', label: 'Tổng quan quán' },
+    { id: 'members', label: 'Hội viên & Khách' },
     { id: 'reports', label: 'Báo cáo doanh thu' },
+    { id: 'inventory', label: 'Kho hàng & Sổ quỹ' },
+    { id: 'staff', label: 'Nhân sự & Ca trực' },
   ];
 
   const handleSelect = (tabId: string) => {
