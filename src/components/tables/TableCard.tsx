@@ -38,10 +38,11 @@ export const TableCard: React.FC<TableCardProps> = ({
 }) => {
   const feeInfo = session ? calculateTableFee(session, pricingRule, currentTime) : null;
 
-  const isAvailable = table.status === 'AVAILABLE';
-  const isPlaying = table.status === 'PLAYING';
-  const isWaiting = table.status === 'WAITING_PAYMENT';
   const isMaintenance = table.status === 'MAINTENANCE';
+  const hasActiveSession = Boolean(session && (session.status === 'ACTIVE' || session.status === 'WAITING_PAYMENT' || session.status === 'PAUSED'));
+  const isPlaying = table.status === 'PLAYING' && hasActiveSession;
+  const isWaiting = table.status === 'WAITING_PAYMENT' && hasActiveSession;
+  const isAvailable = table.status === 'AVAILABLE' || (!hasActiveSession && !isMaintenance);
   const isPaused = session?.status === 'PAUSED';
 
   const getTypeName = (type: string) => {

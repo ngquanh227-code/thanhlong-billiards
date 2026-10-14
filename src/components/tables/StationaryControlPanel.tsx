@@ -64,10 +64,11 @@ export const StationaryControlPanel: React.FC<StationaryControlPanelProps> = ({
     );
   }
 
-  const isPlaying = table.status === 'PLAYING';
-  const isWaiting = table.status === 'WAITING_PAYMENT';
-  const isAvailable = table.status === 'AVAILABLE';
+  const hasActiveSession = Boolean(session && (session.status === 'ACTIVE' || session.status === 'WAITING_PAYMENT' || session.status === 'PAUSED'));
+  const isPlaying = table.status === 'PLAYING' && hasActiveSession;
+  const isWaiting = table.status === 'WAITING_PAYMENT' && hasActiveSession;
   const isMaintenance = table.status === 'MAINTENANCE';
+  const isAvailable = table.status === 'AVAILABLE' || (!hasActiveSession && !isMaintenance);
   const isPaused = session?.status === 'PAUSED';
   const isAdmin = currentStaff.role === 'ADMIN' || (currentStaff.role as string) === 'OWNER' || (currentStaff.role as string) === 'MANAGER';
 

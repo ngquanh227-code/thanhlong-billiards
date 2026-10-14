@@ -31,8 +31,8 @@ const DEFAULT_TABLES: TableItem[] = [
   { id: 'tbl-2', code: 'Bàn 02', name: 'Aileex 9020 Silver Pool', type: 'POOL', hourlyRate: 60000, status: 'AVAILABLE', area: 'Khu Sảnh Lỗ' },
   { id: 'tbl-3', code: 'Bàn 03', name: 'Aileex King Gold Pool', type: 'POOL', hourlyRate: 60000, status: 'PLAYING', currentSessionId: 'sess-2', assignedStaffName: 'Vũ Minh Tuấn', area: 'Khu Sảnh Lỗ' },
   { id: 'tbl-4', code: 'Bàn 04', name: 'Hollywood Pro Carom 3C', type: 'CAROM', hourlyRate: 70000, status: 'AVAILABLE', area: 'Khu Carom' },
-  { id: 'tbl-5', code: 'Bàn 05', name: 'Hollywood Pro Carom 3C', type: 'CAROM', hourlyRate: 70000, status: 'WAITING_PAYMENT', currentSessionId: 'sess-3', assignedStaffName: 'Lê Hoàng Nam', area: 'Khu Carom' },
-  { id: 'tbl-6', code: 'VIP 01', name: 'Phòng VIP Hoàng Gia', type: 'VIP', hourlyRate: 110000, status: 'PLAYING', currentSessionId: 'sess-4', assignedStaffName: 'Trần Quốc Huy', area: 'Phòng VIP Lầu 1' },
+  { id: 'tbl-5', code: 'Bàn 05', name: 'Hollywood Pro Carom 3C', type: 'CAROM', hourlyRate: 70000, status: 'AVAILABLE', area: 'Khu Carom' },
+  { id: 'tbl-6', code: 'VIP 01', name: 'Phòng VIP Hoàng Gia', type: 'VIP', hourlyRate: 60000, status: 'AVAILABLE', area: 'Phòng VIP Lầu 1' },
 ];
 
 // Helper to get time ago in ISO
@@ -407,7 +407,31 @@ export const StorageService = {
 
   // Tables
   getTables(): TableItem[] {
-    return this.get(STORAGE_KEYS.TABLES, DEFAULT_TABLES);
+    const rawTables = this.get(STORAGE_KEYS.TABLES, DEFAULT_TABLES);
+    const sessions = this.getSessions();
+    return rawTables.map((tbl) => {
+      // Bàn 05 and VIP 01 or any table without active session must be AVAILABLE
+      if (tbl.id === 'tbl-5' || tbl.id === 'tbl-6' || tbl.code === 'Bàn 05' || tbl.code === 'VIP 01') {
+        const activeSess = sessions.find((s) => s.tableId === tbl.id && (s.status === 'ACTIVE' || s.status === 'WAITING_PAYMENT' || s.status === 'PAUSED'));
+        if (!activeSess) {
+          return {
+            ...tbl,
+            status: 'AVAILABLE' as const,
+            currentSessionId: undefined,
+            assignedStaffName: undefined,
+          };
+        }
+      }
+      if ((tbl.status === 'PLAYING' || tbl.status === 'WAITING_PAYMENT') && !sessions.some((s) => s.tableId === tbl.id && (s.status === 'ACTIVE' || s.status === 'WAITING_PAYMENT' || s.status === 'PAUSED'))) {
+        return {
+          ...tbl,
+          status: 'AVAILABLE' as const,
+          currentSessionId: undefined,
+          assignedStaffName: undefined,
+        };
+      }
+      return tbl;
+    });
   },
   saveTables(tables: TableItem[]): void {
     this.set(STORAGE_KEYS.TABLES, tables);
