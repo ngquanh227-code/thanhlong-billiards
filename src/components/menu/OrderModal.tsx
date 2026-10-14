@@ -99,12 +99,18 @@ export const OrderModal: React.FC<OrderModalProps> = ({
 
   const draftList = Object.values(orderDraft);
   const draftTotal = draftList.reduce((sum, d) => sum + d.item.price * d.quantity, 0);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleConfirm = () => {
-    if (draftList.length === 0) return;
-    onConfirmOrder(table.id, draftList);
-    setOrderDraft({});
-    onClose();
+    if (draftList.length === 0 || isSubmitting) return;
+    setIsSubmitting(true);
+    try {
+      onConfirmOrder(table.id, draftList);
+      setOrderDraft({});
+      onClose();
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -349,11 +355,11 @@ export const OrderModal: React.FC<OrderModalProps> = ({
                 </button>
                 <button
                   type="button"
-                  disabled={draftList.length === 0}
+                  disabled={draftList.length === 0 || isSubmitting}
                   onClick={handleConfirm}
                   className="flex-[2] h-11 px-3 rounded-xl bg-amber-500 hover:bg-amber-400 disabled:opacity-40 text-slate-950 font-bold text-xs sm:text-sm transition-all shadow-sm flex items-center justify-center active:scale-[0.98] whitespace-nowrap"
                 >
-                  Xác nhận gọi món ({draftList.length})
+                  {isSubmitting ? 'Đang gửi...' : `Xác nhận gọi món (${draftList.length})`}
                 </button>
               </div>
             </div>

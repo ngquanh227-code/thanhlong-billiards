@@ -26,6 +26,7 @@ export const TableMapView: React.FC = () => {
     resumeTable,
     transferTable,
     mergeTables,
+    addOrdersToTable,
     addOrderToTable,
     removeOrderItem,
     updateOrderItemQty,
@@ -147,9 +148,7 @@ export const TableMapView: React.FC = () => {
     tableId: string,
     itemsToAdd: { item: MenuItem; quantity: number; notes?: string }[]
   ) => {
-    itemsToAdd.forEach(({ item, quantity, notes }) => {
-      addOrderToTable(tableId, item, quantity, notes);
-    });
+    addOrdersToTable(tableId, itemsToAdd);
     setActiveOrderModalTable(null);
   };
 

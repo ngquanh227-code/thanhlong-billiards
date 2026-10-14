@@ -19,6 +19,30 @@ export const supabase: SupabaseClient | null = isSupabaseConfigured()
   ? createClient(supabaseUrl, supabaseAnonKey)
   : null;
 
+// Unique client identifier per browser session/device to prevent echo loops
+export const CLIENT_ID = `client_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
+
+export type SyncKey = 'tables' | 'sessions' | 'menu' | 'shifts' | 'transactions';
+
+export interface SyncEnvelope<T = any> {
+  _v: number;
+  senderId: string;
+  timestamp: number;
+  data: T;
+}
+
+export function parseSyncData<T>(raw: any): { data: T; senderId?: string; timestamp?: number } {
+  if (raw && typeof raw === 'object' && '_v' in raw && 'data' in raw && 'senderId' in raw) {
+    return {
+      data: raw.data as T,
+      senderId: raw.senderId,
+      timestamp: raw.timestamp,
+    };
+  }
+  // Backwards compatibility with raw array or object
+  return { data: raw as T };
+}
+
 export const SQL_SETUP_SCRIPT = `-- 1. Tạo bảng lưu trữ dữ liệu đồng bộ cho Thanh Long Billiards
 create table if not exists public.club_data (
   key text primary key,
@@ -39,16 +63,25 @@ with check (true);
 alter publication supabase_realtime add table public.club_data;
 `;
 
+const debounceTimers: Partial<Record<SyncKey, any>> = {};
+
 export const SupabaseSync = {
-  // Sync state up to cloud
-  async pushKey(key: 'tables' | 'sessions' | 'menu' | 'shifts' | 'transactions', data: any): Promise<boolean> {
+  // Sync state up to cloud immediately
+  async pushKey(key: SyncKey, data: any): Promise<boolean> {
     if (!supabase) return false;
     try {
+      const envelope: SyncEnvelope = {
+        _v: 1,
+        senderId: CLIENT_ID,
+        timestamp: Date.now(),
+        data,
+      };
+
       const { error } = await supabase
         .from('club_data')
         .upsert({
           key,
-          data,
+          data: envelope,
           updated_at: new Date().toISOString(),
         });
       if (error) {
@@ -62,8 +95,19 @@ export const SupabaseSync = {
     }
   },
 
+  // Push state with debounce to prevent network flood on rapid typing or item additions
+  pushKeyDebounced(key: SyncKey, data: any, delayMs: number = 250): void {
+    if (debounceTimers[key]) {
+      clearTimeout(debounceTimers[key]);
+    }
+    debounceTimers[key] = setTimeout(() => {
+      SupabaseSync.pushKey(key, data);
+      delete debounceTimers[key];
+    }, delayMs);
+  },
+
   // Pull state from cloud
-  async pullKey<T>(key: 'tables' | 'sessions' | 'menu' | 'shifts' | 'transactions'): Promise<T | null> {
+  async pullKey<T>(key: SyncKey): Promise<T | null> {
     if (!supabase) return null;
     try {
       const { data, error } = await supabase
@@ -72,7 +116,7 @@ export const SupabaseSync = {
         .eq('key', key)
         .single();
       if (error || !data) return null;
-      return data.data as T;
+      return parseSyncData<T>(data.data).data;
     } catch {
       return null;
     }
@@ -93,7 +137,7 @@ export const SupabaseSync = {
 
       const result: any = {};
       data.forEach((row) => {
-        result[row.key] = row.data;
+        result[row.key] = parseSyncData(row.data).data;
       });
       return result;
     } catch {
@@ -102,7 +146,7 @@ export const SupabaseSync = {
   },
 
   // Subscribe to realtime updates across all connected devices
-  subscribeRealtime(onUpdate: (key: string, data: any) => void) {
+  subscribeRealtime(onUpdate: (key: SyncKey, data: any, timestamp?: number) => void) {
     if (!supabase) return () => {};
 
     const channel = supabase
@@ -113,7 +157,12 @@ export const SupabaseSync = {
         (payload) => {
           if (payload.new && (payload.new as any).key) {
             const row = payload.new as any;
-            onUpdate(row.key, row.data);
+            const parsed = parseSyncData(row.data);
+            // Drop our own echo broadcast to eliminate ping-pong loops
+            if (parsed.senderId && parsed.senderId === CLIENT_ID) {
+              return;
+            }
+            onUpdate(row.key as SyncKey, parsed.data, parsed.timestamp);
           }
         }
       )

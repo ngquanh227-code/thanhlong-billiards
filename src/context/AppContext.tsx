@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect, ReactNode, useCallback } from 'react';
+import React, { createContext, useContext, useState, useEffect, ReactNode, useCallback, useRef } from 'react';
 import {
   TableItem,
   TableSession,
@@ -70,6 +70,10 @@ interface AppContextType {
   resumeTable: (tableId: string) => void;
   transferTable: (fromTableId: string, toTableId: string) => boolean;
   mergeTables: (sourceTableId: string, targetTableId: string) => boolean;
+  addOrdersToTable: (
+    tableId: string,
+    itemsToAdd: { item: MenuItem; quantity: number; notes?: string }[]
+  ) => boolean;
   addOrderToTable: (tableId: string, menuItem: MenuItem, quantity: number, notes?: string) => boolean;
   removeOrderItem: (tableId: string, orderItemId: string) => void;
   updateOrderItemQty: (tableId: string, orderItemId: string, delta: number) => void;
@@ -173,46 +177,153 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     return () => clearInterval(timer);
   }, []);
 
+  // Helper to merge incoming remote sessions without dropping locally-added active orders
+  const mergeRemoteSessions = (localSessions: TableSession[], incomingSessions: TableSession[]): TableSession[] => {
+    if (!incomingSessions || !Array.isArray(incomingSessions)) return localSessions;
+
+    const merged = incomingSessions.map((inc) => ({
+      ...inc,
+      orders: [...(inc.orders || [])],
+    }));
+
+    // Preserve local active orders if the incoming session hasn't caught up with them yet
+    localSessions.forEach((local) => {
+      if (local.status === 'ACTIVE' || local.status === 'WAITING_PAYMENT') {
+        const incIndex = merged.findIndex((m) => m.id === local.id);
+        if (incIndex >= 0) {
+          const incSession = merged[incIndex];
+          const orderMap = new Map<string, OrderItem>();
+          (incSession.orders || []).forEach((o) => orderMap.set(o.id, o));
+          (local.orders || []).forEach((lo) => {
+            if (!orderMap.has(lo.id)) {
+              orderMap.set(lo.id, lo);
+            } else {
+              const incOrder = orderMap.get(lo.id)!;
+              if (lo.quantity > incOrder.quantity) {
+                orderMap.set(lo.id, lo);
+              }
+            }
+          });
+          merged[incIndex] = {
+            ...incSession,
+            orders: Array.from(orderMap.values()),
+          };
+        }
+      }
+    });
+
+    return merged;
+  };
+
+  const isInitializedRef = useRef<boolean>(false);
+  const remoteUpdateKeysRef = useRef<Set<string>>(new Set());
+
   // Supabase Realtime Cloud Sync
   useEffect(() => {
-    if (!isSupabaseConfigured()) return;
+    if (!isSupabaseConfigured()) {
+      isInitializedRef.current = true;
+      return;
+    }
 
     // Pull initial cloud state
     SupabaseSync.pullAll().then((cloudData) => {
-      if (!cloudData) return;
-      if (cloudData.tables && cloudData.tables.length > 0) setTables(cloudData.tables);
-      if (cloudData.sessions) setSessions(cloudData.sessions);
-      if (cloudData.menu && cloudData.menu.length > 0) setMenu(cloudData.menu);
-      if (cloudData.shifts) setShifts(cloudData.shifts);
-      if (cloudData.transactions) setTransactions(cloudData.transactions);
+      if (cloudData) {
+        if (cloudData.tables && cloudData.tables.length > 0) {
+          remoteUpdateKeysRef.current.add('tables');
+          setTables(cloudData.tables);
+          StorageService.saveTables(cloudData.tables);
+        }
+        if (cloudData.sessions && Array.isArray(cloudData.sessions)) {
+          remoteUpdateKeysRef.current.add('sessions');
+          setSessions((prevLocal) => {
+            const merged = mergeRemoteSessions(prevLocal, cloudData.sessions!);
+            StorageService.saveSessions(merged);
+            return merged;
+          });
+        }
+        if (cloudData.menu && cloudData.menu.length > 0) {
+          remoteUpdateKeysRef.current.add('menu');
+          setMenu(cloudData.menu);
+          StorageService.saveMenu(cloudData.menu);
+        }
+        if (cloudData.shifts && Array.isArray(cloudData.shifts)) {
+          remoteUpdateKeysRef.current.add('shifts');
+          setShifts(cloudData.shifts);
+          StorageService.saveShifts(cloudData.shifts);
+        }
+        if (cloudData.transactions && Array.isArray(cloudData.transactions)) {
+          remoteUpdateKeysRef.current.add('transactions');
+          setTransactions(cloudData.transactions);
+          StorageService.saveTransactions(cloudData.transactions);
+        }
+      }
+      isInitializedRef.current = true;
     });
 
     // Realtime channel listener across all devices (PC & Phone)
     const unsubscribe = SupabaseSync.subscribeRealtime((key, data) => {
-      if (key === 'tables' && Array.isArray(data)) setTables(data);
-      if (key === 'sessions' && Array.isArray(data)) setSessions(data);
-      if (key === 'menu' && Array.isArray(data)) setMenu(data);
-      if (key === 'shifts' && Array.isArray(data)) setShifts(data);
-      if (key === 'transactions' && Array.isArray(data)) setTransactions(data);
+      remoteUpdateKeysRef.current.add(key);
+
+      if (key === 'tables' && Array.isArray(data)) {
+        setTables(data);
+        StorageService.saveTables(data);
+      }
+      if (key === 'sessions' && Array.isArray(data)) {
+        setSessions((prevLocal) => {
+          const merged = mergeRemoteSessions(prevLocal, data);
+          StorageService.saveSessions(merged);
+          return merged;
+        });
+      }
+      if (key === 'menu' && Array.isArray(data)) {
+        setMenu(data);
+        StorageService.saveMenu(data);
+      }
+      if (key === 'shifts' && Array.isArray(data)) {
+        setShifts(data);
+        StorageService.saveShifts(data);
+      }
+      if (key === 'transactions' && Array.isArray(data)) {
+        setTransactions(data);
+        StorageService.saveTransactions(data);
+      }
     });
 
     return () => unsubscribe();
   }, []);
 
-  // Save to LocalStorage & Push to Supabase Cloud
+  // Save to LocalStorage & Push to Supabase Cloud (with loop cancellation & debounce)
   useEffect(() => {
     StorageService.saveTables(tables);
-    if (isSupabaseConfigured()) SupabaseSync.pushKey('tables', tables);
+    if (!isSupabaseConfigured()) return;
+    if (remoteUpdateKeysRef.current.has('tables')) {
+      remoteUpdateKeysRef.current.delete('tables');
+      return;
+    }
+    if (!isInitializedRef.current) return;
+    SupabaseSync.pushKeyDebounced('tables', tables);
   }, [tables]);
 
   useEffect(() => {
     StorageService.saveSessions(sessions);
-    if (isSupabaseConfigured()) SupabaseSync.pushKey('sessions', sessions);
+    if (!isSupabaseConfigured()) return;
+    if (remoteUpdateKeysRef.current.has('sessions')) {
+      remoteUpdateKeysRef.current.delete('sessions');
+      return;
+    }
+    if (!isInitializedRef.current) return;
+    SupabaseSync.pushKeyDebounced('sessions', sessions);
   }, [sessions]);
 
   useEffect(() => {
     StorageService.saveMenu(menu);
-    if (isSupabaseConfigured()) SupabaseSync.pushKey('menu', menu);
+    if (!isSupabaseConfigured()) return;
+    if (remoteUpdateKeysRef.current.has('menu')) {
+      remoteUpdateKeysRef.current.delete('menu');
+      return;
+    }
+    if (!isInitializedRef.current) return;
+    SupabaseSync.pushKeyDebounced('menu', menu);
   }, [menu]);
 
   useEffect(() => {
@@ -229,12 +340,24 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
 
   useEffect(() => {
     StorageService.saveShifts(shifts);
-    if (isSupabaseConfigured()) SupabaseSync.pushKey('shifts', shifts);
+    if (!isSupabaseConfigured()) return;
+    if (remoteUpdateKeysRef.current.has('shifts')) {
+      remoteUpdateKeysRef.current.delete('shifts');
+      return;
+    }
+    if (!isInitializedRef.current) return;
+    SupabaseSync.pushKeyDebounced('shifts', shifts);
   }, [shifts]);
 
   useEffect(() => {
     StorageService.saveTransactions(transactions);
-    if (isSupabaseConfigured()) SupabaseSync.pushKey('transactions', transactions);
+    if (!isSupabaseConfigured()) return;
+    if (remoteUpdateKeysRef.current.has('transactions')) {
+      remoteUpdateKeysRef.current.delete('transactions');
+      return;
+    }
+    if (!isInitializedRef.current) return;
+    SupabaseSync.pushKeyDebounced('transactions', transactions);
   }, [transactions]);
 
   useEffect(() => {
@@ -552,62 +675,94 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     return true;
   };
 
-  // Add order item to active table
-  const addOrderToTable = (tableId: string, menuItem: MenuItem, quantity: number, notes?: string): boolean => {
+  // Atomic batch order items addition
+  const addOrdersToTable = (
+    tableId: string,
+    itemsToAdd: { item: MenuItem; quantity: number; notes?: string }[]
+  ): boolean => {
+    if (!itemsToAdd || itemsToAdd.length === 0) return false;
+
     const session = getActiveSessionForTable(tableId);
     if (!session) {
       addToast('error', 'Lỗi order', 'Bàn chưa được mở!');
       return false;
     }
 
-    if (menuItem.stock < quantity) {
-      addToast('error', 'Không đủ tồn kho', `Mặt hàng "${menuItem.name}" chỉ còn ${menuItem.stock} ${menuItem.unit}!`);
-      return false;
+    // Validate inventory stock for all items
+    for (const { item, quantity } of itemsToAdd) {
+      const curMenuItem = menu.find((m) => m.id === item.id) || item;
+      if (curMenuItem.stock < quantity) {
+        addToast(
+          'error',
+          'Không đủ tồn kho',
+          `Mặt hàng "${item.name}" chỉ còn ${curMenuItem.stock} ${item.unit}!`
+        );
+        return false;
+      }
     }
 
-    const newOrderItem: OrderItem = {
-      id: `ord-${Date.now()}-${Math.floor(Math.random() * 1000)}`,
-      menuItemId: menuItem.id,
-      name: menuItem.name,
-      price: menuItem.price,
-      costPrice: menuItem.costPrice,
+    const newOrderItems: OrderItem[] = itemsToAdd.map(({ item, quantity, notes }) => ({
+      id: `ord-${Date.now()}-${Math.floor(Math.random() * 100000)}`,
+      menuItemId: item.id,
+      name: item.name,
+      price: item.price,
+      costPrice: item.costPrice,
       quantity,
-      unit: menuItem.unit,
-      category: menuItem.category,
+      unit: item.unit,
+      category: item.category,
       notes,
       createdAt: new Date().toISOString(),
-    };
+    }));
 
-    // Deduct stock immediately
-    setMenu((prev) =>
-      prev.map((m) =>
-        m.id === menuItem.id ? { ...m, stock: Math.max(0, m.stock - quantity) } : m
-      )
-    );
+    // 1. Batch deduct menu stock
+    const updatedMenu = menu.map((m) => {
+      const ordered = itemsToAdd.find((it) => it.item.id === m.id);
+      if (ordered) {
+        return { ...m, stock: Math.max(0, m.stock - ordered.quantity) };
+      }
+      return m;
+    });
+    setMenu(updatedMenu);
+    StorageService.saveMenu(updatedMenu);
 
-    // Add to session orders
-    setSessions((prev) =>
-      prev.map((s) => {
-        if (s.id !== session.id) return s;
-        const existingIdx = s.orders.findIndex(
-          (o) => o.menuItemId === menuItem.id && (!o.notes && !notes)
+    // 2. Batch add orders to session
+    const updatedSessions = sessions.map((s) => {
+      if (s.id !== session.id) return s;
+      const ordersCopy = [...s.orders];
+      newOrderItems.forEach((newItem) => {
+        const existingIdx = ordersCopy.findIndex(
+          (o) => o.menuItemId === newItem.menuItemId && (!o.notes && !newItem.notes)
         );
         if (existingIdx >= 0) {
-          const updated = [...s.orders];
-          updated[existingIdx] = {
-            ...updated[existingIdx],
-            quantity: updated[existingIdx].quantity + quantity,
+          ordersCopy[existingIdx] = {
+            ...ordersCopy[existingIdx],
+            quantity: ordersCopy[existingIdx].quantity + newItem.quantity,
           };
-          return { ...s, orders: updated };
+        } else {
+          ordersCopy.push(newItem);
         }
-        return { ...s, orders: [...s.orders, newOrderItem] };
-      })
-    );
+      });
+      return { ...s, orders: ordersCopy };
+    });
+    setSessions(updatedSessions);
+    StorageService.saveSessions(updatedSessions);
+
+    // 3. Immediately push to Supabase with zero delay
+    if (isSupabaseConfigured()) {
+      SupabaseSync.pushKey('sessions', updatedSessions);
+      SupabaseSync.pushKey('menu', updatedMenu);
+    }
 
     sounds.playItemAdded();
-    logAudit('ORDER MÓN', `Thêm ${quantity} ${menuItem.unit} ${menuItem.name} vào ${session.tableCode}`);
-    addToast('success', 'Đã thêm món', `+${quantity} ${menuItem.name} (${session.tableCode})`);
+    const itemSummaries = itemsToAdd.map((it) => `${it.quantity} ${it.item.name}`).join(', ');
+    logAudit('ORDER MÓN', `Thêm ${itemSummaries} vào ${session.tableCode}`);
+    addToast('success', 'Đã thêm món', `+${itemsToAdd.length} món (${session.tableCode})`);
     return true;
+  };
+
+  // Add order item to active table (single item wrapper)
+  const addOrderToTable = (tableId: string, menuItem: MenuItem, quantity: number, notes?: string): boolean => {
+    return addOrdersToTable(tableId, [{ item: menuItem, quantity, notes }]);
   };
 
   // Remove order item from table & restore stock
@@ -1166,6 +1321,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
         resumeTable,
         transferTable,
         mergeTables,
+        addOrdersToTable,
         addOrderToTable,
         removeOrderItem,
         updateOrderItemQty,
