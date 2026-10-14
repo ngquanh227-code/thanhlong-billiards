@@ -136,13 +136,13 @@ export const CashierModal: React.FC<CashierModalProps> = ({
               onClick={onClose}
               className="p-1.5 px-3 text-slate-400 hover:text-white rounded-xl hover:bg-slate-800 text-xs font-semibold transition-colors"
             >
-              ✕
+              Đóng
             </button>
           </div>
         </div>
 
         {/* Modal Body */}
-        <div className="flex-1 flex flex-col md:flex-row overflow-hidden min-h-0">
+        <div className="flex-1 flex flex-col md:flex-row overflow-y-auto md:overflow-hidden min-h-0">
           {showReceiptPreview ? (
             <div className="flex-1 overflow-y-auto p-4 bg-slate-950 flex justify-center">
               <ThermalReceipt

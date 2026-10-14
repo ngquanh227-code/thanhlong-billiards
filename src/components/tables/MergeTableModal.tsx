@@ -53,7 +53,7 @@ export const MergeTableModal: React.FC<MergeTableModalProps> = ({
             onClick={onClose}
             className="p-1.5 px-3 text-slate-400 hover:text-white rounded-xl hover:bg-slate-800 text-xs font-semibold transition-colors"
           >
-            ✕
+            Đóng
           </button>
         </div>
 

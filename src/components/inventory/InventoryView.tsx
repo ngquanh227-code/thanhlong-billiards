@@ -280,7 +280,7 @@ export const InventoryView: React.FC = () => {
                 onClick={() => setIsCashTxModalOpen(false)}
                 className="text-slate-400 hover:text-white p-1 px-2.5 text-xs font-semibold rounded-lg hover:bg-slate-800"
               >
-                ✕
+                Đóng
               </button>
             </div>
 

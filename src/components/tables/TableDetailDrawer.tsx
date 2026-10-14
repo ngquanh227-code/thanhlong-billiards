@@ -81,7 +81,7 @@ export const TableDetailDrawer: React.FC<TableDetailDrawerProps> = ({
             onClick={onClose}
             className="p-1.5 px-2.5 text-slate-400 hover:text-white rounded-lg hover:bg-charcoal-800 font-mono text-xs font-bold transition-colors"
           >
-            ✕ ĐÓNG
+            ĐÓNG
           </button>
         </div>
 
@@ -190,7 +190,7 @@ export const TableDetailDrawer: React.FC<TableDetailDrawerProps> = ({
                             className="text-slate-400 hover:text-rose-400 text-xs font-mono p-1 rounded"
                             title="Xóa món"
                           >
-                            ✕
+                            Xóa
                           </button>
                         </div>
                       </div>

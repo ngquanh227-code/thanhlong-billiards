@@ -210,7 +210,7 @@ export const TableMapView: React.FC = () => {
         </div>
 
         {/* Tables Grid Map */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4 pb-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4 pb-28 lg:pb-6">
           {tables.map((table) => {
             const activeSession = getActiveSessionForTable(table.id);
             const rule = pricingRules.find((r) => r.type === table.type);

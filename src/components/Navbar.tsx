@@ -46,10 +46,10 @@ export const Navbar: React.FC<NavbarProps> = ({ onNavigateTab, onOpenAiModal }) 
           />
 
           <div className="flex flex-col">
-            <span className="text-sm font-semibold tracking-wider text-amber-300/90 font-brand leading-none">
+            <span className="text-xs sm:text-sm font-semibold tracking-wider text-amber-300/90 font-brand leading-none">
               THANH LONG BILLIARDS
             </span>
-            <span className="text-[11px] text-slate-400 font-sans mt-0.5">
+            <span className="hidden sm:block text-[11px] text-slate-400 font-sans mt-0.5">
               Hệ thống quản lý câu lạc bộ
             </span>
           </div>
@@ -106,7 +106,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onNavigateTab, onOpenAiModal }) 
           {onOpenAiModal && (
             <button
               onClick={onOpenAiModal}
-              className="h-9 px-3.5 rounded-xl text-xs font-semibold flex items-center gap-1.5 whitespace-nowrap transition-all border border-amber-500/30 bg-amber-500/10 hover:bg-amber-500/20 text-amber-300 shadow-sm active:scale-95"
+              className="h-8 sm:h-9 px-2.5 sm:px-3.5 rounded-xl text-[11px] sm:text-xs font-semibold flex items-center gap-1.5 whitespace-nowrap transition-all border border-amber-500/30 bg-amber-500/10 hover:bg-amber-500/20 text-amber-300 shadow-sm active:scale-95"
               title="Mở Trợ lý AI vận hành quán"
             >
               <span className="w-1.5 h-1.5 rounded-full bg-amber-400 inline-block animate-pulse" />
@@ -117,14 +117,14 @@ export const Navbar: React.FC<NavbarProps> = ({ onNavigateTab, onOpenAiModal }) 
           {/* Admin / Staff Role Switcher */}
           <button
             onClick={toggleRole}
-            className={`h-9 px-4 rounded-xl text-xs font-semibold flex items-center justify-center whitespace-nowrap transition-all border active:scale-95 ${
+            className={`h-8 sm:h-9 px-2.5 sm:px-4 rounded-xl text-[11px] sm:text-xs font-semibold flex items-center justify-center whitespace-nowrap transition-all border active:scale-95 ${
               isAdmin
                 ? 'bg-amber-500/15 text-amber-300 border-amber-500/35 hover:bg-amber-500/20'
                 : 'bg-slate-800/80 text-slate-300 border-slate-700 hover:text-white hover:bg-slate-700/60'
             }`}
             title="Chuyển đổi giữa quyền Quản trị và Nhân viên"
           >
-            {isAdmin ? 'Quản trị viên' : 'Nhân viên'}
+            {isAdmin ? 'Quản trị' : 'Nhân viên'}
           </button>
         </div>
       </div>

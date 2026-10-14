@@ -129,14 +129,14 @@ export const OrderModal: React.FC<OrderModalProps> = ({
             onClick={onClose}
             className="p-1.5 px-3 text-slate-400 hover:text-white rounded-xl hover:bg-slate-800 text-xs font-semibold transition-colors"
           >
-            ✕
+            Đóng
           </button>
         </div>
 
         {/* Main Content: 2-Columns */}
-        <div className="flex-1 flex flex-col md:flex-row overflow-hidden min-h-0">
+        <div className="flex-1 flex flex-col md:flex-row overflow-y-auto md:overflow-hidden min-h-0">
           {/* Left Column: Menu Catalog */}
-          <div className="flex-1 flex flex-col p-4 border-b md:border-b-0 md:border-r border-slate-800 overflow-hidden">
+          <div className="flex-1 flex flex-col p-4 border-b md:border-b-0 md:border-r border-slate-800 shrink-0 md:shrink md:overflow-hidden">
             {/* Search & Filter */}
             <div className="flex flex-col gap-2.5 mb-3.5">
               <input
@@ -222,7 +222,7 @@ export const OrderModal: React.FC<OrderModalProps> = ({
           </div>
 
           {/* Right Column: Active & Draft Cart */}
-          <div className="w-full md:w-80 flex flex-col bg-slate-900/60 p-4 justify-between overflow-hidden">
+          <div className="w-full md:w-80 flex flex-col bg-slate-900/60 p-4 justify-between shrink-0">
             <div className="flex-1 flex flex-col overflow-hidden">
               <div className="flex items-center justify-between text-xs font-semibold text-slate-300 mb-2.5">
                 <span>Món vừa chọn ({draftList.length})</span>
@@ -281,7 +281,7 @@ export const OrderModal: React.FC<OrderModalProps> = ({
                             onClick={() => handleRemoveDraftItem(item.id)}
                             className="p-1 text-slate-400 hover:text-rose-400 transition-colors ml-1 text-xs"
                           >
-                            ✕
+                            Xóa
                           </button>
                         </div>
                       </div>
@@ -318,7 +318,7 @@ export const OrderModal: React.FC<OrderModalProps> = ({
                                 className="text-slate-400 hover:text-rose-400 p-0.5 text-xs"
                                 title="Hủy món đã gọi"
                               >
-                                ✕
+                                Xóa
                               </button>
                             )}
                           </div>

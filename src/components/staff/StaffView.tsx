@@ -282,7 +282,7 @@ export const StaffView: React.FC = () => {
                 onClick={() => setIsStartShiftModalOpen(false)}
                 className="text-slate-400 hover:text-white p-1 px-2.5 text-xs font-semibold rounded-lg hover:bg-slate-800"
               >
-                ✕
+                Đóng
               </button>
             </div>
 
@@ -346,7 +346,7 @@ export const StaffView: React.FC = () => {
                 onClick={() => setIsCloseShiftModalOpen(false)}
                 className="text-slate-400 hover:text-white p-1 px-2.5 text-xs font-semibold rounded-lg hover:bg-slate-800"
               >
-                ✕
+                Đóng
               </button>
             </div>
 

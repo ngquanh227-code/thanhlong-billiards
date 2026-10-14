@@ -182,18 +182,20 @@ export default function App() {
           <span className="text-[10px] text-slate-400">F&B</span>
         </button>
 
-        <button
-          onClick={() => {
-            setCurrentTab('members');
-            sounds.playClick();
-          }}
-          className={`flex-1 flex flex-col items-center justify-center gap-0.5 transition-colors ${
-            currentTab === 'members' ? 'text-amber-300 font-semibold bg-amber-500/10' : 'text-slate-400 hover:text-slate-200'
-          }`}
-        >
-          <span className="text-xs font-medium">Hội viên</span>
-          <span className="text-[10px] text-slate-400">Ví VIP</span>
-        </button>
+        {isAdmin && (
+          <button
+            onClick={() => {
+              setCurrentTab('reports');
+              sounds.playClick();
+            }}
+            className={`flex-1 flex flex-col items-center justify-center gap-0.5 transition-colors ${
+              currentTab === 'reports' ? 'text-amber-300 font-semibold bg-amber-500/10' : 'text-slate-400 hover:text-slate-200'
+            }`}
+          >
+            <span className="text-xs font-medium">Báo cáo</span>
+            <span className="text-[10px] text-slate-400">Doanh thu</span>
+          </button>
+        )}
 
         <button
           onClick={() => setIsMobileSidebarOpen(true)}
