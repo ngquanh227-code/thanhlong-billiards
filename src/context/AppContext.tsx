@@ -13,6 +13,7 @@ import {
   OrderItem,
   PaymentMethod,
   TableType,
+  TableStatus,
 } from '../types';
 import { StorageService } from '../services/storage';
 import { calculateTableFee } from '../services/calculation';
@@ -177,103 +178,47 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     return () => clearInterval(timer);
   }, []);
 
-  // Helper to merge incoming remote sessions without dropping locally-added active orders
-  const mergeRemoteSessions = (localSessions: TableSession[], incomingSessions: TableSession[]): TableSession[] => {
-    if (!incomingSessions || !Array.isArray(incomingSessions)) return localSessions;
-
-    const merged = incomingSessions.map((inc) => ({
-      ...inc,
-      orders: [...(inc.orders || [])],
-    }));
-
-    // Preserve local active orders if the incoming session hasn't caught up with them yet
-    localSessions.forEach((local) => {
-      if (local.status === 'ACTIVE' || local.status === 'WAITING_PAYMENT') {
-        const incIndex = merged.findIndex((m) => m.id === local.id);
-        if (incIndex >= 0) {
-          const incSession = merged[incIndex];
-          const orderMap = new Map<string, OrderItem>();
-          (incSession.orders || []).forEach((o) => orderMap.set(o.id, o));
-          (local.orders || []).forEach((lo) => {
-            if (!orderMap.has(lo.id)) {
-              orderMap.set(lo.id, lo);
-            } else {
-              const incOrder = orderMap.get(lo.id)!;
-              if (lo.quantity > incOrder.quantity) {
-                orderMap.set(lo.id, lo);
-              }
-            }
-          });
-          merged[incIndex] = {
-            ...incSession,
-            orders: Array.from(orderMap.values()),
-          };
-        }
-      }
-    });
-
-    return merged;
-  };
-
-  const isInitializedRef = useRef<boolean>(false);
-  const remoteUpdateKeysRef = useRef<Set<string>>(new Set());
-
   // Supabase Realtime Cloud Sync
   useEffect(() => {
-    if (!isSupabaseConfigured()) {
-      isInitializedRef.current = true;
-      return;
-    }
+    if (!isSupabaseConfigured()) return;
 
     // Pull initial cloud state
     SupabaseSync.pullAll().then((cloudData) => {
       if (cloudData) {
         if (cloudData.tables && cloudData.tables.length > 0) {
-          remoteUpdateKeysRef.current.add('tables');
           setTables(cloudData.tables);
           StorageService.saveTables(cloudData.tables);
         }
         if (cloudData.sessions && Array.isArray(cloudData.sessions)) {
-          remoteUpdateKeysRef.current.add('sessions');
-          setSessions((prevLocal) => {
-            const merged = mergeRemoteSessions(prevLocal, cloudData.sessions!);
-            StorageService.saveSessions(merged);
-            return merged;
-          });
+          setSessions(cloudData.sessions);
+          StorageService.saveSessions(cloudData.sessions);
         }
         if (cloudData.menu && cloudData.menu.length > 0) {
-          remoteUpdateKeysRef.current.add('menu');
           setMenu(cloudData.menu);
           StorageService.saveMenu(cloudData.menu);
         }
         if (cloudData.shifts && Array.isArray(cloudData.shifts)) {
-          remoteUpdateKeysRef.current.add('shifts');
           setShifts(cloudData.shifts);
           StorageService.saveShifts(cloudData.shifts);
         }
         if (cloudData.transactions && Array.isArray(cloudData.transactions)) {
-          remoteUpdateKeysRef.current.add('transactions');
           setTransactions(cloudData.transactions);
           StorageService.saveTransactions(cloudData.transactions);
         }
       }
-      isInitializedRef.current = true;
     });
 
     // Realtime channel listener across all devices (PC & Phone)
     const unsubscribe = SupabaseSync.subscribeRealtime((key, data) => {
-      remoteUpdateKeysRef.current.add(key);
+      if (!data) return;
 
       if (key === 'tables' && Array.isArray(data)) {
         setTables(data);
         StorageService.saveTables(data);
       }
       if (key === 'sessions' && Array.isArray(data)) {
-        setSessions((prevLocal) => {
-          const merged = mergeRemoteSessions(prevLocal, data);
-          StorageService.saveSessions(merged);
-          return merged;
-        });
+        setSessions(data);
+        StorageService.saveSessions(data);
       }
       if (key === 'menu' && Array.isArray(data)) {
         setMenu(data);
@@ -292,38 +237,17 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     return () => unsubscribe();
   }, []);
 
-  // Save to LocalStorage & Push to Supabase Cloud (with loop cancellation & debounce)
+  // Save to LocalStorage for fast offline recovery (Cloud pushes happen in user actions)
   useEffect(() => {
     StorageService.saveTables(tables);
-    if (!isSupabaseConfigured()) return;
-    if (remoteUpdateKeysRef.current.has('tables')) {
-      remoteUpdateKeysRef.current.delete('tables');
-      return;
-    }
-    if (!isInitializedRef.current) return;
-    SupabaseSync.pushKeyDebounced('tables', tables);
   }, [tables]);
 
   useEffect(() => {
     StorageService.saveSessions(sessions);
-    if (!isSupabaseConfigured()) return;
-    if (remoteUpdateKeysRef.current.has('sessions')) {
-      remoteUpdateKeysRef.current.delete('sessions');
-      return;
-    }
-    if (!isInitializedRef.current) return;
-    SupabaseSync.pushKeyDebounced('sessions', sessions);
   }, [sessions]);
 
   useEffect(() => {
     StorageService.saveMenu(menu);
-    if (!isSupabaseConfigured()) return;
-    if (remoteUpdateKeysRef.current.has('menu')) {
-      remoteUpdateKeysRef.current.delete('menu');
-      return;
-    }
-    if (!isInitializedRef.current) return;
-    SupabaseSync.pushKeyDebounced('menu', menu);
   }, [menu]);
 
   useEffect(() => {
@@ -340,24 +264,10 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
 
   useEffect(() => {
     StorageService.saveShifts(shifts);
-    if (!isSupabaseConfigured()) return;
-    if (remoteUpdateKeysRef.current.has('shifts')) {
-      remoteUpdateKeysRef.current.delete('shifts');
-      return;
-    }
-    if (!isInitializedRef.current) return;
-    SupabaseSync.pushKeyDebounced('shifts', shifts);
   }, [shifts]);
 
   useEffect(() => {
     StorageService.saveTransactions(transactions);
-    if (!isSupabaseConfigured()) return;
-    if (remoteUpdateKeysRef.current.has('transactions')) {
-      remoteUpdateKeysRef.current.delete('transactions');
-      return;
-    }
-    if (!isInitializedRef.current) return;
-    SupabaseSync.pushKeyDebounced('transactions', transactions);
   }, [transactions]);
 
   useEffect(() => {
@@ -486,20 +396,27 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
       orders: [],
     };
 
-    setSessions((prev) => [newSession, ...prev]);
-    setTables((prev) =>
-      prev.map((t) =>
-        t.id === tableId
-          ? {
-              ...t,
-              status: 'PLAYING',
-              currentSessionId: newSessionId,
-              assignedStaffId: assignedStaff.id,
-              assignedStaffName: assignedStaff.name,
-            }
-          : t
-      )
+    const updatedSessions = [newSession, ...sessions];
+    const updatedTables = tables.map((t) =>
+      t.id === tableId
+        ? {
+            ...t,
+            status: 'PLAYING' as TableStatus,
+            currentSessionId: newSessionId,
+            assignedStaffId: assignedStaff.id,
+            assignedStaffName: assignedStaff.name,
+          }
+        : t
     );
+
+    setSessions(updatedSessions);
+    setTables(updatedTables);
+    StorageService.saveSessions(updatedSessions);
+    StorageService.saveTables(updatedTables);
+    if (isSupabaseConfigured()) {
+      SupabaseSync.pushKey('sessions', updatedSessions);
+      SupabaseSync.pushKey('tables', updatedTables);
+    }
 
     sounds.playOpenTable();
     logAudit('MỞ BÀN', `Mở ${targetTable.code} (${targetTable.type}) - Giá: ${rate.toLocaleString()}đ/h${customer ? ` cho khách ${customer.name}` : ''}`);
@@ -517,13 +434,17 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
       { pausedAt: new Date().toISOString(), reason: reason || 'Tạm dừng chơi' },
     ];
 
-    setSessions((prev) =>
-      prev.map((s) =>
-        s.id === session.id
-          ? { ...s, status: 'PAUSED', pauseRecords: updatedPauseRecords }
-          : s
-      )
+    const updatedSessions = sessions.map((s) =>
+      s.id === session.id
+        ? { ...s, status: 'PAUSED' as const, pauseRecords: updatedPauseRecords }
+        : s
     );
+
+    setSessions(updatedSessions);
+    StorageService.saveSessions(updatedSessions);
+    if (isSupabaseConfigured()) {
+      SupabaseSync.pushKey('sessions', updatedSessions);
+    }
 
     sounds.playClick();
     logAudit('TẠM DỪNG BÀN', `Tạm dừng tính giờ ${session.tableCode} - Lý do: ${reason || 'Không ghi'}`);
@@ -544,13 +465,17 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
       };
     }
 
-    setSessions((prev) =>
-      prev.map((s) =>
-        s.id === session.id
-          ? { ...s, status: 'ACTIVE', pauseRecords }
-          : s
-      )
+    const updatedSessions = sessions.map((s) =>
+      s.id === session.id
+        ? { ...s, status: 'ACTIVE' as const, pauseRecords }
+        : s
     );
+
+    setSessions(updatedSessions);
+    StorageService.saveSessions(updatedSessions);
+    if (isSupabaseConfigured()) {
+      SupabaseSync.pushKey('sessions', updatedSessions);
+    }
 
     sounds.playClick();
     logAudit('TIẾP TỤC BÀN', `Tiếp tục tính giờ ${session.tableCode}`);
@@ -574,43 +499,48 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
       return false;
     }
 
-    setSessions((prev) =>
-      prev.map((s) =>
-        s.id === session.id
-          ? {
-              ...s,
-              tableId: toTable.id,
-              tableCode: toTable.code,
-              tableType: toTable.type,
-              appliedHourlyRate: toTable.hourlyRate,
-            }
-          : s
-      )
+    const updatedSessions = sessions.map((s) =>
+      s.id === session.id
+        ? {
+            ...s,
+            tableId: toTable.id,
+            tableCode: toTable.code,
+            tableType: toTable.type,
+            appliedHourlyRate: toTable.hourlyRate,
+          }
+        : s
     );
 
-    setTables((prev) =>
-      prev.map((t) => {
-        if (t.id === fromTableId) {
-          return {
-            ...t,
-            status: 'AVAILABLE',
-            currentSessionId: undefined,
-            assignedStaffId: undefined,
-            assignedStaffName: undefined,
-          };
-        }
-        if (t.id === toTableId) {
-          return {
-            ...t,
-            status: 'PLAYING',
-            currentSessionId: session.id,
-            assignedStaffId: fromTable.assignedStaffId,
-            assignedStaffName: fromTable.assignedStaffName,
-          };
-        }
-        return t;
-      })
-    );
+    const updatedTables = tables.map((t) => {
+      if (t.id === fromTableId) {
+        return {
+          ...t,
+          status: 'AVAILABLE' as TableStatus,
+          currentSessionId: undefined,
+          assignedStaffId: undefined,
+          assignedStaffName: undefined,
+        };
+      }
+      if (t.id === toTableId) {
+        return {
+          ...t,
+          status: 'PLAYING' as TableStatus,
+          currentSessionId: session.id,
+          assignedStaffId: fromTable.assignedStaffId,
+          assignedStaffName: fromTable.assignedStaffName,
+        };
+      }
+      return t;
+    });
+
+    setSessions(updatedSessions);
+    setTables(updatedTables);
+    StorageService.saveSessions(updatedSessions);
+    StorageService.saveTables(updatedTables);
+    if (isSupabaseConfigured()) {
+      SupabaseSync.pushKey('sessions', updatedSessions);
+      SupabaseSync.pushKey('tables', updatedTables);
+    }
 
     sounds.playClick();
     logAudit('CHUYỂN BÀN', `Chuyển phiên chơi từ ${fromTable.code} sang ${toTable.code}`);
@@ -634,40 +564,45 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     // Merge source orders into target session
     const combinedOrders = [...targetSession.orders, ...sourceSession.orders];
 
-    setSessions((prev) =>
-      prev.map((s) => {
-        if (s.id === targetSession.id) {
-          return {
-            ...s,
-            orders: combinedOrders,
-          };
-        }
-        if (s.id === sourceSession.id) {
-          return {
-            ...s,
-            status: 'COMPLETED',
-            endTime: new Date().toISOString(),
-            notes: `Đã gộp vào ${targetTable.code}`,
-          };
-        }
-        return s;
-      })
-    );
+    const updatedSessions = sessions.map((s) => {
+      if (s.id === targetSession.id) {
+        return {
+          ...s,
+          orders: combinedOrders,
+        };
+      }
+      if (s.id === sourceSession.id) {
+        return {
+          ...s,
+          status: 'COMPLETED' as const,
+          endTime: new Date().toISOString(),
+          notes: `Đã gộp vào ${targetTable.code}`,
+        };
+      }
+      return s;
+    });
 
     // Free source table back to AVAILABLE
-    setTables((prev) =>
-      prev.map((t) =>
-        t.id === sourceTableId
-          ? {
-              ...t,
-              status: 'AVAILABLE',
-              currentSessionId: undefined,
-              assignedStaffId: undefined,
-              assignedStaffName: undefined,
-            }
-          : t
-      )
+    const updatedTables = tables.map((t) =>
+      t.id === sourceTableId
+        ? {
+            ...t,
+            status: 'AVAILABLE' as TableStatus,
+            currentSessionId: undefined,
+            assignedStaffId: undefined,
+            assignedStaffName: undefined,
+          }
+        : t
     );
+
+    setSessions(updatedSessions);
+    setTables(updatedTables);
+    StorageService.saveSessions(updatedSessions);
+    StorageService.saveTables(updatedTables);
+    if (isSupabaseConfigured()) {
+      SupabaseSync.pushKey('sessions', updatedSessions);
+      SupabaseSync.pushKey('tables', updatedTables);
+    }
 
     sounds.playOpenTable();
     logAudit('GỘP BÀN', `Gộp hóa đơn từ ${sourceTable.code} vào ${targetTable.code}`);
@@ -774,19 +709,24 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     if (!item) return;
 
     // Restore stock
-    setMenu((prev) =>
-      prev.map((m) =>
-        m.id === item.menuItemId ? { ...m, stock: m.stock + item.quantity } : m
-      )
+    const updatedMenu = menu.map((m) =>
+      m.id === item.menuItemId ? { ...m, stock: m.stock + item.quantity } : m
     );
 
-    setSessions((prev) =>
-      prev.map((s) =>
-        s.id === session.id
-          ? { ...s, orders: s.orders.filter((o) => o.id !== orderItemId) }
-          : s
-      )
+    const updatedSessions = sessions.map((s) =>
+      s.id === session.id
+        ? { ...s, orders: s.orders.filter((o) => o.id !== orderItemId) }
+        : s
     );
+
+    setMenu(updatedMenu);
+    setSessions(updatedSessions);
+    StorageService.saveMenu(updatedMenu);
+    StorageService.saveSessions(updatedSessions);
+    if (isSupabaseConfigured()) {
+      SupabaseSync.pushKey('menu', updatedMenu);
+      SupabaseSync.pushKey('sessions', updatedSessions);
+    }
 
     sounds.playClick();
     logAudit('HỦY MÓN', `Hủy món ${item.name} (x${item.quantity}) tại ${session.tableCode}`);
@@ -814,21 +754,26 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     }
 
     // Adjust stock
-    setMenu((prev) =>
-      prev.map((m) =>
-        m.id === item.menuItemId ? { ...m, stock: m.stock - delta } : m
-      )
+    const updatedMenu = menu.map((m) =>
+      m.id === item.menuItemId ? { ...m, stock: m.stock - delta } : m
     );
 
-    setSessions((prev) =>
-      prev.map((s) => {
-        if (s.id !== session.id) return s;
-        return {
-          ...s,
-          orders: s.orders.map((o) => (o.id === orderItemId ? { ...o, quantity: newQty } : o)),
-        };
-      })
-    );
+    const updatedSessions = sessions.map((s) => {
+      if (s.id !== session.id) return s;
+      return {
+        ...s,
+        orders: s.orders.map((o) => (o.id === orderItemId ? { ...o, quantity: newQty } : o)),
+      };
+    });
+
+    setMenu(updatedMenu);
+    setSessions(updatedSessions);
+    StorageService.saveMenu(updatedMenu);
+    StorageService.saveSessions(updatedSessions);
+    if (isSupabaseConfigured()) {
+      SupabaseSync.pushKey('menu', updatedMenu);
+      SupabaseSync.pushKey('sessions', updatedSessions);
+    }
 
     sounds.playClick();
   };
@@ -918,24 +863,22 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
       },
     };
 
-    setSessions((prev) => prev.map((s) => (s.id === sessionId ? completedSession : s)));
+    const updatedSessions = sessions.map((s) => (s.id === sessionId ? completedSession : s));
 
     // Return Table to AVAILABLE
-    if (table) {
-      setTables((prev) =>
-        prev.map((t) =>
+    const updatedTables = table
+      ? tables.map((t) =>
           t.id === table.id
             ? {
                 ...t,
-                status: 'AVAILABLE',
+                status: 'AVAILABLE' as TableStatus,
                 currentSessionId: undefined,
                 assignedStaffId: undefined,
                 assignedStaffName: undefined,
               }
             : t
         )
-      );
-    }
+      : tables;
 
     // Record Cash Income Transaction
     const newTx: CashTransaction = {
@@ -948,20 +891,34 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
       referenceId: session.id,
       createdAt: now.toISOString(),
     };
-    setTransactions((prev) => [newTx, ...prev]);
+    const updatedTransactions = [newTx, ...transactions];
 
     // Update active shift revenue stats
-    setShifts((prev) =>
-      prev.map((sh) => {
-        if (sh.status !== 'OPEN') return sh;
-        return {
-          ...sh,
-          totalRevenue: (sh.totalRevenue || 0) + finalTotal,
-          tableRevenue: (sh.tableRevenue || 0) + feeCalculation.tableFee,
-          fnbRevenue: (sh.fnbRevenue || 0) + feeCalculation.fnbFee,
-        };
-      })
-    );
+    const updatedShifts = shifts.map((sh) => {
+      if (sh.status !== 'OPEN') return sh;
+      return {
+        ...sh,
+        totalRevenue: (sh.totalRevenue || 0) + finalTotal,
+        tableRevenue: (sh.tableRevenue || 0) + feeCalculation.tableFee,
+        fnbRevenue: (sh.fnbRevenue || 0) + feeCalculation.fnbFee,
+      };
+    });
+
+    setSessions(updatedSessions);
+    setTables(updatedTables);
+    setTransactions(updatedTransactions);
+    setShifts(updatedShifts);
+    StorageService.saveSessions(updatedSessions);
+    StorageService.saveTables(updatedTables);
+    StorageService.saveTransactions(updatedTransactions);
+    StorageService.saveShifts(updatedShifts);
+
+    if (isSupabaseConfigured()) {
+      SupabaseSync.pushKey('sessions', updatedSessions);
+      SupabaseSync.pushKey('tables', updatedTables);
+      SupabaseSync.pushKey('transactions', updatedTransactions);
+      SupabaseSync.pushKey('shifts', updatedShifts);
+    }
 
     sounds.playPaymentSuccess();
     logAudit(
@@ -975,17 +932,19 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
 
   // Set Table Maintenance
   const setTableMaintenance = (tableId: string, isMaintenance: boolean, notes?: string) => {
-    setTables((prev) =>
-      prev.map((t) =>
-        t.id === tableId
-          ? {
-              ...t,
-              status: isMaintenance ? 'MAINTENANCE' : 'AVAILABLE',
-              notes: isMaintenance ? notes || 'Bảo trì thay vải nỉ / kiểm tra băng' : undefined,
-            }
-          : t
-      )
+    const updatedTables = tables.map((t) =>
+      t.id === tableId
+        ? {
+            ...t,
+            status: (isMaintenance ? 'MAINTENANCE' : 'AVAILABLE') as TableStatus,
+            notes: isMaintenance ? notes || 'Bảo trì thay vải nỉ / kiểm tra băng' : undefined,
+          }
+        : t
     );
+    setTables(updatedTables);
+    StorageService.saveTables(updatedTables);
+    if (isSupabaseConfigured()) SupabaseSync.pushKey('tables', updatedTables);
+
     sounds.playClick();
     addToast('info', 'Trạng thái bàn', `Đã cập nhật trạng thái bàn sang ${isMaintenance ? 'Bảo trì' : 'Trống'}.`);
   };
@@ -1030,7 +989,10 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
       staffName: currentStaff.name,
       createdAt: new Date().toISOString(),
     };
-    setTransactions((prev) => [tx, ...prev]);
+    const updatedTx = [tx, ...transactions];
+    setTransactions(updatedTx);
+    StorageService.saveTransactions(updatedTx);
+    if (isSupabaseConfigured()) SupabaseSync.pushKey('transactions', updatedTx);
 
     sounds.playPaymentSuccess();
     logAudit('NẠP VÍ HỘI VIÊN', `Nạp ${amount.toLocaleString()}đ cho hội viên ${targetCustomer?.name} (${targetCustomer?.code})`);
@@ -1043,7 +1005,11 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
       ...item,
       id: `menu-${Date.now()}`,
     };
-    setMenu((prev) => [...prev, newItem]);
+    const updatedMenu = [...menu, newItem];
+    setMenu(updatedMenu);
+    StorageService.saveMenu(updatedMenu);
+    if (isSupabaseConfigured()) SupabaseSync.pushKey('menu', updatedMenu);
+
     sounds.playClick();
     logAudit('THÊM MÓN MENU', `Thêm món "${newItem.name}" - Giá: ${newItem.price.toLocaleString()}đ`);
     addToast('success', 'Thêm món thành công', newItem.name);
@@ -1052,7 +1018,11 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
 
   // Update Menu Item
   const updateMenuItem = (item: MenuItem) => {
-    setMenu((prev) => prev.map((m) => (m.id === item.id ? item : m)));
+    const updatedMenu = menu.map((m) => (m.id === item.id ? item : m));
+    setMenu(updatedMenu);
+    StorageService.saveMenu(updatedMenu);
+    if (isSupabaseConfigured()) SupabaseSync.pushKey('menu', updatedMenu);
+
     sounds.playClick();
     logAudit('CẬP NHẬT MÓN', `Sửa thông tin món "${item.name}"`);
     addToast('success', 'Cập nhật món', item.name);
@@ -1063,7 +1033,11 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     const itemToDelete = menu.find((m) => m.id === menuItemId);
     if (!itemToDelete) return false;
 
-    setMenu((prev) => prev.filter((m) => m.id !== menuItemId));
+    const updatedMenu = menu.filter((m) => m.id !== menuItemId);
+    setMenu(updatedMenu);
+    StorageService.saveMenu(updatedMenu);
+    if (isSupabaseConfigured()) SupabaseSync.pushKey('menu', updatedMenu);
+
     sounds.playClick();
     logAudit('XÓA MÓN MENU', `Xóa món "${itemToDelete.name}" khỏi thực đơn`);
     addToast('info', 'Đã xóa món', itemToDelete.name);
@@ -1075,12 +1049,10 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     const targetItem = menu.find((m) => m.id === menuItemId);
     if (!targetItem) return;
 
-    setMenu((prev) =>
-      prev.map((m) =>
-        m.id === menuItemId
-          ? { ...m, stock: m.stock + addedStock, costPrice: unitCost || m.costPrice }
-          : m
-      )
+    const updatedMenu = menu.map((m) =>
+      m.id === menuItemId
+        ? { ...m, stock: m.stock + addedStock, costPrice: unitCost || m.costPrice }
+        : m
     );
 
     const totalExpense = addedStock * unitCost;
@@ -1094,7 +1066,16 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
       staffName: currentStaff.name,
       createdAt: new Date().toISOString(),
     };
-    setTransactions((prev) => [tx, ...prev]);
+    const updatedTx = [tx, ...transactions];
+
+    setMenu(updatedMenu);
+    setTransactions(updatedTx);
+    StorageService.saveMenu(updatedMenu);
+    StorageService.saveTransactions(updatedTx);
+    if (isSupabaseConfigured()) {
+      SupabaseSync.pushKey('menu', updatedMenu);
+      SupabaseSync.pushKey('transactions', updatedTx);
+    }
 
     sounds.playClick();
     logAudit('NHẬP KHO', `Nhập ${addedStock} ${targetItem.unit} ${targetItem.name} - Chi phí: ${totalExpense.toLocaleString()}đ`);
@@ -1115,7 +1096,11 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
       tableRevenue: 0,
       fnbRevenue: 0,
     };
-    setShifts((prev) => [newShift, ...prev]);
+    const updatedShifts = [newShift, ...shifts];
+    setShifts(updatedShifts);
+    StorageService.saveShifts(updatedShifts);
+    if (isSupabaseConfigured()) SupabaseSync.pushKey('shifts', updatedShifts);
+
     sounds.playOpenTable();
     logAudit('BẮT ĐẦU CA', `${currentStaff.name} mở ${shiftName} với tiền mặt đầu ca: ${initialCash.toLocaleString()}đ`);
     addToast('success', 'Mở ca làm việc', `Đã mở ${shiftName}`);
@@ -1132,21 +1117,22 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     const expectedCash = (activeShift.initialCash || 0) + (activeShift.totalRevenue || 0);
     const difference = actualEndingCash - expectedCash;
 
-    setShifts((prev) =>
-      prev.map((s) =>
-        s.id === activeShift.id
-          ? {
-              ...s,
-              status: 'CLOSED',
-              endTime: new Date().toISOString(),
-              expectedCashTotal: expectedCash,
-              actualEndingCash,
-              cashDifference: difference,
-              notes,
-            }
-          : s
-      )
+    const updatedShifts = shifts.map((s) =>
+      s.id === activeShift.id
+        ? {
+            ...s,
+            status: 'CLOSED' as const,
+            endTime: new Date().toISOString(),
+            expectedCashTotal: expectedCash,
+            actualEndingCash,
+            cashDifference: difference,
+            notes,
+          }
+        : s
     );
+    setShifts(updatedShifts);
+    StorageService.saveShifts(updatedShifts);
+    if (isSupabaseConfigured()) SupabaseSync.pushKey('shifts', updatedShifts);
 
     sounds.playClick();
     logAudit(
@@ -1172,7 +1158,11 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
       staffName: currentStaff.name,
       createdAt: new Date().toISOString(),
     };
-    setTransactions((prev) => [tx, ...prev]);
+    const updatedTx = [tx, ...transactions];
+    setTransactions(updatedTx);
+    StorageService.saveTransactions(updatedTx);
+    if (isSupabaseConfigured()) SupabaseSync.pushKey('transactions', updatedTx);
+
     sounds.playClick();
     logAudit(`TẠO PHIẾU ${type === 'INCOME' ? 'THU' : 'CHI'}`, `${description} - Số tiền: ${amount.toLocaleString()}đ`);
     addToast('success', `Đã lưu phiếu ${type === 'INCOME' ? 'thu' : 'chi'}`, `${amount.toLocaleString()}đ`);
@@ -1252,7 +1242,11 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
       area: data.area,
       notes: data.notes,
     };
-    setTables((prev) => [...prev, newTable]);
+    const updatedTables = [...tables, newTable];
+    setTables(updatedTables);
+    StorageService.saveTables(updatedTables);
+    if (isSupabaseConfigured()) SupabaseSync.pushKey('tables', updatedTables);
+
     sounds.playOpenTable();
     addToast('success', 'Thêm bàn thành công', `Đã tạo ${newTable.code} - ${newTable.name}`);
     logAudit('THÊM BÀN', `Tạo mới bàn ${newTable.code} (${newTable.type}) - ${newTable.area}`);
@@ -1260,7 +1254,11 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
   };
 
   const updateTable = (updatedTable: TableItem) => {
-    setTables((prev) => prev.map((t) => (t.id === updatedTable.id ? updatedTable : t)));
+    const updatedTables = tables.map((t) => (t.id === updatedTable.id ? updatedTable : t));
+    setTables(updatedTables);
+    StorageService.saveTables(updatedTables);
+    if (isSupabaseConfigured()) SupabaseSync.pushKey('tables', updatedTables);
+
     sounds.playClick();
     addToast('success', 'Cập nhật thành công', `Đã lưu thông tin bàn ${updatedTable.code}`);
     logAudit('CẬP NHẬT BÀN', `Chỉnh sửa thông tin ${updatedTable.code} (${updatedTable.name})`);
@@ -1274,7 +1272,11 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
       addToast('error', 'Không thể xóa bàn', `Bàn ${table.code} đang có khách chơi hoặc chờ tính tiền. Vui lòng hoàn tất lượt chơi trước khi xóa!`);
       return false;
     }
-    setTables((prev) => prev.filter((t) => t.id !== tableId));
+    const updatedTables = tables.filter((t) => t.id !== tableId);
+    setTables(updatedTables);
+    StorageService.saveTables(updatedTables);
+    if (isSupabaseConfigured()) SupabaseSync.pushKey('tables', updatedTables);
+
     sounds.playClick();
     addToast('info', 'Đã xóa bàn', `Đã gỡ ${table.code} khỏi danh sách bàn của quán.`);
     logAudit('XÓA BÀN', `Xóa bàn ${table.code} khỏi hệ thống`);
