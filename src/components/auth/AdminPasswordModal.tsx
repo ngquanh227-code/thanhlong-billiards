@@ -100,11 +100,6 @@ export const AdminPasswordModal: React.FC<AdminPasswordModalProps> = ({
             </div>
           )}
 
-          <div className="p-3 rounded-xl bg-slate-800/50 border border-slate-750 text-[11px] text-slate-400 leading-relaxed">
-            Mật khẩu được lưu trữ an toàn trong Biến môi trường Vercel (<strong className="text-slate-300">VITE_ADMIN_PASSWORD</strong>).
-            Mặc định ban đầu nếu chưa đổi trên Vercel là: <code className="text-amber-300 font-mono">thanhlong2026</code>.
-          </div>
-
           {/* Action Buttons */}
           <div className="flex justify-end gap-2.5 pt-2 border-t border-slate-800 mt-1">
             <button
