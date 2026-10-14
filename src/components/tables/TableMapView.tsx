@@ -38,7 +38,6 @@ export const TableMapView: React.FC = () => {
     addToast,
   } = useApp();
 
-  const [statusFilter, setStatusFilter] = useState<string>('ALL');
 
   // Currently selected table for the stationary panel
   const [selectedTableId, setSelectedTableId] = useState<string>(() => {
@@ -129,10 +128,6 @@ export const TableMapView: React.FC = () => {
     setIsTableModalOpen(false);
   };
 
-  // Filter logic: Only by status
-  const filteredTables = tables.filter((table) => {
-    return statusFilter === 'ALL' || table.status === statusFilter;
-  });
 
   const playingCount = tables.filter((t) => t.status === 'PLAYING').length;
   const waitingCount = tables.filter((t) => t.status === 'WAITING_PAYMENT').length;
@@ -214,55 +209,9 @@ export const TableMapView: React.FC = () => {
           </div>
         </div>
 
-        {/* Status Filters Only (Simplified, Elegant, Clean) */}
-        <div className="flex items-center gap-2 overflow-x-auto no-scrollbar py-0.5">
-          <button
-            onClick={() => setStatusFilter('ALL')}
-            className={`h-9 px-4 rounded-xl font-semibold text-xs transition-all whitespace-nowrap shrink-0 flex items-center justify-center ${
-              statusFilter === 'ALL'
-                ? 'bg-slate-800 text-white shadow-sm border border-slate-700'
-                : 'bg-slate-900/60 text-slate-400 hover:text-white border border-slate-800/80 hover:border-slate-700'
-            }`}
-          >
-            Tất cả ({tables.length})
-          </button>
-          <button
-            onClick={() => setStatusFilter('PLAYING')}
-            className={`h-9 px-4 rounded-xl font-semibold text-xs transition-all whitespace-nowrap shrink-0 flex items-center justify-center ${
-              statusFilter === 'PLAYING'
-                ? 'bg-emerald-500/20 text-emerald-300 shadow-sm border border-emerald-500/40'
-                : 'bg-slate-900/60 text-slate-400 hover:text-white border border-slate-800/80 hover:border-slate-700'
-            }`}
-          >
-            Đang chơi ({playingCount})
-          </button>
-          <button
-            onClick={() => setStatusFilter('AVAILABLE')}
-            className={`h-9 px-4 rounded-xl font-semibold text-xs transition-all whitespace-nowrap shrink-0 flex items-center justify-center ${
-              statusFilter === 'AVAILABLE'
-                ? 'bg-slate-800 text-white shadow-sm border border-slate-700'
-                : 'bg-slate-900/60 text-slate-400 hover:text-white border border-slate-800/80 hover:border-slate-700'
-            }`}
-          >
-            Bàn trống ({availableCount})
-          </button>
-          {waitingCount > 0 && (
-            <button
-              onClick={() => setStatusFilter('WAITING_PAYMENT')}
-              className={`h-9 px-4 rounded-xl font-semibold text-xs transition-all whitespace-nowrap shrink-0 flex items-center justify-center ${
-                statusFilter === 'WAITING_PAYMENT'
-                  ? 'bg-amber-500/20 text-amber-300 shadow-sm border border-amber-500/40'
-                  : 'bg-slate-900/60 text-slate-400 hover:text-white border border-slate-800/80 hover:border-slate-700'
-              }`}
-            >
-              Chờ tính ({waitingCount})
-            </button>
-          )}
-        </div>
-
         {/* Tables Grid Map */}
         <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4 pb-6">
-          {filteredTables.map((table) => {
+          {tables.map((table) => {
             const activeSession = getActiveSessionForTable(table.id);
             const rule = pricingRules.find((r) => r.type === table.type);
 
