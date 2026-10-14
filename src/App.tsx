@@ -7,7 +7,6 @@ import { TableMapView } from './components/tables/TableMapView';
 import { PosCashierView } from './components/pos/PosCashierView';
 import { MenuView } from './components/menu/MenuView';
 import { MemberView } from './components/members/MemberView';
-import { StaffView } from './components/staff/StaffView';
 import { InventoryView } from './components/inventory/InventoryView';
 import { ReportsView } from './components/reports/ReportsView';
 import { SettingsView } from './components/settings/SettingsView';
@@ -24,7 +23,7 @@ export default function App() {
 
   // Guard admin-only tabs
   useEffect(() => {
-    const adminOnlyTabs = ['dashboard', 'members', 'reports', 'staff', 'inventory'];
+    const adminOnlyTabs = ['dashboard', 'members', 'reports', 'inventory'];
     if (!isAdmin && adminOnlyTabs.includes(currentTab)) {
       setCurrentTab('tables');
     }
@@ -75,7 +74,6 @@ export default function App() {
       case 'menu': return 'Menu & Order';
       case 'members': return 'Hội Viên & Thẻ';
       case 'dashboard': return 'Tổng Quan Hoạt Động';
-      case 'staff': return 'Nhân Sự & Ca Trực';
       case 'inventory': return 'Kho Hàng & Sổ Quỹ';
       case 'reports': return 'Báo Cáo Doanh Thu';
       case 'settings': return 'Cài Đặt Hệ Thống';
@@ -127,7 +125,6 @@ export default function App() {
           {currentTab === 'pos' && <PosCashierView />}
           {currentTab === 'menu' && <MenuView />}
           {currentTab === 'members' && <MemberView />}
-          {currentTab === 'staff' && <StaffView />}
           {currentTab === 'inventory' && <InventoryView />}
           {currentTab === 'reports' && <ReportsView />}
           {currentTab === 'settings' && <SettingsView />}

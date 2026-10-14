@@ -28,7 +28,6 @@ export const Sidebar: React.FC<SidebarProps> = ({
     { id: 'members', label: 'Hội viên & Khách' },
     { id: 'reports', label: 'Báo cáo doanh thu' },
     { id: 'inventory', label: 'Kho hàng & Sổ quỹ' },
-    { id: 'staff', label: 'Nhân sự & Ca trực' },
   ];
 
   const handleSelect = (tabId: string) => {
