@@ -134,23 +134,6 @@ export const OpenTableModal: React.FC<OpenTableModalProps> = ({
             )}
           </div>
 
-          {/* Assigned Staff */}
-          <div className="flex flex-col gap-1.5">
-            <label className="text-xs font-medium text-slate-300">
-              Nhân viên phụ trách:
-            </label>
-            <select
-              value={selectedStaffId}
-              onChange={(e) => setSelectedStaffId(e.target.value)}
-              className="w-full px-3.5 py-2.5 text-xs rounded-xl bg-slate-800/80 border border-slate-700 text-white focus:outline-none focus:border-slate-500 cursor-pointer"
-            >
-              {staff.map((s) => (
-                <option key={s.id} value={s.id}>
-                  {s.name} ({s.role === 'ADMIN' ? 'Quản lý' : 'Nhân viên'})
-                </option>
-              ))}
-            </select>
-          </div>
 
           {/* Custom Hourly Rate */}
           <div className="flex flex-col gap-1.5">

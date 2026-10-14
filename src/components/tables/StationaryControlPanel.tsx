@@ -344,20 +344,6 @@ export const StationaryControlPanel: React.FC<StationaryControlPanelProps> = ({
                 </select>
               </div>
 
-              <div>
-                <label className="text-slate-300 font-medium block mb-1">Nhân viên phục vụ:</label>
-                <select
-                  value={quickStaffId}
-                  onChange={(e) => setQuickStaffId(e.target.value)}
-                  className="w-full px-3 py-2 rounded-xl bg-slate-900 border border-slate-800 text-white focus:outline-none text-xs"
-                >
-                  {staff.map((s) => (
-                    <option key={s.id} value={s.id}>
-                      {s.name} ({s.role === 'ADMIN' ? 'Admin' : 'Nhân viên'})
-                    </option>
-                  ))}
-                </select>
-              </div>
 
               <div className="pt-2 flex gap-2">
                 <button
