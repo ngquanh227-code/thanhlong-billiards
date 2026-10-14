@@ -383,10 +383,10 @@ export const StationaryControlPanel: React.FC<StationaryControlPanelProps> = ({
         <div className="p-3 sm:p-4 bg-slate-900/95 border-t border-slate-800 shrink-0">
           <button
             onClick={() => onCheckoutTable(table, session)}
-            className="w-full h-14 rounded-2xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-sm sm:text-base flex items-center justify-between px-5 transition-all shadow-lg shadow-amber-500/10 active:scale-[0.99]"
+            className="w-full h-14 rounded-2xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-sm sm:text-base flex items-center justify-between px-5 transition-all shadow-lg shadow-emerald-600/20 active:scale-[0.99]"
           >
             <span className="font-bold tracking-tight">Thanh toán</span>
-            <span className="font-extrabold text-base sm:text-lg bg-black/10 px-3 py-1 rounded-xl">
+            <span className="font-extrabold text-base sm:text-lg bg-black/20 px-3 py-1 rounded-xl">
               {feeCalc ? formatVND(feeCalc.grandTotal) : ''}
             </span>
           </button>

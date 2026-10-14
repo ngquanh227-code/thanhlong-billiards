@@ -434,7 +434,7 @@ export const PosCashierView: React.FC = () => {
                 <button
                   type="button"
                   onClick={() => handleCheckout(true)}
-                  className="flex-1 h-13 rounded-2xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-sm flex items-center justify-center transition-all shadow-md active:scale-[0.99]"
+                  className="flex-1 h-13 rounded-2xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-sm flex items-center justify-center transition-all shadow-md shadow-emerald-600/20 active:scale-[0.99]"
                 >
                   In hóa đơn & Trả bàn
                 </button>

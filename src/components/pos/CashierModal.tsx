@@ -501,7 +501,7 @@ export const CashierModal: React.FC<CashierModalProps> = ({
               <button
                 type="button"
                 onClick={handleSettleOnly}
-                className="flex-[2] h-12 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-sm flex items-center justify-center transition-all shadow-md active:scale-[0.99] whitespace-nowrap"
+                className="flex-[2] h-12 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-sm flex items-center justify-center transition-all shadow-md shadow-emerald-600/20 active:scale-[0.99] whitespace-nowrap"
               >
                 Chốt thanh toán
               </button>

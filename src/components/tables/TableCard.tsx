@@ -184,7 +184,7 @@ export const TableCard: React.FC<TableCardProps> = ({
 
             <button
               onClick={() => onCheckout(table, session)}
-              className="flex-1 h-11 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs sm:text-sm flex items-center justify-center transition-all shadow-sm active:scale-[0.98] whitespace-nowrap"
+              className="flex-1 h-11 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs sm:text-sm flex items-center justify-center transition-all shadow-sm active:scale-[0.98] whitespace-nowrap"
             >
               Thanh toán
             </button>

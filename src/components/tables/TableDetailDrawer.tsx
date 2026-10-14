@@ -265,7 +265,7 @@ export const TableDetailDrawer: React.FC<TableDetailDrawerProps> = ({
 
             <button
               onClick={() => onCheckoutTable(table, session)}
-              className="w-full py-2.5 px-3 rounded-lg bg-gold-500 hover:bg-amber-400 text-charcoal-950 font-black text-xs transition-colors flex items-center justify-center tracking-wider"
+              className="w-full py-2.5 px-3 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs transition-colors flex items-center justify-center tracking-wider"
             >
               <span>THANH TOÁN HÓA ĐƠN</span>
             </button>
