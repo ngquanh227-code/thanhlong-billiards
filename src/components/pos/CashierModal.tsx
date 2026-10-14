@@ -98,45 +98,51 @@ export const CashierModal: React.FC<CashierModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-5 bg-black/80 backdrop-blur-sm select-none">
-      <div className="relative w-full max-w-4xl max-h-[92vh] rounded-2xl bg-slate-900 border border-slate-800 shadow-2xl overflow-hidden flex flex-col my-auto">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-5 bg-black/80 backdrop-blur-sm select-none safe-area-pb">
+      <div className="relative w-full max-w-4xl max-h-[94vh] rounded-2xl bg-slate-900 border border-slate-800 shadow-2xl overflow-hidden flex flex-col my-auto">
         {/* Header */}
-        <div className="flex items-center justify-between p-4 border-b border-slate-800 bg-slate-900/90">
-          <div className="flex items-center gap-3">
-            <span className="text-xs font-semibold px-2.5 py-1 rounded-full bg-slate-800 text-amber-300 border border-slate-700/60">
-              {table.code}
-            </span>
-            <div>
-              <h3 className="text-base font-semibold text-white flex items-center gap-2">
-                Thanh toán hóa đơn
-                <span className="text-[10px] px-2 py-0.5 rounded-full bg-slate-800 text-slate-300 border border-slate-700">
-                  {table.type}
-                </span>
-              </h3>
-              <p className="text-xs text-slate-400 mt-0.5">
-                Mã HĐ: HD-{session.id.slice(-6).toUpperCase()} • Vào lúc: {new Date(session.startTime).toLocaleTimeString('vi-VN')}
-              </p>
+        <div className="p-3.5 sm:p-4 border-b border-slate-800 bg-slate-900/95 flex flex-col gap-2.5 shrink-0">
+          <div className="flex items-center justify-between gap-2">
+            <div className="flex items-center gap-2.5 min-w-0">
+              <span className="text-xs font-bold px-2.5 py-1 rounded-lg bg-slate-800 text-amber-300 border border-slate-700/60 shrink-0">
+                {table.code}
+              </span>
+              <div className="min-w-0">
+                <h3 className="text-sm sm:text-base font-bold text-white flex items-center gap-1.5 truncate">
+                  <span>Thanh toán hóa đơn</span>
+                  <span className="text-[10px] px-2 py-0.5 rounded-full bg-slate-800 text-slate-300 border border-slate-700 font-normal">
+                    {table.type}
+                  </span>
+                </h3>
+                <p className="text-[11px] text-slate-400 truncate">
+                  HD-{session.id.slice(-6).toUpperCase()} • Vào lúc: {new Date(session.startTime).toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' })}
+                </p>
+              </div>
             </div>
+
+            <button
+              onClick={onClose}
+              className="w-8 h-8 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white flex items-center justify-center text-xs font-bold transition-colors shrink-0 active:scale-95"
+              title="Đóng cửa sổ"
+            >
+              ✕
+            </button>
           </div>
-          <div className="flex items-center gap-2">
+
+          {/* Sub Header Action Buttons */}
+          <div className="flex items-center gap-2 text-xs">
             <button
               onClick={handlePrePrint}
-              className="px-3 py-1.5 rounded-xl bg-slate-800/80 hover:bg-slate-750 text-xs font-medium text-slate-300 border border-slate-700 transition-colors"
+              className="flex-1 sm:flex-initial px-3 py-1.5 rounded-lg bg-slate-800/90 hover:bg-slate-750 text-slate-200 border border-slate-700 text-xs font-medium transition-colors text-center active:scale-98"
               title="In phiếu tạm tính cho khách xem trước"
             >
               In tạm tính
             </button>
             <button
               onClick={() => setShowReceiptPreview(!showReceiptPreview)}
-              className="px-3 py-1.5 rounded-xl bg-slate-800/80 hover:bg-slate-750 text-xs font-medium text-slate-300 border border-slate-700 transition-colors"
+              className="flex-1 sm:flex-initial px-3 py-1.5 rounded-lg bg-slate-800/90 hover:bg-slate-750 text-slate-200 border border-slate-700 text-xs font-medium transition-colors text-center active:scale-98"
             >
               {showReceiptPreview ? 'Đóng xem in' : 'Xem mẫu in'}
-            </button>
-            <button
-              onClick={onClose}
-              className="p-1.5 px-3 text-slate-400 hover:text-white rounded-xl hover:bg-slate-800 text-xs font-semibold transition-colors"
-            >
-              Đóng
             </button>
           </div>
         </div>
@@ -404,28 +410,34 @@ export const CashierModal: React.FC<CashierModalProps> = ({
             </div>
 
             {/* Bottom Actions */}
-            <div className="flex gap-2.5 pt-4 border-t border-slate-800 mt-4">
-              <button
-                type="button"
-                onClick={onClose}
-                className="flex-1 h-12 text-xs font-medium text-slate-400 hover:text-white rounded-xl hover:bg-slate-800 transition-colors flex items-center justify-center whitespace-nowrap"
-              >
-                Hủy
-              </button>
-              <button
-                type="button"
-                onClick={handlePrintAndSettle}
-                className="flex-1 h-12 rounded-xl bg-slate-800 hover:bg-slate-750 text-slate-200 border border-slate-700 font-semibold text-xs flex items-center justify-center transition-colors whitespace-nowrap"
-              >
-                In & Trả bàn
-              </button>
+            <div className="flex flex-col gap-2 pt-3 border-t border-slate-800 mt-3 shrink-0">
+              {/* Primary Action: Full-width, thumb-friendly */}
               <button
                 type="button"
                 onClick={handleSettleOnly}
-                className="flex-[2] h-12 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-sm flex items-center justify-center transition-all shadow-md shadow-emerald-600/20 active:scale-[0.99] whitespace-nowrap"
+                className="w-full h-12 sm:h-13 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-sm flex items-center justify-center gap-2 transition-all shadow-md shadow-emerald-600/20 active:scale-[0.99]"
               >
-                Chốt thanh toán
+                <span>Chốt thanh toán</span>
+                <span className="font-extrabold text-amber-200">({formatVND(calculatedGrandTotal)})</span>
               </button>
+
+              {/* Secondary Actions: 50 / 50 */}
+              <div className="grid grid-cols-2 gap-2">
+                <button
+                  type="button"
+                  onClick={onClose}
+                  className="h-10 sm:h-11 text-xs font-semibold text-slate-400 hover:text-white rounded-xl bg-slate-800/80 hover:bg-slate-800 border border-slate-700/60 transition-colors flex items-center justify-center active:scale-98"
+                >
+                  Hủy bỏ
+                </button>
+                <button
+                  type="button"
+                  onClick={handlePrintAndSettle}
+                  className="h-10 sm:h-11 rounded-xl bg-slate-800 hover:bg-slate-750 text-slate-200 border border-slate-700 font-semibold text-xs flex items-center justify-center transition-colors truncate px-1 active:scale-98"
+                >
+                  In & Trả bàn
+                </button>
+              </div>
             </div>
           </div>
         </div>

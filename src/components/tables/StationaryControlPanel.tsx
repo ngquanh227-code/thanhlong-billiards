@@ -24,6 +24,7 @@ interface StationaryControlPanelProps {
   onRemoveOrderItem: (tableId: string, orderItemId: string) => void;
   onToggleMaintenance: (table: TableItem) => void;
   onEditTable?: (table: TableItem) => void;
+  onCloseMobile?: () => void;
 }
 
 export const StationaryControlPanel: React.FC<StationaryControlPanelProps> = ({
@@ -46,6 +47,7 @@ export const StationaryControlPanel: React.FC<StationaryControlPanelProps> = ({
   onRemoveOrderItem,
   onToggleMaintenance,
   onEditTable,
+  onCloseMobile,
 }) => {
   const [quickCustomerId, setQuickCustomerId] = useState<string>('');
   const [quickStaffId, setQuickStaffId] = useState<string>(currentStaff.id);
@@ -80,33 +82,39 @@ export const StationaryControlPanel: React.FC<StationaryControlPanelProps> = ({
 
   return (
     <div className="h-full flex flex-col bg-slate-900 border-l border-slate-800/80 overflow-hidden select-none font-sans">
+      {/* Mobile Drawer Pull Indicator */}
+      {onCloseMobile && (
+        <div className="w-12 h-1.5 rounded-full bg-slate-700/80 mx-auto my-2 shrink-0 lg:hidden cursor-pointer" onClick={onCloseMobile} />
+      )}
+
       {/* Header */}
-      <div className="p-3.5 bg-slate-900/70 border-b border-slate-800 shrink-0">
+      <div className="p-3 sm:p-3.5 bg-slate-900/80 border-b border-slate-800 shrink-0">
         <div className="flex items-center justify-between gap-2">
-          <div className="flex items-center gap-2.5">
-            <div className="text-sm font-bold px-2.5 py-1 rounded-lg bg-slate-800 text-amber-300 border border-slate-700">
+          <div className="flex items-center gap-2.5 min-w-0">
+            <div className="text-sm font-bold px-2.5 py-1 rounded-lg bg-slate-800 text-amber-300 border border-slate-700 shrink-0">
               {table.code}
             </div>
-            <div>
-              <div className="flex items-center gap-2">
-                <span className="text-xs font-medium text-slate-300">
+            <div className="min-w-0">
+              <div className="flex items-center gap-1.5">
+                <span className="text-xs font-semibold text-slate-200">
                   {table.type}
                 </span>
-                <span className="text-xs text-slate-400">
-                  {formatVND(table.hourlyRate)} / giờ
+                <span className="text-slate-500">•</span>
+                <span className="text-xs text-amber-300 font-medium truncate">
+                  {formatVND(table.hourlyRate)}/h
                 </span>
               </div>
-              <p className="text-[11px] text-slate-400 mt-0.5 truncate max-w-[140px]">
+              <p className="text-[11px] text-slate-400 mt-0.5 truncate">
                 {table.area}
               </p>
             </div>
           </div>
 
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 shrink-0">
             {isAdmin && onEditTable && (
               <button
                 onClick={() => onEditTable(table)}
-                className="text-xs text-amber-300/90 hover:text-amber-200 px-2 py-1 rounded bg-slate-800 hover:bg-slate-700 font-medium transition-colors"
+                className="text-xs text-amber-300 hover:text-amber-200 px-2 py-1 rounded-lg bg-slate-800 hover:bg-slate-750 font-medium transition-colors border border-slate-700/60"
                 title="Sửa thông tin bàn"
               >
                 Sửa
@@ -115,26 +123,36 @@ export const StationaryControlPanel: React.FC<StationaryControlPanelProps> = ({
 
             {isPlaying ? (
               isPaused ? (
-                <span className="text-xs px-2.5 py-1 rounded-full bg-amber-500/15 text-amber-300 font-medium">
+                <span className="text-xs px-2.5 py-1 rounded-full bg-amber-500/15 text-amber-300 font-medium border border-amber-500/25">
                   Tạm dừng
                 </span>
               ) : (
-                <span className="text-xs px-2.5 py-1 rounded-full bg-emerald-500/15 text-emerald-300 font-medium">
+                <span className="text-xs px-2.5 py-1 rounded-full bg-emerald-500/15 text-emerald-300 font-medium border border-emerald-500/25">
                   Đang chơi
                 </span>
               )
             ) : isWaiting ? (
-              <span className="text-xs px-2.5 py-1 rounded-full bg-amber-500/15 text-amber-300 font-medium">
+              <span className="text-xs px-2.5 py-1 rounded-full bg-amber-500/15 text-amber-300 font-medium border border-amber-500/25">
                 Chờ tính
               </span>
             ) : isMaintenance ? (
-              <span className="text-xs px-2.5 py-1 rounded-full bg-slate-800 text-slate-400 font-medium">
+              <span className="text-xs px-2.5 py-1 rounded-full bg-slate-800 text-slate-400 font-medium border border-slate-700">
                 Bảo trì
               </span>
             ) : (
-              <span className="text-xs px-2.5 py-1 rounded-full bg-slate-800/80 text-slate-400 font-medium">
+              <span className="text-xs px-2.5 py-1 rounded-full bg-slate-800/80 text-slate-400 font-medium border border-slate-700/60">
                 Bàn trống
               </span>
+            )}
+
+            {onCloseMobile && (
+              <button
+                onClick={onCloseMobile}
+                className="w-8 h-8 rounded-xl bg-slate-800 hover:bg-slate-750 text-slate-300 hover:text-white flex items-center justify-center text-xs font-bold transition-colors lg:hidden active:scale-95"
+                title="Đóng bảng điều khiển"
+              >
+                ✕
+              </button>
             )}
           </div>
         </div>
@@ -191,14 +209,14 @@ export const StationaryControlPanel: React.FC<StationaryControlPanelProps> = ({
               {isPaused ? (
                 <button
                   onClick={() => onResumeTable(table)}
-                  className="h-10 px-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-semibold flex items-center justify-center transition-all shadow-sm active:scale-[0.98] whitespace-nowrap"
+                  className="h-11 px-1 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-semibold text-xs flex items-center justify-center transition-all shadow-sm active:scale-[0.98] truncate"
                 >
                   Tiếp tục
                 </button>
               ) : (
                 <button
                   onClick={() => onPauseTable(table)}
-                  className="h-10 px-2 rounded-xl bg-slate-800 hover:bg-slate-750 text-amber-300 border border-slate-700/60 font-semibold flex items-center justify-center transition-all active:scale-[0.98] whitespace-nowrap"
+                  className="h-11 px-1 rounded-xl bg-slate-800 hover:bg-slate-750 text-amber-300 border border-slate-700/60 font-semibold text-xs flex items-center justify-center transition-all active:scale-[0.98] truncate"
                 >
                   Tạm dừng
                 </button>
@@ -206,14 +224,14 @@ export const StationaryControlPanel: React.FC<StationaryControlPanelProps> = ({
 
               <button
                 onClick={() => onTransferTable(table)}
-                className="h-10 px-2 rounded-xl bg-slate-800 hover:bg-slate-750 text-slate-200 border border-slate-700/60 font-semibold flex items-center justify-center transition-all active:scale-[0.98] whitespace-nowrap"
+                className="h-11 px-1 rounded-xl bg-slate-800 hover:bg-slate-750 text-slate-200 border border-slate-700/60 font-semibold text-xs flex items-center justify-center transition-all active:scale-[0.98] truncate"
               >
                 Đổi bàn
               </button>
 
               <button
                 onClick={() => onMergeTable(table)}
-                className="h-10 px-2 rounded-xl bg-slate-800 hover:bg-slate-750 text-slate-200 border border-slate-700/60 font-semibold flex items-center justify-center transition-all active:scale-[0.98] whitespace-nowrap"
+                className="h-11 px-1 rounded-xl bg-slate-800 hover:bg-slate-750 text-slate-200 border border-slate-700/60 font-semibold text-xs flex items-center justify-center transition-all active:scale-[0.98] truncate"
               >
                 Gộp bàn
               </button>
@@ -243,9 +261,9 @@ export const StationaryControlPanel: React.FC<StationaryControlPanelProps> = ({
                   {session.orders.map((ord) => (
                     <div
                       key={ord.id}
-                      className="p-2.5 rounded-xl bg-slate-900/70 border border-slate-800/80 flex items-center justify-between text-xs"
+                      className="p-2.5 rounded-xl bg-slate-900/70 border border-slate-800/80 flex items-center justify-between text-xs gap-2"
                     >
-                      <div className="flex-1 min-w-0 pr-2">
+                      <div className="flex-1 min-w-0">
                         <span className="font-semibold text-white truncate block text-xs">{ord.name}</span>
                         <span className="text-[11px] text-slate-400">
                           {formatVND(ord.price)} / {ord.unit}
@@ -253,14 +271,14 @@ export const StationaryControlPanel: React.FC<StationaryControlPanelProps> = ({
                       </div>
 
                       {/* Stepper +/- */}
-                      <div className="flex items-center gap-1.5 mr-2">
+                      <div className="flex items-center gap-1 shrink-0">
                         <button
                           onClick={() => onUpdateOrderItemQty(table.id, ord.id, -1)}
                           className="w-7 h-7 rounded-lg bg-slate-800 hover:bg-slate-750 flex items-center justify-center text-slate-200 text-xs font-bold border border-slate-700/60 active:scale-95 transition-all"
                         >
                           −
                         </button>
-                        <span className="font-bold text-white px-1.5 text-xs font-mono">{ord.quantity}</span>
+                        <span className="font-bold text-white px-1 text-xs font-mono min-w-[16px] text-center">{ord.quantity}</span>
                         <button
                           onClick={() => onUpdateOrderItemQty(table.id, ord.id, 1)}
                           className="w-7 h-7 rounded-lg bg-slate-800 hover:bg-slate-750 flex items-center justify-center text-slate-200 text-xs font-bold border border-slate-700/60 active:scale-95 transition-all"
@@ -269,16 +287,16 @@ export const StationaryControlPanel: React.FC<StationaryControlPanelProps> = ({
                         </button>
                       </div>
 
-                      <div className="text-right flex items-center gap-2">
+                      <div className="text-right flex items-center gap-1.5 shrink-0">
                         <span className="font-bold text-slate-200 text-xs font-mono">
                           {formatVND(ord.price * ord.quantity)}
                         </span>
                         <button
                           onClick={() => onRemoveOrderItem(table.id, ord.id)}
-                          className="text-slate-500 hover:text-rose-400 text-xs px-1.5 py-0.5 rounded transition-colors"
+                          className="text-slate-400 hover:text-rose-400 text-xs p-1 rounded transition-colors ml-0.5"
                           title="Xóa món"
                         >
-                          Xóa
+                          ✕
                         </button>
                       </div>
                     </div>
@@ -380,10 +398,10 @@ export const StationaryControlPanel: React.FC<StationaryControlPanelProps> = ({
 
       {/* Footer: Thanh toán */}
       {(isPlaying || isWaiting) && session && (
-        <div className="p-3 sm:p-4 bg-slate-900/95 border-t border-slate-800 shrink-0">
+        <div className="p-3 sm:p-4 bg-slate-900/95 border-t border-slate-800 shrink-0 safe-area-pb">
           <button
             onClick={() => onCheckoutTable(table, session)}
-            className="w-full h-14 rounded-2xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-sm sm:text-base flex items-center justify-between px-5 transition-all shadow-lg shadow-emerald-600/20 active:scale-[0.99]"
+            className="w-full h-13 sm:h-14 rounded-2xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-sm sm:text-base flex items-center justify-between px-4 sm:px-5 transition-all shadow-lg shadow-emerald-600/20 active:scale-[0.99]"
           >
             <span className="font-bold tracking-tight">Thanh toán</span>
             <span className="font-extrabold text-base sm:text-lg bg-black/20 px-3 py-1 rounded-xl">

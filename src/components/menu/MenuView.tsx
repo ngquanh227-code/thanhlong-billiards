@@ -132,7 +132,7 @@ export const MenuView: React.FC = () => {
         {isAdmin && (
           <button
             onClick={() => setIsAddModalOpen(true)}
-            className="h-10 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs flex items-center justify-center transition-all shadow-sm active:scale-[0.98] whitespace-nowrap"
+            className="w-full sm:w-auto h-11 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs flex items-center justify-center transition-all shadow-sm active:scale-[0.98] whitespace-nowrap"
           >
             + Thêm món mới
           </button>
@@ -147,7 +147,7 @@ export const MenuView: React.FC = () => {
             <button
               key={cat.id}
               onClick={() => setCategoryFilter(cat.id)}
-              className={`px-3 py-1.5 rounded-xl font-medium transition-colors whitespace-nowrap ${
+              className={`h-9 px-3.5 rounded-xl font-medium transition-all whitespace-nowrap flex items-center active:scale-95 ${
                 categoryFilter === cat.id
                   ? 'bg-slate-800 text-white border border-slate-700 font-semibold shadow-sm'
                   : 'bg-slate-900 text-slate-400 hover:text-slate-200 border border-transparent'
@@ -165,7 +165,7 @@ export const MenuView: React.FC = () => {
             placeholder="Tìm theo tên món..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full px-3.5 py-2 text-xs rounded-xl bg-slate-900 border border-slate-800 text-white placeholder-slate-500 focus:outline-none focus:border-slate-600 font-sans"
+            className="w-full px-3.5 py-2.5 text-xs rounded-xl bg-slate-900 border border-slate-800 text-white placeholder-slate-500 focus:outline-none focus:border-slate-600 font-sans"
           />
         </div>
       </div>
@@ -232,7 +232,7 @@ export const MenuView: React.FC = () => {
               </div>
 
               {/* Actions */}
-              <div className="mt-3.5 pt-3 border-t border-slate-800 flex items-center gap-1.5">
+              <div className="mt-3.5 pt-3 border-t border-slate-800 flex items-center gap-2">
                 {isAdmin ? (
                   <>
                     <button
@@ -241,7 +241,7 @@ export const MenuView: React.FC = () => {
                         setImportUnitCost(item.costPrice);
                         setIsImportModalOpen(true);
                       }}
-                      className="flex-1 py-1.5 px-2.5 rounded-xl bg-slate-800 hover:bg-slate-750 text-slate-200 border border-slate-700 text-xs font-semibold transition-colors"
+                      className="flex-1 h-9 sm:h-10 px-2 rounded-xl bg-slate-800 hover:bg-slate-750 text-slate-200 border border-slate-700/80 text-xs font-semibold transition-all active:scale-95 flex items-center justify-center truncate"
                       title="Nhập thêm hàng vào kho"
                     >
                       Nhập kho
@@ -249,7 +249,7 @@ export const MenuView: React.FC = () => {
 
                     <button
                       onClick={() => handleOpenEdit(item)}
-                      className="py-1.5 px-3 rounded-xl bg-slate-800 hover:bg-slate-750 text-amber-300 border border-slate-700 text-xs font-semibold transition-colors"
+                      className="h-9 sm:h-10 px-3 rounded-xl bg-slate-800 hover:bg-slate-750 text-amber-300 border border-slate-700/80 text-xs font-semibold transition-all active:scale-95 flex items-center justify-center"
                       title="Chỉnh sửa thông tin món"
                     >
                       Sửa
@@ -257,10 +257,10 @@ export const MenuView: React.FC = () => {
 
                     <button
                       onClick={() => setItemToDelete(item)}
-                      className="py-1.5 px-3 rounded-xl bg-slate-800 hover:bg-rose-950/50 text-slate-400 hover:text-rose-400 border border-slate-700 text-xs font-semibold transition-colors"
+                      className="h-9 sm:h-10 px-2.5 rounded-xl bg-slate-800 hover:bg-rose-950/50 text-slate-400 hover:text-rose-400 border border-slate-700/80 text-xs font-semibold transition-all active:scale-95 flex items-center justify-center"
                       title="Xóa món khỏi thực đơn"
                     >
-                      Xóa
+                      ✕
                     </button>
                   </>
                 ) : (

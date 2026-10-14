@@ -151,20 +151,14 @@ export const AiAssistantModal: React.FC<AiAssistantModalProps> = ({
     // 6. Gợi ý tăng doanh thu / Combo
     if (q.includes('tăng doanh thu') || q.includes('chiến lược') || q.includes('combo') || q.includes('tối ưu')) {
       return {
-        reply: `Đề xuất tối ưu kinh doanh cho câu lạc bộ:\n1. Combo Giờ Vàng (13:00 - 17:00): Chơi 2 giờ tặng 1 đồ uống hoặc giảm 15% để kéo khách khung giờ thấp điểm.\n2. Thúc đẩy F&B: Đặt menu món ăn nhanh (Mì xào, khô bò, khoai tây) ngay tại bảng điều khiển bàn để cơ thủ gọi thêm giữa hiệp.\n3. Nạp ví hội viên: Khuyến khích cơ thủ nạp ví trả trước 1.000.000đ tặng 100.000đ giúp giữ chân khách quen dài hạn.`,
-        suggestions: ['Tình hình các bàn hiện tại', 'Báo cáo doanh thu hôm nay'],
+        reply: `Đề xuất tối ưu kinh doanh cho câu lạc bộ:\n1. Combo Giờ Vàng (13:00 - 17:00): Chơi 2 giờ tặng 1 đồ uống hoặc giảm 15% để kéo khách khung giờ thấp điểm.\n2. Thúc đẩy F&B: Đặt menu món ăn nhanh (Mì xào, khô bò, khoai tây) ngay tại bảng điều khiển bàn để cơ thủ gọi thêm giữ chân khách.\n3. Thẻ hội viên: Tặng ưu đãi giờ chơi theo bậc thành viên để giữ chân khách quen.`,
+        suggestions: ['Gợi ý combo giờ vàng', 'Báo cáo doanh thu hôm nay'],
       };
     }
 
-    // Default Fallback
     return {
-      reply: `Em đã ghi nhận câu hỏi: "${query}".\nEm có thể giúp anh tra cứu nhanh: số lượng bàn đang chơi, doanh thu hôm nay, cảnh báo tồn kho nguyên liệu, bảng giá giờ thi đấu hoặc mẹo tăng doanh thu. Anh muốn tra cứu nội dung nào?`,
-      suggestions: [
-        'Tình hình các bàn hiện tại',
-        'Báo cáo doanh thu hôm nay',
-        'Món nào sắp hết hàng?',
-        'Bảng giá và ưu đãi hội viên',
-      ],
+      reply: `Tôi là Trợ lý AI Thanh Long. Bạn có thể hỏi tôi:\n- "Bao nhiêu bàn đang chơi?"\n- "Doanh thu hôm nay thế nào?"\n- "Đồ uống nào sắp hết hàng?"\n- "Bảng giá và ưu đãi hội viên"\n- "Gợi ý tăng doanh thu câu lạc bộ"`,
+      suggestions: ['Bao nhiêu bàn đang chơi?', 'Doanh thu hôm nay thế nào?', 'Đồ uống sắp hết hàng'],
     };
   };
 
@@ -199,35 +193,35 @@ export const AiAssistantModal: React.FC<AiAssistantModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-5 bg-black/80 backdrop-blur-md select-none font-sans">
-      <div className="relative w-full max-w-2xl h-[640px] max-h-[92vh] rounded-2xl bg-slate-900 border border-slate-800 shadow-2xl flex flex-col overflow-hidden">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-5 bg-black/80 backdrop-blur-md select-none font-sans safe-area-pb">
+      <div className="relative w-full max-w-2xl h-[640px] max-h-[94vh] rounded-2xl bg-slate-900 border border-slate-800 shadow-2xl flex flex-col overflow-hidden my-auto">
         {/* Header */}
-        <div className="p-4 bg-slate-900/95 border-b border-slate-800 flex items-center justify-between shrink-0">
-          <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-xl bg-amber-500/15 border border-amber-500/30 text-amber-300 font-bold text-xs flex items-center justify-center tracking-tight">
+        <div className="p-3.5 sm:p-4 bg-slate-900/95 border-b border-slate-800 flex items-center justify-between shrink-0 gap-2">
+          <div className="flex items-center gap-2.5 min-w-0">
+            <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-amber-500/15 border border-amber-500/30 text-amber-300 font-bold text-xs flex items-center justify-center tracking-tight shrink-0">
               AI
             </div>
-            <div>
-              <div className="flex items-center gap-2">
-                <h3 className="text-sm sm:text-base font-bold text-white tracking-tight">
-                  Trợ lý Vận hành AI Thanh Long
+            <div className="min-w-0">
+              <div className="flex items-center gap-1.5">
+                <h3 className="text-sm sm:text-base font-bold text-white tracking-tight truncate">
+                  Trợ lý Vận hành AI
                 </h3>
-                <span className="text-[10px] px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-400 font-medium border border-emerald-500/30">
-                  Trực tuyến
+                <span className="text-[10px] px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-400 font-medium border border-emerald-500/30 shrink-0">
+                  Online
                 </span>
               </div>
-              <p className="text-[11px] text-slate-400">
-                Phân tích dữ liệu bàn chơi, doanh thu, kho F&B và hỗ trợ ra quyết định
+              <p className="text-[11px] text-slate-400 truncate">
+                Phân tích dữ liệu bàn chơi & doanh thu
               </p>
             </div>
           </div>
 
           <button
             onClick={onClose}
-            className="h-8 px-3.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white flex items-center justify-center text-xs font-semibold transition-colors"
+            className="w-8 h-8 rounded-xl bg-slate-800 hover:bg-slate-750 text-slate-300 hover:text-white flex items-center justify-center text-xs font-bold transition-all active:scale-95 shrink-0"
             title="Đóng cửa sổ Trợ lý AI"
           >
-            Đóng
+            ✕
           </button>
         </div>
 

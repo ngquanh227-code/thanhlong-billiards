@@ -1011,17 +1011,18 @@ export const SettingsView: React.FC = () => {
 
       {/* Modal: Thêm / Sửa Bàn (Admin Only) */}
       {isTableModalOpen && isAdmin && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
-          <div className="w-full max-w-md rounded-xl bg-charcoal-900 border border-charcoal-750 p-5 flex flex-col gap-4 shadow-xl">
-            <div className="flex items-center justify-between pb-3 border-b border-charcoal-800">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/75 backdrop-blur-sm safe-area-pb select-none">
+          <div className="w-full max-w-md rounded-2xl bg-slate-900 border border-slate-800 p-5 flex flex-col gap-4 shadow-2xl">
+            <div className="flex items-center justify-between pb-3 border-b border-slate-800">
               <h3 className="text-base font-bold text-white font-heading">
                 {editingTable ? `Chỉnh Sửa ${editingTable.code}` : 'Thêm Bàn Mới Cho Quán'}
               </h3>
               <button
                 onClick={() => setIsTableModalOpen(false)}
-                className="text-slate-400 hover:text-white px-2.5 py-1 rounded-md hover:bg-charcoal-800 text-xs font-semibold"
+                className="w-8 h-8 rounded-xl bg-slate-800 hover:bg-slate-750 text-slate-300 hover:text-white flex items-center justify-center text-xs font-bold transition-all active:scale-95"
+                title="Đóng"
               >
-                Đóng
+                ✕
               </button>
             </div>
 
@@ -1111,17 +1112,17 @@ export const SettingsView: React.FC = () => {
                 />
               </div>
 
-              <div className="flex justify-end gap-2 pt-3 border-t border-charcoal-800 mt-2">
+              <div className="flex gap-2 pt-3 border-t border-slate-800 mt-2">
                 <button
                   type="button"
                   onClick={() => setIsTableModalOpen(false)}
-                  className="px-3.5 py-2 rounded-lg bg-charcoal-800 hover:bg-charcoal-750 text-slate-300 font-medium"
+                  className="flex-1 h-11 rounded-xl bg-slate-800 hover:bg-slate-750 text-slate-300 font-semibold text-xs transition-colors flex items-center justify-center active:scale-98"
                 >
                   Hủy
                 </button>
                 <button
                   type="submit"
-                  className="px-4 py-2 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white font-semibold transition-colors"
+                  className="flex-[2] h-11 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs sm:text-sm transition-all shadow-sm flex items-center justify-center active:scale-[0.98]"
                 >
                   {editingTable ? 'Lưu Thay Đổi' : 'Thêm Bàn'}
                 </button>

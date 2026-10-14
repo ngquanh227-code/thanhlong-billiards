@@ -54,28 +54,29 @@ export const OpenTableModal: React.FC<OpenTableModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-5 bg-black/80 backdrop-blur-sm select-none">
-      <div className="relative w-full max-w-lg rounded-2xl bg-slate-900 border border-slate-800 shadow-2xl overflow-hidden flex flex-col max-h-[92vh]">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-5 bg-black/80 backdrop-blur-sm select-none safe-area-pb">
+      <div className="relative w-full max-w-lg rounded-2xl bg-slate-900 border border-slate-800 shadow-2xl overflow-hidden flex flex-col max-h-[94vh] my-auto">
         {/* Header */}
-        <div className="flex items-center justify-between p-4 border-b border-slate-800 bg-slate-900/90">
-          <div className="flex items-center gap-3">
-            <span className="text-xs font-semibold px-2.5 py-1 rounded-full bg-slate-800 text-amber-300 border border-slate-700/60">
+        <div className="flex items-center justify-between p-3.5 sm:p-4 border-b border-slate-800 bg-slate-900/95 shrink-0">
+          <div className="flex items-center gap-2.5 min-w-0">
+            <span className="text-xs font-bold px-2.5 py-1 rounded-lg bg-slate-800 text-amber-300 border border-slate-700/60 shrink-0">
               {table.code}
             </span>
-            <div>
-              <h3 className="text-base font-semibold text-white">
+            <div className="min-w-0">
+              <h3 className="text-sm sm:text-base font-bold text-white truncate">
                 Mở bàn chơi
               </h3>
-              <p className="text-xs text-slate-400 mt-0.5">
+              <p className="text-[11px] text-slate-400 mt-0.5 truncate">
                 {table.name} • {table.area}
               </p>
             </div>
           </div>
           <button
             onClick={onClose}
-            className="p-1.5 px-3 text-slate-400 hover:text-white rounded-xl hover:bg-slate-800 text-xs font-semibold transition-colors"
+            className="w-8 h-8 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white flex items-center justify-center text-xs font-bold transition-colors shrink-0 active:scale-95"
+            title="Đóng"
           >
-            Đóng
+            ✕
           </button>
         </div>
 
@@ -153,17 +154,17 @@ export const OpenTableModal: React.FC<OpenTableModalProps> = ({
           </div>
 
           {/* Buttons */}
-          <div className="flex items-center justify-end gap-2.5 mt-2 pt-4 border-t border-slate-800">
+          <div className="flex items-center gap-2 mt-2 pt-3 border-t border-slate-800 shrink-0">
             <button
               type="button"
               onClick={onClose}
-              className="flex-1 h-11 text-xs font-semibold text-slate-400 hover:text-white rounded-xl hover:bg-slate-800 transition-colors flex items-center justify-center whitespace-nowrap"
+              className="flex-1 h-12 text-xs font-semibold text-slate-400 hover:text-white rounded-xl bg-slate-800/80 hover:bg-slate-800 border border-slate-700/60 transition-colors flex items-center justify-center active:scale-98"
             >
-              Hủy
+              Hủy bỏ
             </button>
             <button
               type="submit"
-              className="flex-[2] h-11 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs sm:text-sm transition-all shadow-sm flex items-center justify-center active:scale-[0.98] whitespace-nowrap"
+              className="flex-[2] h-12 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs sm:text-sm transition-all shadow-sm flex items-center justify-center active:scale-[0.98] truncate"
             >
               Bắt đầu tính giờ
             </button>

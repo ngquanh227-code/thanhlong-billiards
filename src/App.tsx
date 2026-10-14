@@ -87,28 +87,8 @@ export default function App() {
       <Navbar
         onNavigateTab={(tab) => setCurrentTab(tab)}
         onOpenAiModal={() => setIsAiModalOpen(true)}
+        onOpenMobileMenu={() => setIsMobileSidebarOpen(true)}
       />
-
-      {/* Mobile Top Context Strip */}
-      <div className="lg:hidden flex items-center justify-between px-3.5 py-2 bg-slate-900 border-b border-slate-800 shrink-0">
-        <button
-          onClick={() => setIsMobileSidebarOpen(true)}
-          className="flex items-center gap-1.5 text-xs font-medium text-slate-300 bg-slate-800/80 px-3 py-1 rounded-xl border border-slate-700/60 active:scale-95 transition-transform"
-        >
-          <span>Chức năng</span>
-        </button>
-
-        <div className="flex items-center gap-2">
-          <span className="text-xs font-semibold text-white">
-            {getTabTitle(currentTab)}
-          </span>
-          {playingCount > 0 && (
-            <span className="text-[11px] font-medium text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-full border border-emerald-500/20">
-              {playingCount} bàn đang chơi
-            </span>
-          )}
-        </div>
-      </div>
 
       {/* Main Container with Sidebar + Content */}
       <div className="flex-1 flex overflow-hidden">
@@ -119,7 +99,7 @@ export default function App() {
           onCloseMobile={() => setIsMobileSidebarOpen(false)}
         />
 
-        <main className={`flex-1 ${currentTab === 'tables' ? 'overflow-hidden' : 'overflow-y-auto'} h-full flex flex-col pb-16 lg:pb-0`}>
+        <main className={`flex-1 ${currentTab === 'tables' ? 'overflow-hidden' : 'overflow-y-auto'} h-full flex flex-col pb-20 lg:pb-0`}>
           {currentTab === 'dashboard' && <DashboardView onNavigateTab={setCurrentTab} />}
           {currentTab === 'tables' && <TableMapView />}
           {currentTab === 'pos' && <PosCashierView />}
@@ -132,20 +112,20 @@ export default function App() {
       </div>
 
       {/* Dedicated Mobile Bottom Navigation Bar (Thumb friendly for phone users) */}
-      <nav className="lg:hidden fixed bottom-0 left-0 right-0 z-40 bg-slate-900/95 backdrop-blur-md border-t border-slate-800 flex items-stretch h-14 select-none safe-area-pb font-sans">
+      <nav className="lg:hidden fixed bottom-0 left-0 right-0 z-40 bg-slate-900/95 backdrop-blur-md border-t border-slate-800 flex items-stretch h-15 select-none safe-area-pb font-sans shadow-lg">
         <button
           onClick={() => {
             setCurrentTab('tables');
             sounds.playClick();
           }}
-          className={`flex-1 flex flex-col items-center justify-center gap-0.5 transition-colors relative ${
-            currentTab === 'tables' ? 'text-amber-300 font-semibold bg-amber-500/10' : 'text-slate-400 hover:text-slate-200'
+          className={`flex-1 flex flex-col items-center justify-center py-1 transition-all active:scale-95 relative ${
+            currentTab === 'tables' ? 'text-amber-300 font-bold bg-amber-500/10' : 'text-slate-400 hover:text-slate-200'
           }`}
         >
-          <span className="text-xs font-medium">Bàn</span>
-          <span className="text-[10px] text-slate-400">Sơ đồ</span>
+          <span className="text-base leading-none mb-0.5">🎱</span>
+          <span className="text-[11px] font-medium leading-none">Bàn</span>
           {playingCount > 0 && (
-            <span className="absolute top-1.5 right-3 text-[10px] font-bold px-1.5 py-0.2 rounded-full bg-emerald-500 text-slate-950">
+            <span className="absolute top-1 right-2 sm:right-4 text-[10px] font-bold px-1.5 py-0.2 rounded-full bg-emerald-500 text-slate-950 shadow-sm">
               {playingCount}
             </span>
           )}
@@ -156,14 +136,14 @@ export default function App() {
             setCurrentTab('pos');
             sounds.playClick();
           }}
-          className={`flex-1 flex flex-col items-center justify-center gap-0.5 transition-colors relative ${
-            currentTab === 'pos' ? 'text-amber-300 font-semibold bg-amber-500/10' : 'text-slate-400 hover:text-slate-200'
+          className={`flex-1 flex flex-col items-center justify-center py-1 transition-all active:scale-95 relative ${
+            currentTab === 'pos' ? 'text-amber-300 font-bold bg-amber-500/10' : 'text-slate-400 hover:text-slate-200'
           }`}
         >
-          <span className="text-xs font-medium">Thu ngân</span>
-          <span className="text-[10px] text-slate-400">Hóa đơn</span>
+          <span className="text-base leading-none mb-0.5">💵</span>
+          <span className="text-[11px] font-medium leading-none">Thu ngân</span>
           {waitingCount > 0 && (
-            <span className="absolute top-1.5 right-3 text-[10px] font-bold px-1.5 py-0.2 rounded-full bg-amber-400 text-slate-950">
+            <span className="absolute top-1 right-2 sm:right-4 text-[10px] font-bold px-1.5 py-0.2 rounded-full bg-amber-400 text-slate-950 shadow-sm animate-pulse">
               {waitingCount}
             </span>
           )}
@@ -174,12 +154,12 @@ export default function App() {
             setCurrentTab('menu');
             sounds.playClick();
           }}
-          className={`flex-1 flex flex-col items-center justify-center gap-0.5 transition-colors ${
-            currentTab === 'menu' ? 'text-amber-300 font-semibold bg-amber-500/10' : 'text-slate-400 hover:text-slate-200'
+          className={`flex-1 flex flex-col items-center justify-center py-1 transition-all active:scale-95 ${
+            currentTab === 'menu' ? 'text-amber-300 font-bold bg-amber-500/10' : 'text-slate-400 hover:text-slate-200'
           }`}
         >
-          <span className="text-xs font-medium">Thực đơn</span>
-          <span className="text-[10px] text-slate-400">F&B</span>
+          <span className="text-base leading-none mb-0.5">🍹</span>
+          <span className="text-[11px] font-medium leading-none">Thực đơn</span>
         </button>
 
         {isAdmin && (
@@ -188,21 +168,21 @@ export default function App() {
               setCurrentTab('reports');
               sounds.playClick();
             }}
-            className={`flex-1 flex flex-col items-center justify-center gap-0.5 transition-colors ${
-              currentTab === 'reports' ? 'text-amber-300 font-semibold bg-amber-500/10' : 'text-slate-400 hover:text-slate-200'
+            className={`flex-1 flex flex-col items-center justify-center py-1 transition-all active:scale-95 ${
+              currentTab === 'reports' ? 'text-amber-300 font-bold bg-amber-500/10' : 'text-slate-400 hover:text-slate-200'
             }`}
           >
-            <span className="text-xs font-medium">Báo cáo</span>
-            <span className="text-[10px] text-slate-400">Doanh thu</span>
+            <span className="text-base leading-none mb-0.5">📊</span>
+            <span className="text-[11px] font-medium leading-none">Báo cáo</span>
           </button>
         )}
 
         <button
           onClick={() => setIsMobileSidebarOpen(true)}
-          className="flex-1 flex flex-col items-center justify-center gap-0.5 text-slate-400 hover:text-white transition-colors"
+          className="flex-1 flex flex-col items-center justify-center py-1 text-slate-400 hover:text-white transition-all active:scale-95"
         >
-          <span className="text-xs font-medium">Menu</span>
-          <span className="text-[10px] text-slate-400">Thêm</span>
+          <span className="text-base leading-none mb-0.5">☰</span>
+          <span className="text-[11px] font-medium leading-none">Chức năng</span>
         </button>
       </nav>
 

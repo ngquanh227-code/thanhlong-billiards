@@ -6,9 +6,10 @@ import { AdminPasswordModal } from './auth/AdminPasswordModal';
 interface NavbarProps {
   onNavigateTab?: (tab: string) => void;
   onOpenAiModal?: () => void;
+  onOpenMobileMenu?: () => void;
 }
 
-export const Navbar: React.FC<NavbarProps> = ({ onNavigateTab, onOpenAiModal }) => {
+export const Navbar: React.FC<NavbarProps> = ({ onNavigateTab, onOpenAiModal, onOpenMobileMenu }) => {
   const {
     tables,
     isAdmin,
@@ -47,27 +48,39 @@ export const Navbar: React.FC<NavbarProps> = ({ onNavigateTab, onOpenAiModal }) 
 
   return (
     <>
-      <header className="sticky top-0 z-40 w-full bg-slate-900/95 backdrop-blur-md border-b border-slate-800/80 px-4 sm:px-6 py-2.5 select-none transition-colors font-sans">
-        <div className="flex items-center justify-between gap-3 max-w-full mx-auto">
+      <header className="sticky top-0 z-40 w-full bg-slate-900/95 backdrop-blur-md border-b border-slate-800/80 px-3 sm:px-6 py-2 select-none transition-colors font-sans">
+        <div className="flex items-center justify-between gap-2 sm:gap-3 max-w-full mx-auto">
           {/* Brand */}
-          <div
-            className="flex items-center gap-3 cursor-pointer group shrink-0"
-            onClick={() => onNavigateTab && onNavigateTab(isAdmin ? 'dashboard' : 'tables')}
-            title={isAdmin ? "Về trang tổng quan" : "Về sơ đồ bàn"}
-          >
-            <img
-              src={logoImg}
-              alt="Thanh Long Billiards"
-              className="w-9 h-9 rounded-full ring-1 ring-amber-500/40 object-cover group-hover:ring-amber-400 transition-all shadow-sm"
-            />
+          <div className="flex items-center gap-2 sm:gap-3 shrink-0">
+            {onOpenMobileMenu && (
+              <button
+                onClick={onOpenMobileMenu}
+                className="lg:hidden w-8 h-8 rounded-xl bg-slate-800 hover:bg-slate-750 text-slate-300 hover:text-white flex items-center justify-center text-sm font-bold active:scale-95 transition-all border border-slate-700/60"
+                title="Mở menu chức năng"
+              >
+                ☰
+              </button>
+            )}
 
-            <div className="flex flex-col">
-              <span className="text-xs sm:text-sm font-semibold tracking-wider text-amber-300/90 font-brand leading-none">
-                THANH LONG BILLIARDS
-              </span>
-              <span className="hidden sm:block text-[11px] text-slate-400 font-sans mt-0.5">
-                Hệ thống quản lý câu lạc bộ
-              </span>
+            <div
+              className="flex items-center gap-2 sm:gap-2.5 cursor-pointer group"
+              onClick={() => onNavigateTab && onNavigateTab(isAdmin ? 'dashboard' : 'tables')}
+              title={isAdmin ? "Về trang tổng quan" : "Về sơ đồ bàn"}
+            >
+              <img
+                src={logoImg}
+                alt="Thanh Long Billiards"
+                className="w-8 h-8 sm:w-9 sm:h-9 rounded-full ring-1 ring-amber-500/40 object-cover group-hover:ring-amber-400 transition-all shadow-sm"
+              />
+
+              <div className="flex flex-col">
+                <span className="text-xs sm:text-sm font-semibold tracking-wider text-amber-300/90 font-brand leading-none">
+                  THANH LONG
+                </span>
+                <span className="hidden sm:block text-[11px] text-slate-400 font-sans mt-0.5">
+                  Quản lý câu lạc bộ bida
+                </span>
+              </div>
             </div>
           </div>
 

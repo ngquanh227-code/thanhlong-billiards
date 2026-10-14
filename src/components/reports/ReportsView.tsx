@@ -214,14 +214,14 @@ export const ReportsView: React.FC = () => {
           </p>
         </div>
 
-        <div className="flex items-center gap-2.5 flex-wrap">
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5">
           {/* Date Range Selector */}
-          <div className="flex items-center bg-slate-900 p-1 rounded-xl border border-slate-800 text-xs">
+          <div className="grid grid-cols-4 sm:flex items-center bg-slate-900 p-1 rounded-xl border border-slate-800 text-xs text-center">
             {(['TODAY', '7DAYS', 'MONTH', 'ALL'] as const).map((r) => (
               <button
                 key={r}
                 onClick={() => setDateRange(r)}
-                className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
+                className={`py-2 sm:py-1.5 sm:px-3 rounded-lg text-xs font-medium transition-all text-center ${
                   dateRange === r
                     ? 'bg-slate-800 text-white font-semibold shadow-sm'
                     : 'text-slate-400 hover:text-slate-200'
@@ -234,7 +234,7 @@ export const ReportsView: React.FC = () => {
 
           <button
             onClick={handleExportCSV}
-            className="px-3.5 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-slate-200 border border-slate-800 text-xs font-medium transition-colors"
+            className="h-10 sm:h-auto px-3.5 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-slate-200 border border-slate-800 text-xs font-medium transition-colors flex items-center justify-center active:scale-98"
           >
             Xuất file CSV
           </button>

@@ -114,28 +114,29 @@ export const OrderModal: React.FC<OrderModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-5 bg-black/80 backdrop-blur-sm select-none">
-      <div className="relative w-full max-w-4xl max-h-[92vh] rounded-2xl bg-slate-900 border border-slate-800 shadow-2xl overflow-hidden flex flex-col">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-5 bg-black/80 backdrop-blur-sm select-none safe-area-pb">
+      <div className="relative w-full max-w-4xl max-h-[94vh] rounded-2xl bg-slate-900 border border-slate-800 shadow-2xl overflow-hidden flex flex-col my-auto">
         {/* Header */}
-        <div className="flex items-center justify-between p-4 border-b border-slate-800 bg-slate-900/90">
-          <div className="flex items-center gap-3">
-            <span className="text-xs font-semibold px-2.5 py-1 rounded-full bg-slate-800 text-amber-300 border border-slate-700/60">
+        <div className="flex items-center justify-between p-3.5 sm:p-4 border-b border-slate-800 bg-slate-900/95 shrink-0">
+          <div className="flex items-center gap-2.5 min-w-0">
+            <span className="text-xs font-bold px-2.5 py-1 rounded-lg bg-slate-800 text-amber-300 border border-slate-700/60 shrink-0">
               {table.code}
             </span>
-            <div>
-              <h3 className="text-base font-semibold text-white">
+            <div className="min-w-0">
+              <h3 className="text-sm sm:text-base font-bold text-white truncate">
                 Gọi món & Dịch vụ F&B
               </h3>
-              <p className="text-xs text-slate-400 mt-0.5">
+              <p className="text-[11px] text-slate-400 mt-0.5 truncate">
                 {table.name} • {session?.customerName || 'Khách vãng lai'}
               </p>
             </div>
           </div>
           <button
             onClick={onClose}
-            className="p-1.5 px-3 text-slate-400 hover:text-white rounded-xl hover:bg-slate-800 text-xs font-semibold transition-colors"
+            className="w-8 h-8 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white flex items-center justify-center text-xs font-bold transition-colors shrink-0 active:scale-95"
+            title="Đóng"
           >
-            Đóng
+            ✕
           </button>
         </div>
 
@@ -258,36 +259,39 @@ export const OrderModal: React.FC<OrderModalProps> = ({
                         </span>
                       </div>
 
-                      <div className="flex items-center justify-between">
+                      <div className="flex items-center justify-between gap-2">
                         <input
                           type="text"
                           placeholder="Ghi chú (ít đá...)"
                           value={notes}
                           onChange={(e) => handleUpdateNotes(item.id, e.target.value)}
-                          className="text-[11px] px-2.5 py-1 rounded-lg bg-slate-900 border border-slate-700 text-slate-200 placeholder-slate-500 w-28 focus:outline-none focus:border-slate-500"
+                          className="text-xs px-2.5 py-1.5 rounded-lg bg-slate-900 border border-slate-700 text-slate-200 placeholder-slate-500 flex-1 min-w-0 focus:outline-none focus:border-slate-500"
                         />
 
-                        <div className="flex items-center gap-1.5">
+                        <div className="flex items-center gap-1 shrink-0">
                           <button
                             onClick={() => handleDecreaseItem(item.id)}
-                            className="w-5 h-5 rounded-md bg-slate-700 hover:bg-slate-600 flex items-center justify-center text-slate-200 font-semibold"
+                            className="w-7 h-7 rounded-lg bg-slate-700 hover:bg-slate-650 flex items-center justify-center text-slate-200 font-bold text-sm active:scale-95 transition-all"
+                            title="Giảm số lượng"
                           >
                             −
                           </button>
-                          <span className="text-xs font-bold text-white px-1">
+                          <span className="text-xs font-bold text-white px-1.5 font-mono min-w-[20px] text-center">
                             {quantity}
                           </span>
                           <button
                             onClick={() => handleAddItem(item)}
-                            className="w-5 h-5 rounded-md bg-slate-700 hover:bg-slate-600 flex items-center justify-center text-slate-200 font-semibold"
+                            className="w-7 h-7 rounded-lg bg-slate-700 hover:bg-slate-650 flex items-center justify-center text-slate-200 font-bold text-sm active:scale-95 transition-all"
+                            title="Tăng số lượng"
                           >
                             +
                           </button>
                           <button
                             onClick={() => handleRemoveDraftItem(item.id)}
-                            className="p-1 text-slate-400 hover:text-rose-400 transition-colors ml-1 text-xs"
+                            className="p-1 px-1.5 text-slate-400 hover:text-rose-400 text-xs font-medium transition-colors ml-0.5 rounded-md hover:bg-slate-700/60"
+                            title="Xóa món khỏi danh sách"
                           >
-                            Xóa
+                            ✕
                           </button>
                         </div>
                       </div>
@@ -321,7 +325,7 @@ export const OrderModal: React.FC<OrderModalProps> = ({
                             {onRemoveExistingOrder && (
                               <button
                                 onClick={() => onRemoveExistingOrder(table.id, ord.id)}
-                                className="text-slate-400 hover:text-rose-400 p-0.5 text-xs"
+                                className="text-slate-400 hover:text-rose-400 p-1 text-xs"
                                 title="Hủy món đã gọi"
                               >
                                 Xóa
@@ -337,8 +341,8 @@ export const OrderModal: React.FC<OrderModalProps> = ({
             </div>
 
             {/* Bottom Actions */}
-            <div className="pt-3.5 border-t border-slate-800 mt-3 flex flex-col gap-2.5">
-              <div className="flex items-center justify-between text-xs">
+            <div className="pt-3 border-t border-slate-800 mt-2 flex flex-col gap-2 shrink-0">
+              <div className="flex items-center justify-between text-xs px-0.5">
                 <span className="text-slate-400">Tiền món chọn mới:</span>
                 <span className="font-bold text-amber-300 text-sm">
                   {formatVND(draftTotal)}
@@ -349,7 +353,7 @@ export const OrderModal: React.FC<OrderModalProps> = ({
                 <button
                   type="button"
                   onClick={onClose}
-                  className="flex-1 h-11 text-xs font-semibold text-slate-400 hover:text-white rounded-xl hover:bg-slate-800 transition-colors flex items-center justify-center whitespace-nowrap"
+                  className="flex-1 h-12 text-xs font-semibold text-slate-400 hover:text-white rounded-xl bg-slate-800/80 hover:bg-slate-800 border border-slate-700/60 transition-colors flex items-center justify-center active:scale-98"
                 >
                   Đóng
                 </button>
@@ -357,7 +361,7 @@ export const OrderModal: React.FC<OrderModalProps> = ({
                   type="button"
                   disabled={draftList.length === 0 || isSubmitting}
                   onClick={handleConfirm}
-                  className="flex-[2] h-11 px-3 rounded-xl bg-amber-500 hover:bg-amber-400 disabled:opacity-40 text-slate-950 font-bold text-xs sm:text-sm transition-all shadow-sm flex items-center justify-center active:scale-[0.98] whitespace-nowrap"
+                  className="flex-[2] h-12 px-3 rounded-xl bg-amber-500 hover:bg-amber-400 disabled:opacity-40 text-slate-950 font-bold text-xs sm:text-sm transition-all shadow-sm flex items-center justify-center active:scale-[0.98] truncate"
                 >
                   {isSubmitting ? 'Đang gửi...' : `Xác nhận gọi món (${draftList.length})`}
                 </button>

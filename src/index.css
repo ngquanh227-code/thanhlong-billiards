@@ -283,3 +283,27 @@ html.light ::-webkit-scrollbar-thumb:hover {
     display: none !important;
   }
 }
+
+/* Mobile Touch & Safe Area Utilities */
+.safe-area-pb {
+  padding-bottom: max(0.5rem, env(safe-area-inset-bottom, 0px));
+}
+
+.safe-area-pt {
+  padding-top: max(0.5rem, env(safe-area-inset-top, 0px));
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* Prevent double-tap zoom delay on touch buttons */
+button, a, input, select {
+  touch-action: manipulation;
+}
+

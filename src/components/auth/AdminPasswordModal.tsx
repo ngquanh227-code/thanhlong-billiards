@@ -45,24 +45,25 @@ export const AdminPasswordModal: React.FC<AdminPasswordModalProps> = ({
   };
 
   return createPortal(
-    <div className="fixed inset-0 z-[100] flex items-center justify-center p-3 sm:p-5 bg-black/80 backdrop-blur-md select-none font-sans">
-      <div className="w-full max-w-md rounded-2xl bg-slate-900 border border-slate-800 p-5 flex flex-col gap-4 shadow-2xl animate-in fade-in zoom-in-95 duration-150">
+    <div className="fixed inset-0 z-[100] flex items-center justify-center p-2.5 sm:p-5 bg-black/80 backdrop-blur-md select-none font-sans safe-area-pb">
+      <div className="w-full max-w-md rounded-2xl bg-slate-900 border border-slate-800 p-4 sm:p-5 flex flex-col gap-4 shadow-2xl animate-in fade-in zoom-in-95 duration-150 my-auto">
         {/* Header */}
-        <div className="flex items-center justify-between pb-3 border-b border-slate-800">
-          <div>
-            <h3 className="text-base font-bold text-white">
+        <div className="flex items-center justify-between pb-3 border-b border-slate-800 gap-2">
+          <div className="min-w-0">
+            <h3 className="text-sm sm:text-base font-bold text-white truncate">
               Xác thực Quản trị viên
             </h3>
-            <p className="text-xs text-slate-400 mt-0.5">
-              Yêu cầu mật khẩu để truy cập doanh thu và cài đặt quán
+            <p className="text-[11px] text-slate-400 mt-0.5 truncate">
+              Nhập mật khẩu để truy cập doanh thu và cài đặt
             </p>
           </div>
           <button
             type="button"
             onClick={handleClose}
-            className="text-slate-400 hover:text-white px-2.5 py-1 text-xs rounded-lg hover:bg-slate-800 transition-colors"
+            className="w-8 h-8 rounded-xl bg-slate-800 hover:bg-slate-750 text-slate-300 hover:text-white flex items-center justify-center text-xs font-bold transition-all active:scale-95 shrink-0"
+            title="Đóng"
           >
-            Đóng
+            ✕
           </button>
         </div>
 
@@ -102,17 +103,17 @@ export const AdminPasswordModal: React.FC<AdminPasswordModalProps> = ({
           )}
 
           {/* Action Buttons */}
-          <div className="flex justify-end gap-2.5 pt-2 border-t border-slate-800 mt-1">
+          <div className="flex gap-2 pt-3 border-t border-slate-800 mt-1">
             <button
               type="button"
               onClick={handleClose}
-              className="px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-semibold transition-colors"
+              className="flex-1 h-12 rounded-xl bg-slate-800/80 hover:bg-slate-750 text-slate-300 text-xs font-semibold transition-all active:scale-95 border border-slate-700/60"
             >
               Hủy
             </button>
             <button
               type="submit"
-              className="px-5 py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs transition-colors shadow-sm"
+              className="flex-[2] h-12 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs sm:text-sm transition-all shadow-sm active:scale-95"
             >
               Xác nhận
             </button>

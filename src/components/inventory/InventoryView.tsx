@@ -49,39 +49,39 @@ export const InventoryView: React.FC = () => {
           </p>
         </div>
 
-        <div className="flex items-center gap-2.5">
+        <div className="flex items-center gap-2 w-full sm:w-auto">
           <button
             onClick={() => {
               setTxType('EXPENSE');
               setIsCashTxModalOpen(true);
             }}
-            className="px-4 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-rose-300 border border-slate-800 text-xs font-medium transition-colors"
+            className="flex-1 sm:flex-initial h-11 px-4 rounded-xl bg-slate-900 hover:bg-slate-800 text-rose-300 border border-slate-700/80 text-xs font-semibold transition-all active:scale-95 flex items-center justify-center truncate"
           >
-            Tạo phiếu chi
+            + Phiếu chi
           </button>
           <button
             onClick={() => {
               setTxType('INCOME');
               setIsCashTxModalOpen(true);
             }}
-            className="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-medium text-xs transition-colors"
+            className="flex-1 sm:flex-initial h-11 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs transition-all active:scale-95 flex items-center justify-center truncate shadow-sm"
           >
-            Tạo phiếu thu
+            + Phiếu thu
           </button>
         </div>
       </div>
 
       {/* Tabs */}
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-2 overflow-x-auto pb-1 no-scrollbar shrink-0">
         <button
           onClick={() => setActiveTab('INVENTORY')}
-          className={`px-4 py-2 rounded-xl text-xs transition-all ${
+          className={`h-10 px-4 rounded-xl text-xs whitespace-nowrap transition-all active:scale-95 flex items-center shrink-0 ${
             activeTab === 'INVENTORY'
               ? 'bg-slate-800 text-white border border-slate-700 font-semibold shadow-sm'
               : 'bg-slate-900/80 text-slate-400 hover:text-slate-200 border border-slate-800 font-medium'
           }`}
         >
-          Tồn kho mặt hàng ({menu.length})
+          <span>Tồn kho ({menu.length})</span>
           {lowStockItems.length > 0 && (
             <span className="ml-2 px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 text-[10px] font-semibold">
               {lowStockItems.length} sắp hết
@@ -91,13 +91,13 @@ export const InventoryView: React.FC = () => {
 
         <button
           onClick={() => setActiveTab('CASHFLOW')}
-          className={`px-4 py-2 rounded-xl text-xs transition-all ${
+          className={`h-10 px-4 rounded-xl text-xs whitespace-nowrap transition-all active:scale-95 flex items-center shrink-0 ${
             activeTab === 'CASHFLOW'
               ? 'bg-slate-800 text-white border border-slate-700 font-semibold shadow-sm'
               : 'bg-slate-900/80 text-slate-400 hover:text-slate-200 border border-slate-800 font-medium'
           }`}
         >
-          Sổ quỹ thu - chi ({transactions.length})
+          Sổ quỹ thu chi ({transactions.length})
         </button>
       </div>
 

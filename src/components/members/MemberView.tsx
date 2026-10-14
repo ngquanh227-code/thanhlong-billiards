@@ -108,7 +108,7 @@ export const MemberView: React.FC = () => {
         {isAdmin && (
           <button
             onClick={() => setIsAddModalOpen(true)}
-            className="px-3.5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-mono font-black text-xs transition-colors tracking-wider"
+            className="w-full sm:w-auto h-11 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-mono font-black text-xs transition-colors tracking-wider flex items-center justify-center active:scale-98"
           >
             + THÊM HỘI VIÊN
           </button>
@@ -254,9 +254,10 @@ export const MemberView: React.FC = () => {
               </h3>
               <button
                 onClick={() => setIsAddModalOpen(false)}
-                className="text-slate-400 hover:text-white px-2 py-1 text-sm rounded-lg hover:bg-slate-800 transition-colors"
+                className="w-8 h-8 rounded-xl bg-slate-800 hover:bg-slate-750 text-slate-300 hover:text-white flex items-center justify-center text-xs font-bold transition-all active:scale-95"
+                title="Đóng"
               >
-                Đóng
+                ✕
               </button>
             </div>
 
@@ -358,9 +359,10 @@ export const MemberView: React.FC = () => {
               </div>
               <button
                 onClick={() => setIsDepositModalOpen(false)}
-                className="text-slate-400 hover:text-white px-2 py-1 text-sm rounded-lg hover:bg-slate-800 transition-colors"
+                className="w-8 h-8 rounded-xl bg-slate-800 hover:bg-slate-750 text-slate-300 hover:text-white flex items-center justify-center text-xs font-bold transition-all active:scale-95"
+                title="Đóng"
               >
-                Đóng
+                ✕
               </button>
             </div>
 

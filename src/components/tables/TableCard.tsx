@@ -176,11 +176,11 @@ export const TableCard: React.FC<TableCardProps> = ({
       </div>
 
       {/* Footer Actions */}
-      <div className="pt-2 border-t border-slate-800/60" onClick={(e) => e.stopPropagation()}>
+      <div className="pt-2.5 border-t border-slate-800/60" onClick={(e) => e.stopPropagation()}>
         {isAvailable && (
           <button
             onClick={() => onOpenTable(table)}
-            className="w-full h-11 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-semibold text-xs sm:text-sm flex items-center justify-center transition-all shadow-sm active:scale-[0.98] whitespace-nowrap"
+            className="w-full h-11 sm:h-12 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs sm:text-sm flex items-center justify-center transition-all shadow-sm active:scale-[0.98] truncate"
           >
             Mở bàn
           </button>
@@ -190,14 +190,14 @@ export const TableCard: React.FC<TableCardProps> = ({
           <div className="flex items-center gap-2">
             <button
               onClick={() => onOrderMenu(table)}
-              className="flex-1 h-11 rounded-xl bg-slate-800 hover:bg-slate-750 text-slate-200 text-xs font-semibold flex items-center justify-center transition-all border border-slate-700/60 active:scale-[0.98] whitespace-nowrap"
+              className="flex-1 h-11 sm:h-12 rounded-xl bg-slate-800 hover:bg-slate-750 text-slate-200 text-xs font-semibold flex items-center justify-center transition-all border border-slate-700/60 active:scale-[0.98] truncate"
             >
               Gọi món
             </button>
 
             <button
               onClick={() => onCheckout(table, session)}
-              className="flex-1 h-11 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs sm:text-sm flex items-center justify-center transition-all shadow-sm active:scale-[0.98] whitespace-nowrap"
+              className="flex-1 h-11 sm:h-12 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs sm:text-sm flex items-center justify-center transition-all shadow-sm active:scale-[0.98] truncate"
             >
               Thanh toán
             </button>
@@ -207,7 +207,7 @@ export const TableCard: React.FC<TableCardProps> = ({
         {isMaintenance && (
           <button
             onClick={() => onToggleMaintenance(table)}
-            className="w-full h-11 rounded-xl bg-slate-800 hover:bg-slate-750 text-slate-300 text-xs font-medium flex items-center justify-center transition-all whitespace-nowrap"
+            className="w-full h-11 sm:h-12 rounded-xl bg-slate-800 hover:bg-slate-750 text-slate-300 text-xs font-medium flex items-center justify-center transition-all border border-slate-750 truncate active:scale-98"
           >
             Mở lại bàn
           </button>

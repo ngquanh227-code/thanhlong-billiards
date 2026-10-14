@@ -161,15 +161,14 @@ export const TableMapView: React.FC = () => {
       {/* Left Column: Tables Grid, Filters & Bar */}
       <div className="flex-1 h-full overflow-y-auto p-4 sm:p-6 flex flex-col gap-4">
         {/* Top Header Controls */}
-        {/* Top Header Controls */}
-        <div className="flex items-center justify-between gap-4 pb-3 border-b border-slate-800/80">
-          <div className="flex flex-col gap-0.5 min-w-0">
-            <div className="flex items-center gap-2.5 flex-wrap">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-slate-800/80 shrink-0">
+          <div className="flex flex-col gap-1 min-w-0">
+            <div className="flex items-center gap-2 flex-wrap">
               <h1 className="text-xl sm:text-2xl font-bold text-white tracking-tight whitespace-nowrap">
                 Sơ đồ bàn
               </h1>
-              <span className="text-xs text-slate-400 font-medium whitespace-nowrap bg-slate-800/70 px-2.5 py-1 rounded-lg border border-slate-700/50">
-                {tables.length} bàn ({playingCount} đang chơi, {availableCount} trống)
+              <span className="text-[11px] sm:text-xs text-slate-300 font-medium whitespace-nowrap bg-slate-800/80 px-2.5 py-1 rounded-lg border border-slate-700/50">
+                {tables.length} bàn ({playingCount} chơi, {availableCount} trống)
               </span>
             </div>
             <p className="text-xs text-slate-400 hidden sm:block truncate">
@@ -177,12 +176,12 @@ export const TableMapView: React.FC = () => {
             </p>
           </div>
 
-          <div className="flex items-center gap-2 text-xs shrink-0">
+          <div className="flex items-center gap-2 text-xs w-full sm:w-auto">
             {/* Admin Add Table Action */}
             {isAdmin && (
               <button
                 onClick={handleOpenAddTable}
-                className="h-10 px-4 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold flex items-center justify-center transition-all shadow-sm active:scale-[0.98] whitespace-nowrap"
+                className="flex-1 sm:flex-initial h-11 px-4 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold flex items-center justify-center transition-all shadow-sm active:scale-[0.98] whitespace-nowrap"
                 title="Thêm bàn mới với thông tin chi tiết"
               >
                 + Thêm bàn
@@ -192,7 +191,7 @@ export const TableMapView: React.FC = () => {
             {availableTables.length > 0 && !isAdmin && (
               <button
                 onClick={() => setActiveOpenModalTable(availableTables[0])}
-                className="h-10 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold flex items-center justify-center transition-all shadow-sm active:scale-[0.98] whitespace-nowrap"
+                className="flex-1 sm:flex-initial h-11 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold flex items-center justify-center transition-all shadow-sm active:scale-[0.98] whitespace-nowrap"
               >
                 + Mở bàn
               </button>
@@ -201,7 +200,7 @@ export const TableMapView: React.FC = () => {
             {/* Mobile trigger to view panel */}
             <button
               onClick={() => setIsMobilePanelOpen(true)}
-              className="lg:hidden h-10 px-3.5 rounded-xl bg-slate-800 border border-slate-700 text-slate-200 font-semibold flex items-center justify-center active:scale-[0.98] whitespace-nowrap"
+              className="lg:hidden flex-1 sm:flex-initial h-11 px-3.5 rounded-xl bg-slate-800 hover:bg-slate-750 border border-slate-700 text-slate-200 font-semibold flex items-center justify-center active:scale-[0.98] whitespace-nowrap"
             >
               Bảng điều khiển
             </button>
@@ -286,19 +285,12 @@ export const TableMapView: React.FC = () => {
 
       {/* Mobile Drawer (Only on screens < 1024px) */}
       {isMobilePanelOpen && (
-        <div className="lg:hidden fixed inset-0 z-50 flex flex-col justify-end bg-black/60 backdrop-blur-sm">
-          <div className="bg-slate-900 border-t border-slate-800 rounded-t-3xl max-h-[85vh] flex flex-col overflow-hidden shadow-2xl">
-            <div className="p-3.5 bg-slate-900/90 flex items-center justify-between border-b border-slate-800">
-              <span className="text-sm font-semibold text-white">
-                Điều khiển • {selectedTable?.code}
-              </span>
-              <button
-                onClick={() => setIsMobilePanelOpen(false)}
-                className="px-3 py-1 rounded-lg bg-slate-800 text-slate-300 text-xs font-medium hover:text-white"
-              >
-                Đóng
-              </button>
-            </div>
+        <div className="lg:hidden fixed inset-0 z-50 flex flex-col justify-end bg-black/70 backdrop-blur-sm">
+          <div
+            className="fixed inset-0"
+            onClick={() => setIsMobilePanelOpen(false)}
+          />
+          <div className="relative z-10 bg-slate-900 border-t border-slate-800 rounded-t-3xl max-h-[88vh] flex flex-col overflow-hidden shadow-2xl">
             <div className="flex-1 overflow-y-auto">
               <StationaryControlPanel
                 table={selectedTable}
@@ -309,6 +301,7 @@ export const TableMapView: React.FC = () => {
                 customers={customers}
                 staff={staff}
                 currentStaff={currentStaff}
+                onCloseMobile={() => setIsMobilePanelOpen(false)}
                 onOpenTableModal={(tbl) => {
                   setIsMobilePanelOpen(false);
                   setActiveOpenModalTable(tbl);

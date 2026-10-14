@@ -23,6 +23,7 @@ export const PosCashierView: React.FC = () => {
     activeTables.length > 0 ? activeTables[0].id : ''
   );
   const [selectedCompletedSession, setSelectedCompletedSession] = useState<TableSession | null>(null);
+  const [mobileTab, setMobileTab] = useState<'LIST' | 'TERMINAL'>('LIST');
 
   const selectedTable = tables.find((t) => t.id === selectedTableId);
   const selectedSession = selectedTable ? getActiveSessionForTable(selectedTable.id) : undefined;
@@ -56,6 +57,7 @@ export const PosCashierView: React.FC = () => {
       setSelectedTableId(remaining[0].id);
     } else {
       setSelectedTableId('');
+      setMobileTab('LIST');
     }
   };
 
@@ -70,7 +72,7 @@ export const PosCashierView: React.FC = () => {
     : '';
 
   return (
-    <div className="flex flex-col gap-4 p-4 sm:p-6 max-w-7xl mx-auto w-full select-none font-sans pb-24 lg:pb-12">
+    <div className="flex flex-col gap-4 p-3 sm:p-6 max-w-7xl mx-auto w-full select-none font-sans pb-24 lg:pb-12">
       {/* Top Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-slate-800/80">
         <div>
@@ -92,10 +94,36 @@ export const PosCashierView: React.FC = () => {
         </div>
       </div>
 
+      {/* Mobile Tab Switcher */}
+      <div className="flex lg:hidden items-center p-1 rounded-xl bg-slate-900 border border-slate-800 shrink-0">
+        <button
+          type="button"
+          onClick={() => setMobileTab('LIST')}
+          className={`flex-1 py-2.5 rounded-lg text-xs font-semibold transition-all ${
+            mobileTab === 'LIST'
+              ? 'bg-amber-500/15 text-amber-300 shadow-sm border border-amber-500/30'
+              : 'text-slate-400 hover:text-white'
+          }`}
+        >
+          Danh sách bàn ({activeTables.length})
+        </button>
+        <button
+          type="button"
+          onClick={() => setMobileTab('TERMINAL')}
+          className={`flex-1 py-2.5 rounded-lg text-xs font-semibold transition-all ${
+            mobileTab === 'TERMINAL'
+              ? 'bg-emerald-600/20 text-emerald-300 shadow-sm border border-emerald-500/30'
+              : 'text-slate-400 hover:text-white'
+          }`}
+        >
+          {selectedTable ? `Thu tiền ${selectedTable.code}` : 'Hóa đơn thu tiền'}
+        </button>
+      </div>
+
       {/* Main Grid: Left List (4 cols) & Right Terminal (8 cols) */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-4">
         {/* Left Column: Tables list */}
-        <div className="lg:col-span-4 flex flex-col gap-3.5">
+        <div className={`${mobileTab === 'LIST' ? 'flex' : 'hidden'} lg:flex lg:col-span-4 flex-col gap-3.5`}>
           <div className="p-4 rounded-2xl bg-slate-900 border border-slate-800 flex flex-col">
             <span className="text-xs font-semibold text-slate-300 mb-3 block">
               Danh sách bàn có khách ({activeTables.length})
@@ -119,6 +147,7 @@ export const PosCashierView: React.FC = () => {
                       onClick={() => {
                         setSelectedTableId(t.id);
                         setSelectedCompletedSession(null);
+                        setMobileTab('TERMINAL');
                       }}
                       className={`p-3 rounded-xl border cursor-pointer transition-colors ${
                         isSelected
@@ -167,7 +196,10 @@ export const PosCashierView: React.FC = () => {
               {completedToday.slice(0, 5).map((s) => (
                 <div
                   key={s.id}
-                  onClick={() => setSelectedCompletedSession(s)}
+                  onClick={() => {
+                    setSelectedCompletedSession(s);
+                    setMobileTab('TERMINAL');
+                  }}
                   className="p-2.5 rounded-xl bg-slate-900/50 hover:bg-slate-800 flex items-center justify-between text-xs cursor-pointer transition-colors"
                 >
                   <span className="font-medium text-white">{s.tableCode}</span>
@@ -179,24 +211,27 @@ export const PosCashierView: React.FC = () => {
         </div>
 
         {/* Right Column: Checkout Terminal */}
-        <div className="lg:col-span-8 flex flex-col">
+        <div className={`${mobileTab === 'TERMINAL' ? 'flex' : 'hidden'} lg:flex lg:col-span-8 flex-col`}>
           {selectedCompletedSession ? (
             /* Completed Receipt Review */
-            <div className="p-5 rounded-2xl bg-slate-900 border border-slate-800 flex flex-col items-center">
-              <div className="w-full flex items-center justify-between pb-3 border-b border-slate-800 mb-4">
-                <span className="text-sm font-semibold text-white">
+            <div className="p-4 sm:p-5 rounded-2xl bg-slate-900 border border-slate-800 flex flex-col items-center">
+              <div className="w-full flex items-center justify-between pb-3 border-b border-slate-800 mb-4 gap-2">
+                <span className="text-sm font-semibold text-white truncate">
                   Chi tiết hóa đơn: {selectedCompletedSession.tableCode}
                 </span>
-                <div className="flex gap-2">
+                <div className="flex gap-2 shrink-0">
                   <button
                     onClick={() => window.print()}
-                    className="h-8.5 px-3.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-medium flex items-center justify-center transition-colors"
+                    className="h-9 px-3 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-medium flex items-center justify-center transition-colors"
                   >
-                    In lại hóa đơn
+                    In lại
                   </button>
                   <button
-                    onClick={() => setSelectedCompletedSession(null)}
-                    className="h-8.5 px-3.5 rounded-lg bg-slate-800 text-slate-300 text-xs font-medium flex items-center justify-center hover:text-white transition-colors"
+                    onClick={() => {
+                      setSelectedCompletedSession(null);
+                      setMobileTab('LIST');
+                    }}
+                    className="h-9 px-3 rounded-lg bg-slate-800 text-slate-300 text-xs font-medium flex items-center justify-center hover:text-white transition-colors"
                   >
                     Đóng
                   </button>
@@ -218,22 +253,31 @@ export const PosCashierView: React.FC = () => {
             </div>
           ) : selectedTable && selectedSession && feeCalc ? (
             /* Live Terminal */
-            <div className="p-5 rounded-2xl bg-slate-900 border border-slate-800 flex flex-col justify-between">
+            <div className="p-4 sm:p-5 rounded-2xl bg-slate-900 border border-slate-800 flex flex-col justify-between">
               <div>
+                {/* Mobile Back to List button */}
+                <button
+                  type="button"
+                  onClick={() => setMobileTab('LIST')}
+                  className="lg:hidden text-xs text-amber-300 hover:text-amber-200 font-semibold mb-3 flex items-center gap-1 active:scale-95"
+                >
+                  ← Chọn bàn khác ({activeTables.length} bàn)
+                </button>
+
                 {/* Header */}
-                <div className="flex items-center justify-between pb-3.5 border-b border-slate-800 mb-4">
-                  <div>
-                    <h2 className="text-base font-bold text-white">
+                <div className="flex items-center justify-between pb-3.5 border-b border-slate-800 mb-4 gap-2">
+                  <div className="min-w-0">
+                    <h2 className="text-sm sm:text-base font-bold text-white truncate">
                       Thanh toán: {selectedTable.code} ({selectedTable.type})
                     </h2>
-                    <span className="text-xs text-slate-400 mt-0.5 block">
+                    <span className="text-xs text-slate-400 mt-0.5 block truncate">
                       Giờ vào: {new Date(selectedSession.startTime).toLocaleTimeString('vi-VN')}
                     </span>
                   </div>
 
                   <button
                     onClick={() => setShowPrintPreview(!showPrintPreview)}
-                    className="px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-xs font-medium text-slate-300 transition-colors"
+                    className="px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-xs font-medium text-slate-300 transition-colors shrink-0"
                   >
                     {showPrintPreview ? 'Ẩn mẫu in' : 'Xem mẫu in'}
                   </button>
@@ -397,11 +441,11 @@ export const PosCashierView: React.FC = () => {
               </div>
 
               {/* Bottom Actions */}
-              <div className="pt-3.5 border-t border-slate-800 flex gap-2.5">
+              <div className="pt-3.5 border-t border-slate-800 flex flex-col sm:flex-row gap-2.5 shrink-0">
                 <button
                   type="button"
                   onClick={() => handleCheckout(true)}
-                  className="flex-1 h-13 rounded-2xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-sm flex items-center justify-center transition-all shadow-md shadow-emerald-600/20 active:scale-[0.99]"
+                  className="flex-1 h-12 sm:h-13 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-sm flex items-center justify-center transition-all shadow-md shadow-emerald-600/20 active:scale-[0.99] truncate px-3"
                 >
                   In hóa đơn & Trả bàn
                 </button>
@@ -409,16 +453,23 @@ export const PosCashierView: React.FC = () => {
                 <button
                   type="button"
                   onClick={() => handleCheckout(false)}
-                  className="flex-1 h-13 rounded-2xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-sm font-semibold flex items-center justify-center transition-colors active:scale-[0.99]"
+                  className="flex-1 h-12 sm:h-13 rounded-xl bg-slate-800 hover:bg-slate-750 text-slate-200 text-sm font-semibold flex items-center justify-center transition-colors active:scale-[0.99] truncate px-3 border border-slate-700/60"
                 >
                   Chốt không in
                 </button>
               </div>
             </div>
           ) : (
-            <div className="p-16 rounded-2xl bg-slate-900 border border-slate-800 text-center flex flex-col items-center justify-center text-slate-400 text-xs">
-              <span className="text-amber-300 font-semibold mb-1">Quầy thu ngân</span>
+            <div className="p-12 sm:p-16 rounded-2xl bg-slate-900 border border-slate-800 text-center flex flex-col items-center justify-center text-slate-400 text-xs gap-2">
+              <span className="text-amber-300 font-semibold text-sm">Quầy thu ngân</span>
               <span>Chọn một bàn bên danh sách để bắt đầu thanh toán</span>
+              <button
+                type="button"
+                onClick={() => setMobileTab('LIST')}
+                className="lg:hidden mt-2 px-4 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-750 text-slate-200 font-medium text-xs border border-slate-700 active:scale-95 transition-all"
+              >
+                Xem danh sách bàn có khách
+              </button>
             </div>
           )}
         </div>
