@@ -55,6 +55,16 @@ export const TableCard: React.FC<TableCardProps> = ({
     }
   };
 
+  const getTypeBadge = (type: string) => {
+    switch (type) {
+      case 'POOL': return 'bg-cyan-500/10 text-cyan-300 border-cyan-500/25';
+      case 'CAROM': return 'bg-purple-500/10 text-purple-300 border-purple-500/25';
+      case 'VIP': return 'bg-amber-500/15 text-amber-300 border-amber-500/30';
+      case 'SNOOKER': return 'bg-blue-500/10 text-blue-300 border-blue-500/25';
+      default: return 'bg-slate-800 text-slate-300 border-slate-700';
+    }
+  };
+
   return (
     <div
       onClick={() => onSelectTable && onSelectTable(table)}
@@ -80,7 +90,7 @@ export const TableCard: React.FC<TableCardProps> = ({
               <h3 className="text-base font-bold text-white tracking-tight">
                 {table.code}
               </h3>
-              <span className="text-[11px] px-2 py-0.5 rounded-md bg-slate-800/80 text-slate-300 font-medium whitespace-nowrap">
+              <span className={`text-[11px] px-2 py-0.5 rounded-md font-medium whitespace-nowrap border ${getTypeBadge(table.type)}`}>
                 {getTypeName(table.type)}
               </span>
             </div>
@@ -93,28 +103,31 @@ export const TableCard: React.FC<TableCardProps> = ({
             {/* Status indicator */}
             {isPlaying ? (
               isPaused ? (
-                <span className="text-[11px] px-2.5 py-0.5 rounded-full bg-amber-500/15 text-amber-300 font-medium border border-amber-500/25 whitespace-nowrap">
-                  Tạm dừng
+                <span className="text-[11px] px-2.5 py-0.5 rounded-full bg-amber-500/15 text-amber-300 font-medium border border-amber-500/25 whitespace-nowrap flex items-center gap-1.5">
+                  <span className="w-1.5 h-1.5 rounded-full bg-amber-400 inline-block" />
+                  <span>Tạm dừng</span>
                 </span>
               ) : (
-                <span className="text-[11px] px-2.5 py-0.5 rounded-full bg-emerald-500/15 text-emerald-300 font-medium border border-emerald-500/25 whitespace-nowrap">
-                  Đang chơi
+                <span className="text-[11px] px-2.5 py-0.5 rounded-full bg-emerald-500/15 text-emerald-300 font-medium border border-emerald-500/25 whitespace-nowrap flex items-center gap-1.5">
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 inline-block animate-pulse" />
+                  <span>Đang chơi</span>
                 </span>
               )
             ) : isWaiting ? (
-              <span className="text-[11px] px-2.5 py-0.5 rounded-full bg-amber-500/20 text-amber-300 font-medium border border-amber-500/30 whitespace-nowrap">
-                Chờ tính
+              <span className="text-[11px] px-2.5 py-0.5 rounded-full bg-amber-500/20 text-amber-300 font-medium border border-amber-500/30 whitespace-nowrap flex items-center gap-1.5">
+                <span className="w-1.5 h-1.5 rounded-full bg-amber-400 inline-block" />
+                <span>Chờ tính</span>
               </span>
             ) : isMaintenance ? (
               <span className="text-[11px] px-2.5 py-0.5 rounded-full bg-slate-800 text-slate-400 font-medium whitespace-nowrap">
                 Bảo trì
               </span>
             ) : (
-              <span className="text-[11px] px-2.5 py-0.5 rounded-full bg-slate-800/80 text-slate-400 font-medium whitespace-nowrap">
-                Bàn trống
+              <span className="text-[11px] px-2.5 py-0.5 rounded-full bg-slate-800/80 text-slate-400 font-medium whitespace-nowrap flex items-center gap-1.5 border border-slate-700/40">
+                <span className="w-1.5 h-1.5 rounded-full bg-slate-500 inline-block" />
+                <span>Bàn trống</span>
               </span>
             )}
-
           </div>
         </div>
 

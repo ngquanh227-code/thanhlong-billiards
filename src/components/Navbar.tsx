@@ -4,9 +4,10 @@ import logoImg from '../assets/logo.png';
 
 interface NavbarProps {
   onNavigateTab?: (tab: string) => void;
+  onOpenAiModal?: () => void;
 }
 
-export const Navbar: React.FC<NavbarProps> = ({ onNavigateTab }) => {
+export const Navbar: React.FC<NavbarProps> = ({ onNavigateTab, onOpenAiModal }) => {
   const {
     tables,
     isAdmin,
@@ -101,6 +102,18 @@ export const Navbar: React.FC<NavbarProps> = ({ onNavigateTab }) => {
 
         {/* Right Actions */}
         <div className="flex items-center gap-2 font-sans">
+          {/* AI Chatbot Assistant Button */}
+          {onOpenAiModal && (
+            <button
+              onClick={onOpenAiModal}
+              className="h-9 px-3.5 rounded-xl text-xs font-semibold flex items-center gap-1.5 whitespace-nowrap transition-all border border-amber-500/30 bg-amber-500/10 hover:bg-amber-500/20 text-amber-300 shadow-sm active:scale-95"
+              title="Mở Trợ lý AI vận hành quán"
+            >
+              <span className="w-1.5 h-1.5 rounded-full bg-amber-400 inline-block animate-pulse" />
+              <span>Trợ lý AI</span>
+            </button>
+          )}
+
           {/* Admin / Staff Role Switcher */}
           <button
             onClick={toggleRole}

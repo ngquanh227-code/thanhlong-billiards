@@ -11,11 +11,13 @@ import { StaffView } from './components/staff/StaffView';
 import { InventoryView } from './components/inventory/InventoryView';
 import { ReportsView } from './components/reports/ReportsView';
 import { SettingsView } from './components/settings/SettingsView';
+import { AiAssistantModal } from './components/ai/AiAssistantModal';
 import { sounds } from './services/sound';
 
 export default function App() {
   const [currentTab, setCurrentTab] = useState<string>('tables');
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState<boolean>(false);
+  const [isAiModalOpen, setIsAiModalOpen] = useState<boolean>(false);
   const { currentStaff, tables, isAdmin } = useApp();
   const playingCount = tables.filter((t) => t.status === 'PLAYING').length;
   const waitingCount = tables.filter((t) => t.status === 'WAITING_PAYMENT').length;
@@ -55,6 +57,10 @@ export default function App() {
         e.preventDefault();
         setCurrentTab('pos');
         sounds.playClick();
+      } else if (e.key === 'F9') {
+        e.preventDefault();
+        setIsAiModalOpen((prev) => !prev);
+        sounds.playClick();
       }
     };
 
@@ -82,6 +88,7 @@ export default function App() {
       {/* Top Navbar */}
       <Navbar
         onNavigateTab={(tab) => setCurrentTab(tab)}
+        onOpenAiModal={() => setIsAiModalOpen(true)}
       />
 
       {/* Mobile Top Context Strip */}
@@ -200,6 +207,22 @@ export default function App() {
         </button>
       </nav>
 
+      {/* Floating AI Assistant Trigger Capsule (Desktop) */}
+      <button
+        onClick={() => setIsAiModalOpen(true)}
+        className="hidden sm:flex fixed bottom-5 right-5 z-30 h-11 px-4 rounded-full bg-slate-900/90 backdrop-blur-md hover:bg-slate-850 text-amber-300 border border-amber-500/30 hover:border-amber-400 items-center gap-2.5 shadow-2xl transition-all active:scale-95 text-xs font-semibold"
+        title="Trợ lý AI vận hành quán (Phím tắt F9)"
+      >
+        <span className="w-2 h-2 rounded-full bg-amber-400 animate-pulse" />
+        <span>Trợ lý AI</span>
+      </button>
+
+      {/* AI Assistant Modal */}
+      <AiAssistantModal
+        isOpen={isAiModalOpen}
+        onClose={() => setIsAiModalOpen(false)}
+        onNavigateTab={(tab) => setCurrentTab(tab)}
+      />
     </div>
   );
 }
