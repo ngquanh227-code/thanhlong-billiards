@@ -132,7 +132,7 @@ export const SettingsView: React.FC = () => {
   };
 
   return (
-    <div className="flex flex-col gap-6 p-4 lg:p-8 max-w-7xl mx-auto w-full select-none">
+    <div className="flex-1 h-full overflow-y-auto p-4 lg:p-8 max-w-7xl mx-auto w-full select-none space-y-6 pb-28 lg:pb-16 font-sans">
       {/* Top Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-800">
         <div>
@@ -727,6 +727,295 @@ export const SettingsView: React.FC = () => {
         </div>
       </div>
 
+      {/* Row 5: Admin Pricing Policies & Member Tier Discounts */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
+        {/* 1. Member Tier Discount Rates & Points */}
+        <div className="p-5 rounded-2xl bg-slate-900/60 border border-slate-800/80 flex flex-col justify-between">
+          <div>
+            <div className="flex items-center justify-between mb-2">
+              <h3 className="text-sm font-semibold text-white">
+                Ưu đãi giảm giá theo Hạng Hội viên
+              </h3>
+              <span className="text-[11px] px-2.5 py-0.5 rounded-full font-medium bg-amber-500/15 text-amber-300 border border-amber-500/25">
+                {isAdmin ? 'Quản trị viên' : 'Chỉ xem'}
+              </span>
+            </div>
+            <p className="text-xs text-slate-400 mb-4">
+              Tỷ lệ chiết khấu tiền giờ tự động áp dụng khi nhập mã hoặc số điện thoại khách hàng.
+            </p>
+
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs mb-4">
+              <div className="p-3 rounded-xl bg-slate-800/40 border border-slate-700/60">
+                <div className="flex items-center justify-between mb-1.5">
+                  <span className="font-semibold text-slate-200">Hạng Bạc</span>
+                  <span className="text-[10px] px-1.5 py-0.2 rounded bg-slate-700 text-slate-300 font-mono">SILVER</span>
+                </div>
+                <div className="flex items-center gap-1.5">
+                  <input
+                    type="number"
+                    min="0"
+                    max="100"
+                    readOnly={!isAdmin}
+                    value={formSettings.silverDiscountPercent ?? 5}
+                    onChange={(e) => setFormSettings({ ...formSettings, silverDiscountPercent: Number(e.target.value) })}
+                    className={`w-full px-2.5 py-1.5 rounded-lg border font-mono font-bold text-center ${
+                      isAdmin ? 'bg-slate-800 border-slate-600 text-white' : 'bg-slate-850 border-slate-800 text-slate-300 cursor-default'
+                    }`}
+                  />
+                  <span className="text-slate-400 font-bold">%</span>
+                </div>
+              </div>
+
+              <div className="p-3 rounded-xl bg-slate-800/40 border border-amber-500/20">
+                <div className="flex items-center justify-between mb-1.5">
+                  <span className="font-semibold text-amber-300">Hạng Vàng</span>
+                  <span className="text-[10px] px-1.5 py-0.2 rounded bg-amber-500/20 text-amber-300 font-mono">GOLD</span>
+                </div>
+                <div className="flex items-center gap-1.5">
+                  <input
+                    type="number"
+                    min="0"
+                    max="100"
+                    readOnly={!isAdmin}
+                    value={formSettings.goldDiscountPercent ?? 10}
+                    onChange={(e) => setFormSettings({ ...formSettings, goldDiscountPercent: Number(e.target.value) })}
+                    className={`w-full px-2.5 py-1.5 rounded-lg border font-mono font-bold text-center ${
+                      isAdmin ? 'bg-slate-800 border-slate-600 text-amber-300' : 'bg-slate-850 border-slate-800 text-amber-300/80 cursor-default'
+                    }`}
+                  />
+                  <span className="text-amber-400 font-bold">%</span>
+                </div>
+              </div>
+
+              <div className="p-3 rounded-xl bg-slate-800/40 border border-cyan-500/20">
+                <div className="flex items-center justify-between mb-1.5">
+                  <span className="font-semibold text-cyan-300">Kim Cương</span>
+                  <span className="text-[10px] px-1.5 py-0.2 rounded bg-cyan-500/20 text-cyan-300 font-mono">DIAMOND</span>
+                </div>
+                <div className="flex items-center gap-1.5">
+                  <input
+                    type="number"
+                    min="0"
+                    max="100"
+                    readOnly={!isAdmin}
+                    value={formSettings.diamondDiscountPercent ?? 15}
+                    onChange={(e) => setFormSettings({ ...formSettings, diamondDiscountPercent: Number(e.target.value) })}
+                    className={`w-full px-2.5 py-1.5 rounded-lg border font-mono font-bold text-center ${
+                      isAdmin ? 'bg-slate-800 border-slate-600 text-cyan-300' : 'bg-slate-850 border-slate-800 text-cyan-300/80 cursor-default'
+                    }`}
+                  />
+                  <span className="text-cyan-400 font-bold">%</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Loyalty points rule */}
+            <div className="p-3 rounded-xl bg-slate-800/30 border border-slate-800 text-xs flex flex-col gap-1.5">
+              <label className="text-slate-300 font-medium">Quy tắc tích lũy điểm thưởng khi thanh toán:</label>
+              <div className="flex items-center gap-2">
+                <span className="text-slate-400">Chi tiêu mỗi</span>
+                <input
+                  type="number"
+                  step="1000"
+                  readOnly={!isAdmin}
+                  value={formSettings.pointsPerVnd ?? 10000}
+                  onChange={(e) => setFormSettings({ ...formSettings, pointsPerVnd: Number(e.target.value) })}
+                  className={`w-32 px-2.5 py-1 rounded-lg border font-mono font-semibold ${
+                    isAdmin ? 'bg-slate-800 border-slate-700 text-white' : 'bg-slate-850 border-slate-800 text-slate-300 cursor-default'
+                  }`}
+                />
+                <span className="text-slate-400">VNĐ =</span>
+                <span className="font-bold text-amber-300">1 Điểm thưởng</span>
+              </div>
+            </div>
+          </div>
+
+          <div className="flex justify-end pt-4 mt-3 border-t border-slate-800">
+            {isAdmin && (
+              <button
+                type="button"
+                onClick={() => updateSettings(formSettings)}
+                className="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-medium text-xs transition-colors"
+              >
+                Lưu ưu đãi hội viên
+              </button>
+            )}
+          </div>
+        </div>
+
+        {/* 2. Peak Hours, Weekend Surcharges & Grace Period */}
+        <div className="p-5 rounded-2xl bg-slate-900/60 border border-slate-800/80 flex flex-col justify-between">
+          <div>
+            <div className="flex items-center justify-between mb-2">
+              <h3 className="text-sm font-semibold text-white">
+                Khung giờ cao điểm & Ân hạn miễn phí
+              </h3>
+              <span className="text-[11px] px-2.5 py-0.5 rounded-full font-medium bg-emerald-500/15 text-emerald-300 border border-emerald-500/25">
+                Biểu phí linh hoạt
+              </span>
+            </div>
+            <p className="text-xs text-slate-400 mb-4">
+              Tự động nâng giá trong giờ đông khách và miễn phí cho khách hủy bàn nhanh.
+            </p>
+
+            <div className="space-y-3.5 text-xs">
+              {/* Peak Hour Settings */}
+              <div className="p-3.5 rounded-xl bg-slate-800/40 border border-slate-700/60 flex flex-col gap-2.5">
+                <div className="flex items-center justify-between">
+                  <label className="font-semibold text-white cursor-pointer flex items-center gap-2">
+                    <input
+                      type="checkbox"
+                      disabled={!isAdmin}
+                      checked={formSettings.enablePeakHourRate ?? true}
+                      onChange={(e) => setFormSettings({ ...formSettings, enablePeakHourRate: e.target.checked })}
+                      className="w-4 h-4 rounded text-amber-500 cursor-pointer"
+                    />
+                    <span>Áp dụng giá giờ cao điểm (Peak Hours)</span>
+                  </label>
+                  <span className={`text-[10px] px-2 py-0.5 rounded font-mono ${
+                    formSettings.enablePeakHourRate ? 'bg-amber-500/20 text-amber-300 font-bold' : 'bg-slate-800 text-slate-500'
+                  }`}>
+                    {formSettings.enablePeakHourRate ? 'ĐANG BẬT' : 'TẮT'}
+                  </span>
+                </div>
+
+                <div className="grid grid-cols-2 gap-3 pl-6">
+                  <div>
+                    <label className="text-slate-400 text-[11px] block mb-1">Giờ bắt đầu:</label>
+                    <input
+                      type="time"
+                      readOnly={!isAdmin}
+                      value={formSettings.peakHourStart || '18:00'}
+                      onChange={(e) => setFormSettings({ ...formSettings, peakHourStart: e.target.value })}
+                      className={`w-full px-2.5 py-1.5 rounded-lg border font-mono ${
+                        isAdmin ? 'bg-slate-800 border-slate-700 text-white' : 'bg-slate-850 border-slate-800 text-slate-300 cursor-default'
+                      }`}
+                    />
+                  </div>
+                  <div>
+                    <label className="text-slate-400 text-[11px] block mb-1">Giờ kết thúc:</label>
+                    <input
+                      type="time"
+                      readOnly={!isAdmin}
+                      value={formSettings.peakHourEnd || '23:30'}
+                      onChange={(e) => setFormSettings({ ...formSettings, peakHourEnd: e.target.value })}
+                      className={`w-full px-2.5 py-1.5 rounded-lg border font-mono ${
+                        isAdmin ? 'bg-slate-800 border-slate-700 text-white' : 'bg-slate-850 border-slate-800 text-slate-300 cursor-default'
+                      }`}
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {/* Weekend Surcharge */}
+              <div className="p-3.5 rounded-xl bg-slate-800/40 border border-slate-700/60 flex flex-col gap-2.5">
+                <div className="flex items-center justify-between">
+                  <label className="font-semibold text-white cursor-pointer flex items-center gap-2">
+                    <input
+                      type="checkbox"
+                      disabled={!isAdmin}
+                      checked={formSettings.enableWeekendSurcharge ?? true}
+                      onChange={(e) => setFormSettings({ ...formSettings, enableWeekendSurcharge: e.target.checked })}
+                      className="w-4 h-4 rounded text-emerald-500 cursor-pointer"
+                    />
+                    <span>Phụ thu cuối tuần (Thứ 7 & Chủ Nhật)</span>
+                  </label>
+                  <span className={`text-[10px] px-2 py-0.5 rounded font-mono ${
+                    formSettings.enableWeekendSurcharge ? 'bg-emerald-500/20 text-emerald-300 font-bold' : 'bg-slate-800 text-slate-500'
+                  }`}>
+                    {formSettings.enableWeekendSurcharge ? 'ĐANG BẬT' : 'TẮT'}
+                  </span>
+                </div>
+
+                <div className="pl-6 flex items-center gap-2">
+                  <span className="text-slate-400">Mức phụ thu:</span>
+                  <input
+                    type="number"
+                    step="5000"
+                    readOnly={!isAdmin}
+                    value={formSettings.weekendSurchargePerHour ?? 10000}
+                    onChange={(e) => setFormSettings({ ...formSettings, weekendSurchargePerHour: Number(e.target.value) })}
+                    className={`w-36 px-2.5 py-1 rounded-lg border font-mono font-bold ${
+                      isAdmin ? 'bg-slate-800 border-slate-700 text-white' : 'bg-slate-850 border-slate-800 text-slate-300 cursor-default'
+                    }`}
+                  />
+                  <span className="text-slate-400">đ / giờ chơi</span>
+                </div>
+              </div>
+
+              {/* Grace Period & Happy Hour */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                {/* Grace Period */}
+                <div className="p-3 rounded-xl bg-slate-800/40 border border-slate-700/60 flex flex-col gap-1.5">
+                  <span className="font-semibold text-white">Ân hạn miễn phí (Grace Period):</span>
+                  <p className="text-[11px] text-slate-400">
+                    Mở nhầm hoặc khách hủy sớm dưới số phút này sẽ được tính 0đ:
+                  </p>
+                  <div className="flex items-center gap-2 mt-1">
+                    <input
+                      type="number"
+                      min="0"
+                      max="30"
+                      readOnly={!isAdmin}
+                      value={formSettings.gracePeriodMinutes ?? 5}
+                      onChange={(e) => setFormSettings({ ...formSettings, gracePeriodMinutes: Number(e.target.value) })}
+                      className={`w-20 px-2 py-1 rounded-lg border font-mono font-bold text-center ${
+                        isAdmin ? 'bg-slate-800 border-slate-700 text-emerald-400' : 'bg-slate-850 border-slate-800 text-emerald-400/80 cursor-default'
+                      }`}
+                    />
+                    <span className="text-slate-300 font-medium">phút đầu</span>
+                  </div>
+                </div>
+
+                {/* Happy Hour */}
+                <div className="p-3 rounded-xl bg-slate-800/40 border border-slate-700/60 flex flex-col gap-1.5">
+                  <div className="flex items-center justify-between">
+                    <span className="font-semibold text-white">Giờ Vàng (Happy Hour):</span>
+                    <input
+                      type="checkbox"
+                      disabled={!isAdmin}
+                      checked={formSettings.happyHourEnabled ?? false}
+                      onChange={(e) => setFormSettings({ ...formSettings, happyHourEnabled: e.target.checked })}
+                      className="w-4 h-4 rounded text-amber-500 cursor-pointer"
+                    />
+                  </div>
+                  <p className="text-[11px] text-slate-400">
+                    Khung giờ thấp điểm (12:00 - 17:00):
+                  </p>
+                  <div className="flex items-center gap-2 mt-1">
+                    <span className="text-slate-400">Giảm</span>
+                    <input
+                      type="number"
+                      min="0"
+                      max="100"
+                      readOnly={!isAdmin}
+                      value={formSettings.happyHourDiscountPercent ?? 15}
+                      onChange={(e) => setFormSettings({ ...formSettings, happyHourDiscountPercent: Number(e.target.value) })}
+                      className={`w-16 px-2 py-1 rounded-lg border font-mono font-bold text-center ${
+                        isAdmin ? 'bg-slate-800 border-slate-700 text-amber-300' : 'bg-slate-850 border-slate-800 text-amber-300/80 cursor-default'
+                      }`}
+                    />
+                    <span className="text-slate-300 font-medium">% tiền giờ</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="flex justify-end pt-4 mt-3 border-t border-slate-800">
+            {isAdmin && (
+              <button
+                type="button"
+                onClick={() => updateSettings(formSettings)}
+                className="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-medium text-xs transition-colors"
+              >
+                Lưu biểu phí & Khung giờ
+              </button>
+            )}
+          </div>
+        </div>
+      </div>
+
       {/* Modal: Thêm / Sửa Bàn (Admin Only) */}
       {isTableModalOpen && isAdmin && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
@@ -737,9 +1026,9 @@ export const SettingsView: React.FC = () => {
               </h3>
               <button
                 onClick={() => setIsTableModalOpen(false)}
-                className="text-slate-400 hover:text-white px-2 py-1 rounded-md hover:bg-charcoal-800 font-mono text-sm"
+                className="text-slate-400 hover:text-white px-2.5 py-1 rounded-md hover:bg-charcoal-800 text-xs font-semibold"
               >
-                ✕
+                Đóng
               </button>
             </div>
 

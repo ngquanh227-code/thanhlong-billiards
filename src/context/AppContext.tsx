@@ -636,8 +636,10 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     const rule = pricingRules.find((r) => r.type === session.tableType);
     const now = new Date();
 
-    const feeCalculation = calculateTableFee(session, rule, now);
+    const feeCalculation = calculateTableFee(session, rule, now, settings);
     const finalTotal = Math.max(0, feeCalculation.tableFee - discountAmount + feeCalculation.fnbFee + surcharge);
+
+    const ptsDivisor = settings.pointsPerVnd || 10000;
 
     // If payment method is Member Wallet, check balance & deduct
     if (paymentMethod === 'MEMBER_WALLET' && session.customerId) {
@@ -653,7 +655,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
                 ...c,
                 prepaidBalance: c.prepaidBalance - finalTotal,
                 totalSpent: c.totalSpent + finalTotal,
-                points: Math.max(0, c.points - pointsRedeemed + Math.floor(finalTotal / 1000)),
+                points: Math.max(0, c.points - pointsRedeemed + Math.floor(finalTotal / ptsDivisor)),
                 totalPlayHours: c.totalPlayHours + (feeCalculation.billedMinutes / 60),
               }
             : c
@@ -666,7 +668,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
             ? {
                 ...c,
                 totalSpent: c.totalSpent + finalTotal,
-                points: Math.max(0, c.points - pointsRedeemed + Math.floor(finalTotal / 1000)),
+                points: Math.max(0, c.points - pointsRedeemed + Math.floor(finalTotal / ptsDivisor)),
                 totalPlayHours: c.totalPlayHours + (feeCalculation.billedMinutes / 60),
               }
             : c

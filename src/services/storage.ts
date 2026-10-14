@@ -341,7 +341,18 @@ const DEFAULT_SETTINGS: SystemSettings = {
   bankAccountName: 'THANH LONG BILLIARDS CLUB',
   peakHourStart: '18:00',
   peakHourEnd: '23:30',
+  enablePeakHourRate: true,
   enableWeekendSurcharge: true,
+  weekendSurchargePerHour: 10000,
+  silverDiscountPercent: 5,
+  goldDiscountPercent: 10,
+  diamondDiscountPercent: 15,
+  pointsPerVnd: 10000,
+  happyHourEnabled: false,
+  happyHourDiscountPercent: 15,
+  happyHourStart: '12:00',
+  happyHourEnd: '17:00',
+  gracePeriodMinutes: 5,
   receiptHeader: 'CÂU LẠC BỘ BIDA THANH LONG',
   receiptFooter: 'Cảm ơn Quý Khách! Hẹn gặp lại Quý Cơ Thủ!',
   currency: 'VNĐ',
@@ -483,7 +494,8 @@ export const StorageService = {
 
   // Settings
   getSettings(): SystemSettings {
-    return this.get(STORAGE_KEYS.SETTINGS, DEFAULT_SETTINGS);
+    const saved = this.get<Partial<SystemSettings>>(STORAGE_KEYS.SETTINGS, DEFAULT_SETTINGS);
+    return { ...DEFAULT_SETTINGS, ...saved };
   },
   saveSettings(settings: SystemSettings): void {
     this.set(STORAGE_KEYS.SETTINGS, settings);

@@ -182,7 +182,21 @@ export interface SystemSettings {
   bankAccountName: string;
   peakHourStart: string; // e.g. "18:00"
   peakHourEnd: string; // e.g. "23:00"
+  enablePeakHourRate: boolean;
   enableWeekendSurcharge: boolean;
+  weekendSurchargePerHour: number; // VND/hour
+  // Member tier discounts (%)
+  silverDiscountPercent: number; // default 5
+  goldDiscountPercent: number; // default 10
+  diamondDiscountPercent: number; // default 15
+  pointsPerVnd: number; // default 10000 (10.000đ = 1 point)
+  // Happy hour promotions
+  happyHourEnabled: boolean;
+  happyHourDiscountPercent: number; // default 15
+  happyHourStart: string; // e.g. "12:00"
+  happyHourEnd: string; // e.g. "17:00"
+  // Grace period (minutes before charging table fee)
+  gracePeriodMinutes: number; // default 5
   receiptHeader: string;
   receiptFooter: string;
   currency: string;

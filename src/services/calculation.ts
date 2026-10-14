@@ -1,4 +1,4 @@
-import { TableSession, PricingRule, MemberTier } from '../types';
+import { TableSession, PricingRule, MemberTier, SystemSettings } from '../types';
 
 /**
  * Format number to Vietnamese Currency VND
@@ -70,20 +70,24 @@ export function applyRounding(minutes: number, roundingRule: 1 | 5 | 10 | 15 = 1
 }
 
 /**
+ * Check if a date/time is within time range HH:mm
+ */
+export function isWithinTimeRange(date: Date, startStr: string = '12:00', endStr: string = '17:00'): boolean {
+  const currentMinutes = date.getHours() * 60 + date.getMinutes();
+  const [startH, startM] = (startStr || '12:00').split(':').map(Number);
+  const [endH, endM] = (endStr || '17:00').split(':').map(Number);
+
+  const startLimit = (startH || 0) * 60 + (startM || 0);
+  const endLimit = (endH || 0) * 60 + (endM || 0);
+
+  return currentMinutes >= startLimit && currentMinutes <= endLimit;
+}
+
+/**
  * Check if a date/time is within configured peak hours
  */
 export function isPeakHour(date: Date, startStr: string = '18:00', endStr: string = '23:00'): boolean {
-  const hours = date.getHours();
-  const minutes = date.getMinutes();
-  const currentMinutes = hours * 60 + minutes;
-
-  const [startH, startM] = startStr.split(':').map(Number);
-  const [endH, endM] = endStr.split(':').map(Number);
-
-  const startLimit = (startH || 18) * 60 + (startM || 0);
-  const endLimit = (endH || 23) * 60 + (endM || 0);
-
-  return currentMinutes >= startLimit && currentMinutes <= endLimit;
+  return isWithinTimeRange(date, startStr, endStr);
 }
 
 /**
@@ -97,14 +101,15 @@ export function isWeekend(date: Date): boolean {
 /**
  * Get tier discount percentage on table fee
  */
-export function getTierDiscountPercent(tier?: MemberTier): number {
+export function getTierDiscountPercent(tier?: MemberTier, settings?: SystemSettings): number {
+  if (!tier) return 0;
   switch (tier) {
     case 'DIAMOND':
-      return 15; // 15% discount
+      return settings?.diamondDiscountPercent ?? 15;
     case 'GOLD':
-      return 10; // 10% discount
+      return settings?.goldDiscountPercent ?? 10;
     case 'SILVER':
-      return 5; // 5% discount
+      return settings?.silverDiscountPercent ?? 5;
     default:
       return 0;
   }
@@ -116,7 +121,8 @@ export function getTierDiscountPercent(tier?: MemberTier): number {
 export function calculateTableFee(
   session: TableSession,
   pricingRule?: PricingRule,
-  now: Date = new Date()
+  now: Date = new Date(),
+  settings?: SystemSettings
 ): {
   netSeconds: number;
   netMinutes: number;
@@ -125,11 +131,19 @@ export function calculateTableFee(
   tableFee: number;
   fnbFee: number;
   discountAmount: number;
+  tierDiscountAmount: number;
+  happyHourDiscountAmount: number;
   surcharge: number;
   grandTotal: number;
+  isGracePeriod: boolean;
+  isHappyHour: boolean;
 } {
   const netSeconds = calculateNetPlayedSeconds(session, now);
   const rawMinutes = netSeconds / 60;
+  const netMinutes = Math.floor(rawMinutes);
+
+  const gracePeriod = settings?.gracePeriodMinutes ?? 5;
+  const isGracePeriod = netMinutes <= gracePeriod;
 
   const minMinutes = pricingRule?.minimumMinutes || 15;
   const roundingRule = pricingRule?.roundingMinutes || 1;
@@ -140,31 +154,62 @@ export function calculateTableFee(
   billedMinutes = applyRounding(billedMinutes, roundingRule);
 
   // Hourly rate - locked with session or from rule
-  const hourlyRate = session.appliedHourlyRate || pricingRule?.defaultHourlyRate || 60000;
+  let hourlyRate = session.appliedHourlyRate || pricingRule?.defaultHourlyRate || 60000;
+  if (!session.appliedHourlyRate && pricingRule && settings?.enablePeakHourRate) {
+    if (isPeakHour(now, settings.peakHourStart, settings.peakHourEnd) && pricingRule.peakHourRate > 0) {
+      hourlyRate = pricingRule.peakHourRate;
+    }
+  }
 
-  // Raw table fee
-  let rawTableFee = Math.round((billedMinutes / 60) * hourlyRate);
+  // Raw table fee (Free if within grace period!)
+  let rawTableFee = isGracePeriod ? 0 : Math.round((billedMinutes / 60) * hourlyRate);
+
+  // Member discount on table fee
+  const tierDiscountPercent = getTierDiscountPercent(session.customerTier, settings);
+  const tierDiscountAmount = Math.round(rawTableFee * (tierDiscountPercent / 100));
+
+  // Happy hour discount
+  let isHappyHour = false;
+  let happyHourDiscountAmount = 0;
+  if (
+    !isGracePeriod &&
+    settings?.happyHourEnabled &&
+    isWithinTimeRange(now, settings.happyHourStart, settings.happyHourEnd)
+  ) {
+    isHappyHour = true;
+    const hhPercent = settings.happyHourDiscountPercent || 15;
+    happyHourDiscountAmount = Math.round(rawTableFee * (hhPercent / 100));
+  }
+
+  const totalDiscount = Math.min(rawTableFee, tierDiscountAmount + happyHourDiscountAmount);
 
   // Calculate orders total
   const fnbFee = (session.orders || []).reduce((sum, item) => sum + item.price * item.quantity, 0);
 
-  // Member discount on table fee
-  const tierDiscountPercent = getTierDiscountPercent(session.customerTier);
-  const discountAmount = Math.round(rawTableFee * (tierDiscountPercent / 100));
+  // Surcharges
+  let dynamicSurcharge = session.surcharge || 0;
+  if (settings?.enableWeekendSurcharge && isWeekend(now) && !isGracePeriod) {
+    const hours = billedMinutes / 60;
+    const weekendAdd = Math.round(hours * (settings.weekendSurchargePerHour || 10000));
+    dynamicSurcharge += weekendAdd;
+  }
 
-  const surcharge = session.surcharge || 0;
   const tableFee = Math.max(0, rawTableFee);
-  const grandTotal = Math.max(0, tableFee - discountAmount + fnbFee + surcharge);
+  const grandTotal = Math.max(0, tableFee - totalDiscount + fnbFee + dynamicSurcharge);
 
   return {
     netSeconds,
-    netMinutes: Math.floor(rawMinutes),
+    netMinutes,
     billedMinutes,
     hourlyRate,
     tableFee,
     fnbFee,
-    discountAmount,
-    surcharge,
+    discountAmount: totalDiscount,
+    tierDiscountAmount,
+    happyHourDiscountAmount,
+    surcharge: dynamicSurcharge,
     grandTotal,
+    isGracePeriod,
+    isHappyHour,
   };
 }
