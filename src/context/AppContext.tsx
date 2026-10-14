@@ -90,6 +90,7 @@ interface AppContextType {
   // Menu & Stock Actions
   addMenuItem: (item: Omit<MenuItem, 'id'>) => MenuItem;
   updateMenuItem: (item: MenuItem) => void;
+  deleteMenuItem: (menuItemId: string) => boolean;
   importStock: (menuItemId: string, addedStock: number, unitCost: number, supplierNotes?: string) => void;
 
   // Shift & Cashflow Actions
@@ -840,6 +841,18 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     addToast('success', 'Cập nhật món', item.name);
   };
 
+  // Delete Menu Item
+  const deleteMenuItem = (menuItemId: string): boolean => {
+    const itemToDelete = menu.find((m) => m.id === menuItemId);
+    if (!itemToDelete) return false;
+
+    setMenu((prev) => prev.filter((m) => m.id !== menuItemId));
+    sounds.playClick();
+    logAudit('XÓA MÓN MENU', `Xóa món "${itemToDelete.name}" khỏi thực đơn`);
+    addToast('info', 'Đã xóa món', itemToDelete.name);
+    return true;
+  };
+
   // Import Stock
   const importStock = (menuItemId: string, addedStock: number, unitCost: number, supplierNotes?: string) => {
     const targetItem = menu.find((m) => m.id === menuItemId);
@@ -1097,6 +1110,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
         depositCustomerWallet,
         addMenuItem,
         updateMenuItem,
+        deleteMenuItem,
         importStock,
         startNewShift,
         closeCurrentShift,
