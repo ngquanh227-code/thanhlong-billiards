@@ -12,6 +12,7 @@ import { InventoryView } from './components/inventory/InventoryView';
 import { ReportsView } from './components/reports/ReportsView';
 import { SettingsView } from './components/settings/SettingsView';
 import { AiAssistantModal } from './components/ai/AiAssistantModal';
+import { DraggableAiBubble } from './components/ai/DraggableAiBubble';
 import { sounds } from './services/sound';
 
 export default function App() {
@@ -207,15 +208,11 @@ export default function App() {
         </button>
       </nav>
 
-      {/* Floating AI Assistant Trigger Capsule (Desktop) */}
-      <button
-        onClick={() => setIsAiModalOpen(true)}
-        className="hidden sm:flex fixed bottom-5 right-5 z-30 h-11 px-4 rounded-full bg-slate-900/90 backdrop-blur-md hover:bg-slate-850 text-amber-300 border border-amber-500/30 hover:border-amber-400 items-center gap-2.5 shadow-2xl transition-all active:scale-95 text-xs font-semibold"
-        title="Trợ lý AI vận hành quán (Phím tắt F9)"
-      >
-        <span className="w-2 h-2 rounded-full bg-amber-400 animate-pulse" />
-        <span>Trợ lý AI</span>
-      </button>
+      {/* Draggable Floating AI Chat Bubble */}
+      <DraggableAiBubble
+        isOpen={isAiModalOpen}
+        onToggle={() => setIsAiModalOpen((prev) => !prev)}
+      />
 
       {/* AI Assistant Modal */}
       <AiAssistantModal
